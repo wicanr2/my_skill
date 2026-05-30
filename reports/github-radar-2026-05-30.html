@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Weekly Radar — 2026-05-30</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--border:#30363d;--fg:#e6edf3;--muted:#8b949e;--link:#58a6ff;
+        --s:#f85149;--a:#d29922;--b:#3fb950;--c:#8b949e}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,"Segoe UI","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--fg);margin:0;padding:2rem;line-height:1.55}
+  h1{margin:0 0 .25rem}
+  .sub{color:var(--muted);margin-bottom:1.5rem;font-size:.9rem}
+  h2{border-bottom:1px solid var(--border);padding-bottom:.3rem;margin-top:2.2rem}
+  a{color:var(--link);text-decoration:none}
+  a:hover{text-decoration:underline}
+  table{border-collapse:collapse;width:100%;margin-top:.6rem;font-size:.92rem}
+  th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#21262d}
+  tr:nth-child(even) td{background:var(--panel)}
+  td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;min-width:1.4em;text-align:center;border-radius:4px;padding:1px 6px;font-weight:700;font-size:.8rem;color:#0d1117}
+  .S{background:var(--s)} .A{background:var(--a)} .B{background:var(--b)} .C{background:var(--c)}
+  .legend span{margin-right:1rem;font-size:.85rem}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin:.8rem 0}
+  .flag{border-left:3px solid var(--s);padding-left:.8rem;margin:.5rem 0}
+  ul{margin:.4rem 0 .4rem 1.1rem}
+  code{background:#21262d;padding:1px 5px;border-radius:4px;font-size:.85em}
+  footer{color:var(--muted);font-size:.82rem;margin-top:2.5rem;border-top:1px solid var(--border);padding-top:1rem}
+</style>
+</head>
+<body>
+
+<h1>GitHub Weekly Radar</h1>
+<div class="sub">
+  產生日期 2026-05-30 · 篩選條件:<code>created:&gt;2026-04-30</code> 且 <code>stars:&gt;2000</code>(近 30 天新建)·
+  資料以 <code>gh api search/repositories</code> 核實的真實 <code>created_at</code> 與當下星數為準 ·
+  共 25 個
+</div>
+
+<div class="legend">
+  <span><b class="pill S">S</b> 策略性·高可信</span>
+  <span><b class="pill A">A</b> 值得導入/pilot</span>
+  <span><b class="pill B">B</b> 小眾/選用</span>
+  <span><b class="pill C">C</b> 紅旗/雙刃/雜訊</span>
+</div>
+
+<h2>已驗證新建清單(25)</h2>
+<table>
+<tr><th>Tier</th><th class="n">★</th><th>created</th><th>repo</th><th>lang</th><th>描述</th></tr>
+
+<tr><td><span class="pill S">S</span></td><td class="n">12,493</td><td>2026-05-06</td><td><a href="https://github.com/antirez/ds4" target="_blank">antirez/ds4</a></td><td>C</td><td>DeepSeek 4 Flash 本地推論引擎(Metal/CUDA)。Redis 作者 antirez 出品,高可信。</td></tr>
+<tr><td><span class="pill S">S</span></td><td class="n">3,936</td><td>2026-05-20</td><td><a href="https://github.com/perplexityai/bumblebee" target="_blank">perplexityai/bumblebee</a></td><td>Go</td><td>唯讀的開發端點掃描器,檢查對已知軟體供應鏈污染的暴露。Perplexity 官方。</td></tr>
+<tr><td><span class="pill S">S</span></td><td class="n">2,998</td><td>2026-05-08</td><td><a href="https://github.com/microsoft/SkillOpt" target="_blank">microsoft/SkillOpt</a></td><td>Python</td><td>為凍結 LLM agent 訓練可重用「自然語言 skill」的 text-space optimizer。微軟研究。</td></tr>
+<tr><td><span class="pill S">S</span></td><td class="n">2,109</td><td>2026-05-14</td><td><a href="https://github.com/facebookresearch/vggt-omega" target="_blank">facebookresearch/vggt-omega</a></td><td>Python</td><td>VGGT Omega(CVPR 2026 Oral)。Meta 研究視覺幾何模型。</td></tr>
+
+<tr><td><span class="pill A">A</span></td><td class="n">8,612</td><td>2026-05-06</td><td><a href="https://github.com/BigPizzaV3/CodexPlusPlus" target="_blank">BigPizzaV3/CodexPlusPlus</a></td><td>Rust</td><td>Codex 體驗增強工具,讓 Codex 更好用。</td></tr>
+<tr><td><span class="pill A">A</span></td><td class="n">5,400</td><td>2026-05-11</td><td><a href="https://github.com/nexu-io/html-anything" target="_blank">nexu-io/html-anything</a></td><td>HTML</td><td>agentic HTML 編輯器:本地 agent 寫 HTML,75 Skills × 9 Surfaces,一鍵發佈,零 API key。</td></tr>
+<tr><td><span class="pill A">A</span></td><td class="n">4,712</td><td>2026-05-15</td><td><a href="https://github.com/vercel-labs/zerolang" target="_blank">vercel-labs/zerolang</a></td><td>C</td><td>「給 agent 用的程式語言」。Vercel Labs 實驗作。</td></tr>
+<tr><td><span class="pill A">A</span></td><td class="n">4,034</td><td>2026-05-08</td><td><a href="https://github.com/vercel-labs/zero-native" target="_blank">vercel-labs/zero-native</a></td><td>Zig</td><td>用 Zig + web UI 建桌面/行動 app。Vercel Labs。</td></tr>
+<tr><td><span class="pill A">A</span></td><td class="n">2,791</td><td>2026-05-06</td><td><a href="https://github.com/strukto-ai/mirage" target="_blank">strukto-ai/mirage</a></td><td>TypeScript</td><td>AI agent 的統一虛擬檔案系統。</td></tr>
+<tr><td><span class="pill A">A</span></td><td class="n">2,105</td><td>2026-05-06</td><td><a href="https://github.com/opensquilla/opensquilla" target="_blank">opensquilla/opensquilla</a></td><td>Python</td><td>token-efficient AI agent,同預算更高智慧密度。</td></tr>
+<tr><td><span class="pill A">A</span></td><td class="n">2,081</td><td>2026-05-22</td><td><a href="https://github.com/OpenBMB/PilotDeck" target="_blank">OpenBMB/PilotDeck</a></td><td>TypeScript</td><td>任務導向 AI agent 生產力平台。OpenBMB。</td></tr>
+
+<tr><td><span class="pill B">B</span></td><td class="n">6,655</td><td>2026-05-11</td><td><a href="https://github.com/FULU-Foundation/OrcaSlicer-bambulab" target="_blank">FULU-Foundation/OrcaSlicer-bambulab</a></td><td>C++</td><td>OrcaSlicer(Bambu Lab)3D 列印切片器分支。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">4,821</td><td>2026-05-01</td><td><a href="https://github.com/darrylmorley/whatcable" target="_blank">darrylmorley/whatcable</a></td><td>Swift</td><td>macOS 選單列 app,用白話告訴你每條 USB-C 線實際能做什麼。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,933</td><td>2026-05-11</td><td><a href="https://github.com/simonlin1212/a-stock-data" target="_blank">simonlin1212/a-stock-data</a></td><td>—</td><td>A股全棧資料工具包:7 層架構、28 端點、13 資料源、零第三方依賴。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,460</td><td>2026-05-01</td><td><a href="https://github.com/virgiliojr94/book-to-skill" target="_blank">virgiliojr94/book-to-skill</a></td><td>Python</td><td>把任何技術書 PDF 變成 Claude Code skill。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,390</td><td>2026-05-10</td><td><a href="https://github.com/huangserva/3DCellForge" target="_blank">huangserva/3DCellForge</a></td><td>JavaScript</td><td>AI 驅動的互動式 3D 模型生成/檢視/簡報工作室。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,328</td><td>2026-05-06</td><td><a href="https://github.com/yaojingang/yao-open-prompts" target="_blank">yaojingang/yao-open-prompts</a></td><td>Python</td><td>中文 AI 提示詞庫,覆蓋工作/學習/內容/行銷/生活。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,219</td><td>2026-05-05</td><td><a href="https://github.com/zarazhangrui/beautiful-html-templates" target="_blank">zarazhangrui/beautiful-html-templates</a></td><td>HTML</td><td>HTML 簡報範本庫,讓 coding agent 自動挑版型做漂亮 deck。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,154</td><td>2026-05-03</td><td><a href="https://github.com/raiyanyahya/how-to-train-your-gpt" target="_blank">raiyanyahya/how-to-train-your-gpt</a></td><td>Jupyter</td><td>從零建現代 LLM,每行註解、像對五歲小孩解釋。</td></tr>
+<tr><td><span class="pill B">B</span></td><td class="n">2,580</td><td>2026-05-02</td><td><a href="https://github.com/crafter-station/petdex" target="_blank">crafter-station/petdex</a></td><td>TypeScript</td><td>給 Codex/Claude Code/OpenCode/Gemini CLI 的動畫寵物公開藝廊。</td></tr>
+
+<tr><td><span class="pill C">C</span></td><td class="n">4,788</td><td>2026-05-07</td><td><a href="https://github.com/V4bel/dirtyfrag" target="_blank">V4bel/dirtyfrag</a></td><td>C</td><td>無描述、C、單名作者。疑為 kernel/exploit。<b>雙刃,使用前先確認用途與授權。</b></td></tr>
+<tr><td><span class="pill C">C</span></td><td class="n">3,621</td><td>2026-05-12</td><td><a href="https://github.com/simplifaisoul/osiris" target="_blank">simplifaisoul/osiris</a></td><td>TypeScript</td><td>開源全球情報(OSINT)即時儀表板,號稱 Palantir 替代。<b>雙刃,注意隱私/法務。</b></td></tr>
+<tr><td><span class="pill C">C</span></td><td class="n">3,037</td><td>2026-05-05</td><td><a href="https://github.com/XBuilderLAB/cheat-on-content" target="_blank">XBuilderLAB/cheat-on-content</a></td><td>Python</td><td>「一個月 100 萬粉」的內容成長 hack workflow。<b>誇大行銷話術,grift 味。</b></td></tr>
+<tr><td><span class="pill C">C</span></td><td class="n">3,075</td><td>2026-05-19</td><td><a href="https://github.com/FoundZiGu/GuJumpgate" target="_blank">FoundZiGu/GuJumpgate</a></td><td>JavaScript</td><td>無描述。資訊不足,待觀察。</td></tr>
+<tr><td><span class="pill C">C</span></td><td class="n">2,536</td><td>2026-05-20</td><td><a href="https://github.com/thananon/9arm-skills" target="_blank">thananon/9arm-skills</a></td><td>Shell</td><td>無描述的個人 skill 集。content repo,高 churn。</td></tr>
+
+</table>
+
+<h2>PM 重要性簡報</h2>
+
+<div class="card">
+<b>本月真正「新且重要」的訊號</b>
+<ul>
+  <li><b>大廠/可信作者下場做「小而硬」的工具</b>:antirez 的本地推論引擎 ds4、Meta 的 vggt-omega、微軟 SkillOpt、Perplexity 的供應鏈掃描器 bumblebee——不是 demo,是基礎能力。</li>
+  <li><b>「Skill 工程化」從內容包升級為研究題目</b>:microsoft/SkillOpt 把「訓練可重用自然語言 skill」做成 optimizer,book-to-skill 把書變 skill——比上個月一堆手寫 skill 包更有結構。</li>
+  <li><b>agent 的執行底座成形</b>:strukto-ai/mirage(agent 虛擬檔案系統)、opensquilla(token 效率)、html-anything(agent 產出可發佈成品)——大家在補 agent 的「手腳」而非又一個框架。</li>
+  <li><b>Vercel Labs 押注 agent-native 語言/runtime</b>:zerolang + zero-native,值得 monitor 看會不會成標準。</li>
+  <li><b>供應鏈安全意識上升</b>:bumblebee 一週衝近 4k★,反映社群對相依污染的焦慮。</li>
+</ul>
+</div>
+
+<div class="card">
+<b>紅旗 / 雙刃(辨識特徵)</b>
+<div class="flag"><b>V4bel/dirtyfrag</b> — C + 無描述 + 單名作者,典型未公開 exploit。<i>tell:無說明卻高星的低階 C。</i></div>
+<div class="flag"><b>simplifaisoul/osiris</b> — OSINT「Palantir 替代」,隱私/法務/濫用面大。<i>tell:大規模情報蒐集定位。</i></div>
+<div class="flag"><b>XBuilderLAB/cheat-on-content</b> — 「一個月 100 萬粉、不是運氣是系統」。<i>tell:承諾結果、機制含糊的成長 hack。</i></div>
+<div class="flag"><b>無描述 content repo</b>(GuJumpgate、9arm-skills)— 衝星快、易棄,Q3 前可能沒人維護。</div>
+</div>
+
+<div class="card">
+<b>這週該做什麼</b>
+<ul>
+  <li><b>Adopt/試</b>:antirez/ds4(若要本地 DeepSeek 推論)、perplexityai/bumblebee(供應鏈自檢,唯讀低風險)。</li>
+  <li><b>Pilot</b>:microsoft/SkillOpt(若你在做 agent skill)、strukto-ai/mirage(agent 檔案抽象)。</li>
+  <li><b>Monitor</b>:vercel-labs/zerolang + zero-native、OpenBMB/PilotDeck、nexu-io/html-anything。</li>
+  <li><b>Ignore/小心</b>:dirtyfrag、osiris、cheat-on-content,以及無描述的 content repo。</li>
+</ul>
+</div>
+
+<h2>附註:被 web 榜單誤報為「新」的老牌 repo</h2>
+<p class="sub">以下是上一輪 aggregator/blog 列為「本月新專案」、實查 <code>created_at</code> 後確認為 2025～2026 初建立(真實存在、星數更高,但非新建):</p>
+<table>
+<tr><th class="n">★</th><th>created</th><th>repo</th><th>實情</th></tr>
+<tr><td class="n">375,562</td><td>2025-11-24</td><td><a href="https://github.com/openclaw/openclaw" target="_blank">openclaw/openclaw</a></td><td>~6 個月前建立;星數比 blog 寫的 302K 還高</td></tr>
+<tr><td class="n">173,163</td><td>2025-07-22</td><td><a href="https://github.com/NousResearch/hermes-agent" target="_blank">NousResearch/hermes-agent</a></td><td>近一年前</td></tr>
+<tr><td class="n">167,281</td><td>2025-04-30</td><td><a href="https://github.com/anomalyco/opencode" target="_blank">anomalyco/opencode</a></td><td>一年多前</td></tr>
+<tr><td class="n">68,410</td><td>2025-06-07</td><td><a href="https://github.com/ruvnet/RuView" target="_blank">ruvnet/RuView</a></td><td>非新建;WiFi 測生命徵象,宣稱仍待驗證</td></tr>
+<tr><td class="n">33,709</td><td>2026-01-18</td><td><a href="https://github.com/colbymchenry/codegraph" target="_blank">colbymchenry/codegraph</a></td><td>~4 個月前</td></tr>
+<tr><td class="n">29,604</td><td>2026-02-18</td><td><a href="https://github.com/tinyhumansai/openhuman" target="_blank">tinyhumansai/openhuman</a></td><td>~3 個月前</td></tr>
+<tr><td class="n">22,477</td><td>2026-02-22</td><td><a href="https://github.com/CloakHQ/CloakBrowser" target="_blank">CloakHQ/CloakBrowser</a></td><td>非新建;過 bot 偵測,雙刃</td></tr>
+</table>
+
+<footer>
+由 skill <code>github-weekly-radar</code> 產生 · 清單以 <code>gh api</code> 核實,非抄 web 榜單 ·
+星數為 2026-05-30 當下值,會隨時間變動 · repo <a href="https://github.com/wicanr2/my_skill" target="_blank">wicanr2/my_skill</a>
+</footer>
+
+</body>
+</html>

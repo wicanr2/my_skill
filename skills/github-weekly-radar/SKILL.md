@@ -81,9 +81,33 @@ PM prompt 要點:自足(agent 看不到本對話)、附完整清單與星數、�
 
 ### Step 5 — 輸出格式(交付給使用者)
 - **A. 已驗證新建清單**:依領域分群,每列 `星數 · created · owner/name · 一句話`。
+  **每個 repo 一律附 GitHub 網址** `https://github.com/{full_name}`(對話中用 markdown 連結,HTML 中用 `<a>`)。
 - **B. PM 簡報**:分級表 + 訊號 + 紅旗 + 行動。
 - **附註**:被誤報為新的老牌 repo(列真實 created_at)。
 - 預設繁體中文(zh-TW),技術術語保留原文。
+
+### Step 6 — 一律額外產生可開啟的 HTML 報告
+除了對話內回覆,**每次都產出一份 standalone HTML**(無外部 CDN、單檔可雙擊開),存到
+`my_skill/reports/github-radar-<yyyy-MM-dd>.html`,並把路徑給使用者。HTML 必須:
+- 每個 repo 是可點的 `<a href="https://github.com/{full_name}" target="_blank">`。
+- 含表格欄位:★ / created / repo(連結)/ 語言 / 描述,並標 Tier 色塊(S/A/B/C)。
+- 含 PM 簡報區(訊號、紅旗、行動)與「老牌非新建」附註。
+- 內嵌 `<style>`,深色乾淨版面,標頭顯示產生日期與篩選條件(視窗、星數門檻)。
+
+可直接用 PowerShell 由 gh JSON 生 HTML 骨架,再把 PM 評估段落補進去:
+```powershell
+$rows = $j.items | ForEach-Object {
+  $u = "https://github.com/$($_.full_name)"
+  "<tr><td>$($_.stargazers_count)</td><td>$($_.created_at.Substring(0,10))</td>" +
+  "<td><a href='$u' target='_blank'>$($_.full_name)</a></td>" +
+  "<td>$($_.language)</td><td>$([System.Web.HttpUtility]::HtmlEncode($_.description))</td></tr>"
+}
+$html = "<!doctype html><meta charset='utf-8'><style>body{font-family:system-ui;background:#0d1117;color:#e6edf3;margin:2rem}a{color:#58a6ff}table{border-collapse:collapse;width:100%}td,th{border:1px solid #30363d;padding:6px 10px;text-align:left}tr:nth-child(even){background:#161b22}</style>" +
+  "<h1>GitHub Weekly Radar — $(Get-Date -Format yyyy-MM-dd)</h1>" +
+  "<table><tr><th>★</th><th>created</th><th>repo</th><th>lang</th><th>desc</th></tr>$($rows -join '')</table>"
+$html | Out-File "reports/github-radar-$(Get-Date -Format yyyy-MM-dd).html" -Encoding utf8
+```
+(注意:PowerShell `Out-File` 預設 UTF-16,**務必 `-Encoding utf8`**,否則瀏覽器中文亂碼。)
 
 ## 每週節奏
 
