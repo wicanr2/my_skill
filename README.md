@@ -35,11 +35,19 @@ $j.items | ForEach-Object {
    ```
 2. **直接在對話中引用**:把需要的 `SKILL.md` 內容貼給 Claude,或放進專案的 `.claude/skills/`。
 
+## 報告產物
+
+`github-weekly-radar` 每次執行都會在 [`reports/`](reports/) 產生一份 standalone HTML 週報
+(單檔可雙擊開、每個 repo 附 GitHub 連結、Tier 色塊)。最新一份:
+[`reports/github-radar-2026-05-30.html`](reports/github-radar-2026-05-30.html)。
+
 ## 結構
 
 ```
 my_skill/
 ├── README.md
+├── reports/
+│   └── github-radar-<date>.html   # 每次執行產生的 HTML 週報
 └── skills/
     └── github-weekly-radar/
         └── SKILL.md
