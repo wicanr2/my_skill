@@ -1,5 +1,16 @@
 # my_skill
 
+<p align="center">
+  <img src="assets/signature_preview.png" alt="原來是個胖仔 / wicanr2 chibi pixel art signature" width="384">
+</p>
+
+<p align="center">
+  <em>原來是個胖仔 (wicanr2) — chibi pixel art 簽名</em><br>
+  <sub>原始 48×24 8bpp paletted PNG，源自 <a href="https://github.com/wicanr2/openxcom-cht">openxcom-cht</a> 專案主選單簽名整合，這裡 8× 放大顯示</sub>
+</p>
+
+---
+
 個人 Claude Code skill 收藏庫。每個 skill 一個資料夾,內含 `SKILL.md`(YAML frontmatter 定義 `name` / `description` + 工作流說明)。
 
 ## Skills
