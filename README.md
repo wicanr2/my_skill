@@ -63,6 +63,7 @@ $j.items | ForEach-Object {
 | [`50-ubiquitous-language`](rules/50-ubiquitous-language.md) | DDD ubiquitous language:每個 repo 維護 `CONTEXT.md` 術語表,人與 agent 共用同一套詞,降低 verbosity 與返工 |
 | [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
+| [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 老遊戲（1990s 經典）繁中化專案 README 三層 voice register（Hero 信 / Magazine 編輯人聲 / Technical 工程文件）+ 1990s 雜誌風 SOP + 譯名考古感 + TOC sync checklist。萃取自 openxcom-cht v2.27 review。 |
 
 ## Personas(agent 人格)
 
