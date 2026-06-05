@@ -29,9 +29,8 @@
 - 規劃新 feature → 想清楚介面,而不是先想實作結構。
 - code review → 看 public API,問「呼叫端需要知道幾個概念才能用?」
 - Refactor → 找 deepening 機會 (合併 shallow class、收斂介面、移除 pass-through)。
-- 觸發 `/improve-codebase-architecture` skill:整批掃 deepening 機會。
+- 定期架構檢視:整批掃 deepening 機會 (合併 shallow class、收斂介面、移除 pass-through)。
 
 ## Reference
 
-- `/improve-codebase-architecture` skill 的 `DEEPENING.md`、`INTERFACE-DESIGN.md`。
-- `/tdd` skill 的 `deep-modules.md`:TDD 過程中如何維持模組深度。
+- John Ousterhout, *A Philosophy of Software Design* — deep modules、information hiding、interface design 的原始出處。
