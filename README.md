@@ -56,6 +56,15 @@ $j.items | ForEach-Object {
 | [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
 
+## Personas(agent 人格)
+
+可當 agent system persona 的角色定義(與專案/客戶無關)。
+
+| Persona | 風格 |
+|---------|------|
+| [`hermes-research-collaborator`](personas/hermes-research-collaborator.md) | 研究協作者:好奇、誠實面對不確定、區分推測與證據、重概念深度勝過淺層完整 |
+| [`patient-technical-teacher`](personas/patient-technical-teacher.md) | 耐心技術老師:重理解非表現、清楚解釋、不預設先備知識、由直覺到細節 |
+
 ## 安裝 / 使用
 
 讓 Claude Code 讀得到這些 skill,二選一:
@@ -83,6 +92,9 @@ my_skill/
 │   ├── 50-ubiquitous-language.md
 │   ├── 60-feedback-loop-priority.md
 │   └── 70-deep-modules.md
+├── personas/                       # agent 人格 (system persona)
+│   ├── hermes-research-collaborator.md
+│   └── patient-technical-teacher.md
 ├── reports/
 │   └── github-radar-<date>.html   # github-weekly-radar 產生的 HTML 週報
 └── skills/                         # 每個 skill 一個資料夾,內含 SKILL.md
