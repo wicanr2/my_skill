@@ -18,6 +18,7 @@
 | Skill | 用途 | 觸發時機 |
 |-------|------|----------|
 | [`github-weekly-radar`](skills/github-weekly-radar/SKILL.md) | 每週彙整 GitHub 近期重要**新**專案 + senior-PM 重要性評估 | 「這週 github 重要新專案」「新 repo 週報」「trending 摘要」 |
+| [`cocomo-estimate`](skills/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
 | [`classic-mac-c-game-sdl-port`](skills/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
 | [`qb64pe-game-linux-port`](skills/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
@@ -28,6 +29,13 @@
 | [`prompt-master`](skills/prompt-master/SKILL.md) | 為任何 AI 工具生成優化 prompt(LLM/Cursor/Midjourney/coding agent) | 「寫/改/優化 prompt」 |
 | [`ascii-matrix-scene`](skills/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
 | [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
+
+### cocomo-estimate 一句話
+
+不要只給「AI agent 做了 X 小時」 — 看起來像吹牛。本 skill 永遠列**三個數字**：
+**COCOMO 教科書值**（傳統人力合理上界）/ **單人無 AI 校正後**（拔掉 1980s 團隊 overhead）/ **2026 實測**（wall-clock + 真實人小時）。
+顯式揭露 COCOMO 兩個系統性偏差（低估 0-SLOC 高心智成本工作、高估 1980s 團隊 overhead），給讀者一個 ballpark 而非合約報價。
+案例：[pg-cht](https://github.com/wicanr2/pg-cht)（32 PM 教科書 vs 0.5 PM 實測，60× 壓縮）、[openxcom-cht](https://github.com/wicanr2/openxcom-cht)（雙作漢化 3 sub-project 拆解）。
 
 ### github-weekly-radar 一句話
 
