@@ -2,7 +2,7 @@
 
 針對棘手 bug、效能 regression、不確定行為的最高優先動作:**先建立一個快速、決定性、agent 可執行的 pass/fail 訊號**。
 
-源自 `/diagnose` Phase 1。沒有這個訊號,瞪程式碼也救不了。
+沒有這個 pass/fail 訊號,瞪程式碼也救不了。
 
 ## Hierarchy of loops (try in order)
 
@@ -12,7 +12,7 @@
 4. **Headless browser script** (Playwright / Puppeteer)。
 5. **Replay captured trace** (network request / payload / event log)。
 
-更多 fallback (throwaway harness / fuzz / bisection / differential / HITL) 見 `/diagnose` Phase 1。
+更多 fallback:throwaway harness / fuzz / bisection / differential / HITL,可依場景擴充。
 
 ## Iterate the loop itself
 
@@ -37,5 +37,4 @@
 
 ## When to trigger
 
-- 使用者說「除錯」「diagnose」「找 bug」「效能變慢」「regression」→ 觸發 `/diagnose` skill,Phase 1 即此規則。
-- 即使不觸發完整 skill,該優先順序也適用。
+- 遇到「除錯 / 找 bug / 效能變慢 / regression」場景時,此優先順序即適用 —— 先建訊號,再動手。

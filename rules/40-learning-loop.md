@@ -2,7 +2,7 @@
 
 任務具有探索、除錯、規劃、重構、研究或需求不完整特性時,採用 learning loop,不一次下結論。
 
-> Bug / 效能 regression 場景請優先觸發 `/diagnose` skill (Phase 1 feedback loop 為核心);本檔為通用框架,適用於 debug 以外的探索任務。
+> Bug / 效能 regression 場景以 feedback loop (先建決定性 pass/fail 訊號) 為核心,見 `60-feedback-loop-priority`;本檔為通用框架,適用於 debug 以外的探索任務。
 
 ## Core principles
 1. 定義 goal、constraint、可驗證 success criteria。
@@ -31,10 +31,7 @@
 - 不只產生看似合理答案,附上可驗證依據。
 - 改程式或設定前先說目的,再實作,再驗證結果。
 - 遇錯誤先 root cause analysis,再決定修補。
-- 同類任務重複出現 → 整理到對應 rule / skill,不要把暫時訊息混入全域偏好。
-
-## 跨 skill 對應
-Bug → `/diagnose` ; 對齊 → `/grill-me` / `/grill-with-docs` ; 架構 → `/improve-codebase-architecture` ; 需求 → `/to-prd` ; 不熟程式 → `/zoom-out`
+- 同類任務重複出現 → 整理到對應 rule / 工具,不要把暫時訊息混入全域偏好。
 
 ## 何時不展開完整 loop
 - 純機械性任務

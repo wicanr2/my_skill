@@ -1,7 +1,7 @@
 # Ubiquitous Language (CONTEXT.md)
 
 每個專案應該維護一份 domain glossary,讓 agent 與人共用同一套術語。
-源頭概念來自 Eric Evans 的 DDD,被 `/grill-with-docs` skill 直接用來縮短溝通。
+源頭概念來自 Eric Evans 的 DDD,用來縮短人與 agent 的溝通、收斂用詞。
 
 ## Rules
 
@@ -13,7 +13,7 @@
 
 ## When to apply
 
-- 開新 repo 時:`grill-with-docs` 會主動建立 CONTEXT.md。
+- 開新 repo 時:主動建立 CONTEXT.md 草稿。
 - 既有 repo 沒有 CONTEXT.md 時:第一次跨領域對話前,先 sketch 一份草稿問使用者確認。
 - 每次新增同義詞、簡稱、技術術語前,先檢查是否需要登錄。
 
@@ -26,5 +26,4 @@
 
 ## Reference
 
-- `/grill-with-docs` skill: 對話過程中即時更新 CONTEXT.md 與 ADR。
-- `/improve-codebase-architecture` skill 的 `LANGUAGE.md` 章節:架構檢視時的語言審查指引。
+- Eric Evans, *Domain-Driven Design* — ubiquitous language 的原始出處。
