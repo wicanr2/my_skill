@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Akalabeth (繁中化) AppImage launcher
+# - 自帶 QB64-PE 編出來的 ELF + 字型檔
+# - 第一次執行把 data files 解壓到 user dir,後續所有改動(ini 設定、存檔)都寫 user dir
+
+set -eu
+
+HERE="$(dirname "$(readlink -f "$0")")"
+
+export LD_LIBRARY_PATH="$HERE/usr/lib/x86_64-linux-gnu:$HERE/usr/lib:${LD_LIBRARY_PATH:-}"
+
+USER_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/Akalabeth"
+mkdir -p "$USER_DATA_HOME"
+
+# 字型檔與 ini 第一次啟動時 copy 到 user dir(後續可被覆寫,例如玩家換字型)
+for f in font_t16.dat font_a16.dat AK_CHT.ini font_t16_wqy.dat font_t16_taipei.dat; do
+    if [ -f "$HERE/opt/game/$f" ] && [ ! -f "$USER_DATA_HOME/$f" ]; then
+        cp "$HERE/opt/game/$f" "$USER_DATA_HOME/$f"
+    fi
+done
+
+# 存檔目錄(M4 patch 會寫 akalabeth.sav 進這)
+# 不在這建 sav,讓 .bas 自己決定
+
+cd "$USER_DATA_HOME"
+exec "$HERE/usr/bin/akalabeth" "$@"
