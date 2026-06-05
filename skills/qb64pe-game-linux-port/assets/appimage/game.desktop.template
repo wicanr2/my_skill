@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Akalabeth
+Name[zh_TW]=阿卡拉貝:末日之境
+Comment=Akalabeth: World of Doom (Traditional Chinese Edition)
+Comment[zh_TW]=創世紀之父 Richard Garriott 1979 開山作的繁中化版本
+Exec=akalabeth
+Icon=akalabeth
+Categories=Game;RolePlaying;
+Terminal=false

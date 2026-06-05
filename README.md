@@ -18,6 +18,16 @@
 | Skill | 用途 | 觸發時機 |
 |-------|------|----------|
 | [`github-weekly-radar`](skills/github-weekly-radar/SKILL.md) | 每週彙整 GitHub 近期重要**新**專案 + senior-PM 重要性評估 | 「這週 github 重要新專案」「新 repo 週報」「trending 摘要」 |
+| [`classic-mac-c-game-sdl-port`](skills/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
+| [`qb64pe-game-linux-port`](skills/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
+| [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
+| [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
+| [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
+| [`slack`](skills/slack/SKILL.md) | Slack workspace 自動化(讀未讀/發訊/搜尋/抓資料) via 瀏覽器 | 「查我的 Slack」「發訊到」「搜尋 Slack」 |
+| [`vercel-sandbox`](skills/vercel-sandbox/SKILL.md) | 在 Vercel Sandbox microVM 內跑 agent-browser + Chrome | 「Vercel Sandbox browser」「microVM Chrome」 |
+| [`prompt-master`](skills/prompt-master/SKILL.md) | 為任何 AI 工具生成優化 prompt(LLM/Cursor/Midjourney/coding agent) | 「寫/改/優化 prompt」 |
+| [`ascii-matrix-scene`](skills/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
+| [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
 
 ### github-weekly-radar 一句話
 
@@ -34,6 +44,17 @@ $j.items | ForEach-Object {
   "{0,7}  {1}  {2}  {3}" -f $_.stargazers_count,$_.created_at.Substring(0,10),$_.full_name,$_.description
 }
 ```
+
+## Rules(通用工作方法論)
+
+放進 `~/.claude/rules/` 可讓 Claude Code 全域套用的通用方法論(與專案/客戶無關)。
+
+| Rule | 主旨 |
+|------|------|
+| [`40-learning-loop`](rules/40-learning-loop.md) | 探索/除錯/重構的 learning loop:定義 goal/constraint/可驗證成功標準,先做最小測試,每輪更新假設,先驗證再下結論 |
+| [`50-ubiquitous-language`](rules/50-ubiquitous-language.md) | DDD ubiquitous language:每個 repo 維護 `CONTEXT.md` 術語表,人與 agent 共用同一套詞,降低 verbosity 與返工 |
+| [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
+| [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
 
 ## 安裝 / 使用
 
@@ -57,11 +78,19 @@ $j.items | ForEach-Object {
 ```
 my_skill/
 ├── README.md
+├── rules/                          # 通用工作方法論 (放 ~/.claude/rules/)
+│   ├── 40-learning-loop.md
+│   ├── 50-ubiquitous-language.md
+│   ├── 60-feedback-loop-priority.md
+│   └── 70-deep-modules.md
 ├── reports/
-│   └── github-radar-<date>.html   # 每次執行產生的 HTML 週報
-└── skills/
-    └── github-weekly-radar/
-        └── SKILL.md
+│   └── github-radar-<date>.html   # github-weekly-radar 產生的 HTML 週報
+└── skills/                         # 每個 skill 一個資料夾,內含 SKILL.md
+    ├── github-weekly-radar/
+    ├── classic-mac-c-game-sdl-port/
+    ├── qb64pe-game-linux-port/
+    ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
+    └── prompt-master/  ascii-matrix-scene/  organize-folder/
 ```
 
 新增 skill:在 `skills/` 下開一個 kebab-case 資料夾,放一份有 frontmatter 的 `SKILL.md`,
