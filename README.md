@@ -29,6 +29,7 @@
 | [`prompt-master`](skills/prompt-master/SKILL.md) | 為任何 AI 工具生成優化 prompt(LLM/Cursor/Midjourney/coding agent) | 「寫/改/優化 prompt」 |
 | [`ascii-matrix-scene`](skills/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
 | [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
+| [`mac-app-cross-pack`](skills/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」 |
 
 ### cocomo-estimate 一句話
 
@@ -111,7 +112,8 @@ my_skill/
     ├── classic-mac-c-game-sdl-port/
     ├── qb64pe-game-linux-port/
     ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
-    └── prompt-master/  ascii-matrix-scene/  organize-folder/
+    ├── prompt-master/  ascii-matrix-scene/  organize-folder/
+    └── mac-app-cross-pack/
 ```
 
 新增 skill:在 `skills/` 下開一個 kebab-case 資料夾,放一份有 frontmatter 的 `SKILL.md`,
