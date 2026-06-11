@@ -103,19 +103,20 @@ my_skill/
 │   ├── 40-learning-loop.md
 │   ├── 50-ubiquitous-language.md
 │   ├── 60-feedback-loop-priority.md
-│   └── 70-deep-modules.md
+│   ├── 70-deep-modules.md
+│   └── 80-retro-cht-readme-polish.md
 ├── personas/                       # agent 人格 (system persona)
 │   ├── hermes-research-collaborator.md
 │   └── patient-technical-teacher.md
 ├── reports/
 │   └── github-radar-<date>.html   # github-weekly-radar 產生的 HTML 週報
 └── skills/                         # 每個 skill 一個資料夾,內含 SKILL.md
-    ├── github-weekly-radar/
+    ├── github-weekly-radar/  cocomo-estimate/
     ├── classic-mac-c-game-sdl-port/
     ├── qb64pe-game-linux-port/  dragon-wars-cht-remake/
     ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
     ├── prompt-master/  ascii-matrix-scene/  organize-folder/
-    └── mac-app-cross-pack/
+    └── mac-app-cross-pack/  my-skill-merge/
 ```
 
 新增 skill:在 `skills/` 下開一個 kebab-case 資料夾,放一份有 frontmatter 的 `SKILL.md`,
