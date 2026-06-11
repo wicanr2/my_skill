@@ -21,6 +21,7 @@
 | [`cocomo-estimate`](skills/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
 | [`classic-mac-c-game-sdl-port`](skills/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
 | [`qb64pe-game-linux-port`](skills/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
+| [`dragon-wars-cht-remake`](skills/dragon-wars-cht-remake/SKILL.md) | 《火龍之戰》(Dragon Wars, 1989)繁中化 + C++20/SDL2 重寫:用 opendw 當 oracle 做逐指令差異測試、DATA1/DATA2 資產萃取(5-bit 文字/Huffman/場景圖去交錯)、CJK 渲染、Read Paragraph 防拷 | 「火龍之戰」「Dragon Wars」「opendw」「opendw_remake」「火龍之戰中文化」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
@@ -30,6 +31,7 @@
 | [`ascii-matrix-scene`](skills/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
 | [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
 | [`mac-app-cross-pack`](skills/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」 |
+| [`my-skill-merge`](skills/my-skill-merge/SKILL.md) | 把本機 `~/.claude/` 的 rules/skills/agents/personas 同步進本公開 repo,**內建客戶機密 denylist + 去識別化**,push 前列 diff 等確認(review 不 copy-paste) | 「merge ~/.claude 進 my_skill」「同步 skill 到 GitHub」「更新 my_skill repo」「跑 my-skill-merge」 |
 
 ### cocomo-estimate 一句話
 
@@ -110,7 +112,7 @@ my_skill/
 └── skills/                         # 每個 skill 一個資料夾,內含 SKILL.md
     ├── github-weekly-radar/
     ├── classic-mac-c-game-sdl-port/
-    ├── qb64pe-game-linux-port/
+    ├── qb64pe-game-linux-port/  dragon-wars-cht-remake/
     ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
     ├── prompt-master/  ascii-matrix-scene/  organize-folder/
     └── mac-app-cross-pack/
