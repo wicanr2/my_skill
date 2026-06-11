@@ -22,12 +22,15 @@
 | [`classic-mac-c-game-sdl-port`](skills/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
 | [`qb64pe-game-linux-port`](skills/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
 | [`dragon-wars-cht-remake`](skills/dragon-wars-cht-remake/SKILL.md) | 《火龍之戰》(Dragon Wars, 1989)繁中化 + C++20/SDL2 重寫:用 opendw 當 oracle 做逐指令差異測試、DATA1/DATA2 資產萃取(5-bit 文字/Huffman/場景圖去交錯)、CJK 渲染、Read Paragraph 防拷 | 「火龍之戰」「Dragon Wars」「opendw」「opendw_remake」「火龍之戰中文化」 |
+| [`panzer-general-wine`](skills/panzer-general-wine/SKILL.md) | 在 wine 跑《裝甲元帥》(Panzer General, Borland Pascal Win95) 完整解法:256 色 bypass(自製 `pgs.dll` PE forwarder)+ 兩個 nil-deref PE patch + 中文字型 substitute + Windows 端 `WING32.dll` 打包 | 「PG」「Panzer General」「裝甲元帥」「256 色才能執行」「exNilPtr」「缺 WING32.dll」 |
+| [`zak-fmtowns-zhtw`](skills/zak-fmtowns-zhtw/SKILL.md) | 《Zak McKracken》(FM-Towns) 繁中化完整 SOP:`scummtr -r` raw + CRLF 突破 CJK、ScummVM 8 處 patch 走 ZH_CHN 12×12 GBK 字型路徑、WQY 點陣字、GBK 0x5C escape transformer | 「Zak McKracken」「scummtr 不認 CJK」「Unknown function id 0xAB」「FM-Towns 中文」「chinese_gb16x12.fnt」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
 | [`slack`](skills/slack/SKILL.md) | Slack workspace 自動化(讀未讀/發訊/搜尋/抓資料) via 瀏覽器 | 「查我的 Slack」「發訊到」「搜尋 Slack」 |
 | [`vercel-sandbox`](skills/vercel-sandbox/SKILL.md) | 在 Vercel Sandbox microVM 內跑 agent-browser + Chrome | 「Vercel Sandbox browser」「microVM Chrome」 |
 | [`prompt-master`](skills/prompt-master/SKILL.md) | 為任何 AI 工具生成優化 prompt(LLM/Cursor/Midjourney/coding agent) | 「寫/改/優化 prompt」 |
+| [`english-prompt-coach`](skills/english-prompt-coach/SKILL.md) | user 用英文下 prompt 時,任務前附 (1) 自然改寫版 (2) 中文修正解析表,當日常英文寫作練習;ON/OFF toggle 跨 session 沿用 | 「start coaching」「開始 coach」「再幫我看英文」「stop coaching」 |
 | [`ascii-matrix-scene`](skills/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
 | [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
 | [`mac-app-cross-pack`](skills/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」 |
@@ -114,8 +117,9 @@ my_skill/
     ├── github-weekly-radar/  cocomo-estimate/
     ├── classic-mac-c-game-sdl-port/
     ├── qb64pe-game-linux-port/  dragon-wars-cht-remake/
+    ├── panzer-general-wine/  zak-fmtowns-zhtw/   # 老遊戲繁中化/wine
     ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
-    ├── prompt-master/  ascii-matrix-scene/  organize-folder/
+    ├── prompt-master/  english-prompt-coach/  ascii-matrix-scene/  organize-folder/
     └── mac-app-cross-pack/  my-skill-merge/
 ```
 

@@ -1,11 +1,11 @@
 ---
 name: organize-folder
-description: 整理 anr2 指定目錄為「客戶 → 類型」兩層結構，套用 YYYYMMDD-主題說明 命名規則。觸發條件：使用者要求「整理 XX 目錄」「重組這個資料夾」「歸位散落檔案」「目錄太亂幫我分類」並指定路徑。產出：重組後目錄結構 + INDEX.md + RESTRUCTURE_LOG.md + 各分類 README.md。內建客戶機密辨識：含 pem/key/password/token 自動建議搬到 ~/00-機密/，不歸入一般分類。
+description: 整理 使用者 指定目錄為「客戶 → 類型」兩層結構，套用 YYYYMMDD-主題說明 命名規則。觸發條件：使用者要求「整理 XX 目錄」「重組這個資料夾」「歸位散落檔案」「目錄太亂幫我分類」並指定路徑。產出：重組後目錄結構 + INDEX.md + RESTRUCTURE_LOG.md + 各分類 README.md。內建客戶機密辨識：含 pem/key/password/token 自動建議搬到 ~/00-機密/，不歸入一般分類。
 ---
 
 # 整理目錄結構 Skill
 
-把指定目錄重組為 anr2 偏好的「客戶 → 類型」兩層分類，並統一命名規則。
+把指定目錄重組為 使用者 偏好的「客戶 → 類型」兩層分類，並統一命名規則。
 
 ## 何時用此 Skill
 
@@ -22,7 +22,7 @@ description: 整理 anr2 指定目錄為「客戶 → 類型」兩層結構，�
 - 整理程式碼倉庫（用 git/重構工具）
 - 整理 `.config/`、`.cache/`、`.git/`、`.obsidian/`、`.claude/` 等系統/應用設定（一律不動）
 
-## 核心規則（從 anr2 memory 提煉）
+## 核心規則（從 使用者 memory 提煉）
 
 ### 1. 兩層結構：客戶 → 類型
 
