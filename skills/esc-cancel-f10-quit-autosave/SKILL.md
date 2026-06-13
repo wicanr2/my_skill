@@ -1,6 +1,6 @@
 ---
 name: esc-cancel-f10-quit-autosave
-description: 互動式 app（GUI/TUI/遊戲）的離開語意鐵則 — ESC 永遠只 cancel/back，F10（或 Ctrl+Q）才是離開鍵，離開前必須跳 Yes/No 對話框並自動存檔。觸發條件：使用者要做 GUI / TUI / 遊戲 / wizard 流程的 input handler、設計選單導航、加 quit 按鍵、實作存檔系統、或提到「按 ESC 跳出」「按 ESC 結束遊戲」「按鍵設計」「離開前確認」「自動存檔」「quit dialog」「modal」「按錯鍵丟進度」。**主動觸發**：規劃任何互動式 app 的 input layer、寫 SDL/curses/web 鍵盤 event handler、改動 menu navigation 邏輯 → 套用此 skill。場景包括但不限於 SDL2 遊戲、curses TUI、Electron app、web app modal、CLI wizard 流程。
+description: 互動式 app (GUI/TUI/遊戲) 離開語意鐵則:ESC 只 cancel/back,F10(或 Ctrl+Q)才離開,離開前跳 Yes/No 並自動存檔。觸發:做 input handler/選單導航/quit 鍵/存檔系統,或「按 ESC 跳出/結束」「按鍵設計」「離開前確認」「自動存檔」「quit dialog」「modal」「按錯鍵丟進度」。SDL/curses/web/Electron/CLI wizard 皆適用。完整鐵則見內文。
 ---
 
 # ESC = cancel only · F10 = quit + auto-save + confirm dialog

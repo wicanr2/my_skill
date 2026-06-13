@@ -1,6 +1,6 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。
+description: 不用 Mac 機,在 GitHub Actions macOS-14 runner ship SDL 1.2/C++ 老遊戲的 macOS universal `.app`+`.dmg`。涵蓋 arm64+x86_64 universal build、SDL 1.2 source build、`std::unary_function` C++14 fallback、dylibbundler、WSL `mkisofs -hfs` 產 DMG、Gatekeeper quarantine 解除。觸發:「Mac DMG build」「macos-14 universal binary」「SDL 1.2 brew 沒了」「std::unary_function 找不到」「APFS DMG Windows 讀不到」「補 Mac 版」。完整 CI 流程見內文。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
