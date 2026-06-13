@@ -17,6 +17,7 @@
 
 | Skill | 用途 | 觸發時機 |
 |-------|------|----------|
+| [`kneron-edge-ai-integration`](skills/kneron-edge-ai-integration/SKILL.md) | **階層式** 把 YOLO/物件偵測整合部署到耐能 Kneron NPU (KL730/720) 的 SOP + 必踩雷:量化崩潰根因 (raw-logit 須用 mmse 非 percentage=1.0)、kneron-mmdetection docker 6 坑、ONNX→NEF、decode+NMS、逐 channel 驗收、記憶體/CPU 上限。SKILL.md 精簡+三大致命雷,references/ 4 檔按需讀 | 「YOLO 跑在耐能/Kneron NPU」「KL730/KL720 部署」「ONNX 轉 NEF」「NPU 量化後輸出全 0/崩潰」「kneron-mmdetection 環境」「edge AI 晶片整合物件偵測」 |
 | [`github-weekly-radar`](skills/github-weekly-radar/SKILL.md) | 每週彙整 GitHub 近期重要**新**專案 + senior-PM 重要性評估 | 「這週 github 重要新專案」「新 repo 週報」「trending 摘要」 |
 | [`cocomo-estimate`](skills/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
 | [`classic-mac-c-game-sdl-port`](skills/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
