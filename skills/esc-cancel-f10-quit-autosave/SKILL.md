@@ -1,9 +1,14 @@
+---
+name: esc-cancel-f10-quit-autosave
+description: 互動式 app（GUI/TUI/遊戲）的離開語意鐵則 — ESC 永遠只 cancel/back，F10（或 Ctrl+Q）才是離開鍵，離開前必須跳 Yes/No 對話框並自動存檔。觸發條件：使用者要做 GUI / TUI / 遊戲 / wizard 流程的 input handler、設計選單導航、加 quit 按鍵、實作存檔系統、或提到「按 ESC 跳出」「按 ESC 結束遊戲」「按鍵設計」「離開前確認」「自動存檔」「quit dialog」「modal」「按錯鍵丟進度」。**主動觸發**：規劃任何互動式 app 的 input layer、寫 SDL/curses/web 鍵盤 event handler、改動 menu navigation 邏輯 → 套用此 skill。場景包括但不限於 SDL2 遊戲、curses TUI、Electron app、web app modal、CLI wizard 流程。
+---
+
 # ESC = cancel only · F10 = quit + auto-save + confirm dialog
 
-**核心**：互動式 app（CLI 之外的 GUI / TUI 遊戲 / wizard 流程）裡的離開語意，**必須**分成
+**核心**：互動式 app（GUI / TUI / wizard / 遊戲）的離開語意，**必須**分成
 「取消當前操作」與「結束整個 app」兩條完全不同的路徑。**ESC 永遠是前者**。
 
-本 rule 從 [wizardry-1-cht v1.25.3 game-tester 回報事件](https://github.com/wicanr2/wizardry-1-cht/commit/e70dfe2)
+本 skill 從 [wizardry-1-cht v1.25.3 game-tester 回報事件](https://github.com/wicanr2/wizardry-1-cht/commit/e70dfe2)
 萃取：QA agent 兩次誤觸 ESC 把 60 分鐘 progress 噴掉 → 鐵則化。
 
 ## 鐵則
@@ -112,6 +117,16 @@ if (target == Scene::Quit) {
 }
 ```
 
+## 對應到其他框架
+
+| 框架 | ESC = cancel | 離開鍵 | Save 入口 |
+|---|---|---|---|
+| **SDL2 game** | `SDLK_ESCAPE` 回上一 scene | `SDLK_F10` 全域熱鍵 | `save_game(state, path)` |
+| **curses TUI** | `KEY_ESC` 退出子模式 | Ctrl+Q（`KEY_DC` 等）| 自訂 persist 函式 |
+| **Electron / Web** | `keydown` event.key === 'Escape' 關 modal | `Ctrl/Cmd+Q` 或選單「離開」| localStorage / IndexedDB sync |
+| **CLI wizard** (rich/prompt_toolkit) | ESC 回上一個 step | Ctrl+C 但 trap 到 dialog | 寫 partial draft 到 disk |
+| **iOS / Android** | back button 退一層 | 「結束」menu item | Core Data / Room save |
+
 ## 反模式（會踩雷）
 
 - ❌ ESC 在最外層直接 `return false` — QA 誤觸丟進度
@@ -125,12 +140,17 @@ if (target == Scene::Quit) {
 - 任何 GUI / TUI / interactive CLI app
 - 有「狀態值得保留」（存檔、編輯中的文件、購物車、未提交的表單）
 - 多層次選單結構（>= 2 層）
+- 寫 SDL2 / SDL3 / pygame / curses / Electron / Qt 的 keyboard event handler
+- 改動 menu navigation 邏輯
+- 加 modal 對話框
+- 設計 wizard 流程的「上一步 / 取消 / 完成」按鍵
 
 ## When NOT to apply
 
 - 純一次性 CLI（`grep`、`ls`）— ESC 沒語意
 - Vim 等以 ESC 為**模式切換**的特殊應用（ESC = 進 normal mode 是它的鐵則之一，跟這條不衝突）
 - 對話 chat 介面（按 Enter 送、按上下換歷史，沒有「結束」概念）
+- 純讀取展示用的 viewer（沒狀態可保留）
 
 ## Reference case
 
