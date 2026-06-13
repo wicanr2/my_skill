@@ -14,6 +14,13 @@ description: 把本機 `~/.claude/` 的 rules / skills / agents / personas 同�
 3. **公開即不可逆**。push 到公開 GitHub 後,即使刪除仍可能被快取/索引。寧可漏掉一個通用 skill,不可放進一個機密 skill。
 4. **真名只存在私有檔**。所有真實客戶名 / 場域 / 系統碼 / 黑名單 skill 名,集中在本機私有設定 `~/.claude/.my-skill-merge-private.sh`(**不進 repo**)。本公開 SKILL.md 與 commit、README 一律只用代號(客戶A/B/C、vendor-x、專案X/Y)。新增客戶碼 → 只改私有檔。
 5. **push 前必停**:`git add` + `commit` 後,列出 `git diff --staged` 摘要,**停下來等使用者確認**才 `git push`(符合 agent 邊界:對外/git push 需先確認)。
+6. **永遠先 `fetch`,絕不擅自 `pull --rebase`**。`rebase` 在「兩台電腦同時 push」場景會洗掉遠端的 commit,屬於不可逆損失。安全 sync 流程:
+   - `git fetch` → 只更新 remote-tracking,不動 local
+   - `git status -sb` 看 ahead/behind
+   - **fast-forward 才自動 merge**:`git merge --ff-only origin/main`(local clean、remote 領先)
+   - **diverged 必停**:雙方都有新 commit → 列出兩邊 commit 給使用者,問「merge / cherry-pick / 手動 review」哪個
+   - **`--force` 系列必須使用者明確要求**:`--force` / `--force-with-lease` / `git reset --hard` 都需 explicit go-ahead
+   - 等價於「`pull` 只在 fast-forward 場景使用,其他都要先報告」
 
 ## repo 定位
 
