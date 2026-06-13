@@ -1,6 +1,6 @@
 ---
 name: ascii-matrix-scene
-description: 產出全螢幕終端 ASCII art 動畫,pattern 為「Matrix Katakana 背景雨 + 多個共用 angle 同步繞 Y 軸 turnaround 的 3D billboard 物件 + 水平行進的 sprite 縱隊」,全部在單一 `(canvas, cmap, mask)` 協議上合成,並用 alt-screen buffer + 整幀單次 write 抑制閃爍。觸發條件:使用者要求「做一個 ASCII 動畫」「matrix 風格 ASCII」「全螢幕 3D ASCII 場景」「終端螢幕保護」「把這張 PNG / 這個 icon 變成 ASCII 並讓它 turnaround」「ASCII 雨加 3D 物件」,或要求新增 / 修改 `~/ascii-art/` 下既有動畫(尤其 `dna_matrix.py` 衍生)。產出:單檔 `.py` 放到 `~/ascii-art/`,沿用 reference template 的 build_*() 點集合 + render_*() shared 協議 + Rain/Sprite 圖層 + 防閃爍主迴圈。基於 2026-05 `dna_matrix.py`(HELIX / ULTIMA / PANZER 場景)。
+description: 產出全螢幕終端 ASCII art 動畫(Matrix Katakana 背景雨 + 共用 angle 繞 Y 軸 turnaround 的 3D billboard + 水平行進 sprite 縱隊,單一 canvas/cmap/mask 協議 + 防閃爍)。觸發:「做 ASCII 動畫」「matrix 風格 ASCII」「全螢幕 3D ASCII 場景」「終端螢幕保護」「把 PNG/icon 變 ASCII 並 turnaround」「ASCII 雨加 3D 物件」,或改 ~/ascii-art/(尤其 dna_matrix.py 衍生)。
 ---
 
 # ASCII Matrix Scene Skill
