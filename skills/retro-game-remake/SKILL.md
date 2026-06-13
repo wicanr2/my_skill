@@ -1,6 +1,6 @@
 ---
 name: retro-game-remake
-description: 把 1980s–90s 老遊戲(尤其 CRPG)逆向工程 + 乾淨重寫成跨平台 C/SDL2 引擎 + 繁中化的完整方法論。核心策略「反編當 oracle,不照抄」:Ghidra/capstone 反編原版當行為真值,破解原版資料格式,手寫可維護的乾淨引擎,挖出各版本(含 FM Towns 日版)美術/CD音樂/音效,headless 驗證可破關,Docker 跨平台打包(AppImage/Windows/Mac GitHub Actions),引擎與版權資料分離。觸發條件:使用者要「重製/移植/中文化某老遊戲」、「反組譯遊戲執行檔」、「破解老遊戲資料格式」、「抽取 FM Towns/DOS 遊戲美術或音樂」、「把老遊戲做成跨平台可玩」、或接續 u2-cht/u3-cht/u6-cht/opendw 這類重製專案。本 skill 階層式:先讀本檔總覽 + 踩雷,需要某階段細節再讀 references/ 下對應檔。基於 Ultima II 繁中重製(u2-cht, 2026-06)完整經驗。
+description: 把 1980s–90s 老遊戲(尤其 CRPG)逆向工程 + 乾淨重寫成跨平台 C/SDL2 + 繁中化的階層式方法論(反編當 oracle 不照抄)。觸發:「重製/移植/中文化老遊戲」「反組譯遊戲執行檔」「破解老遊戲資料格式」「抽 FM Towns/DOS 美術或音樂」「把老遊戲做成跨平台可玩」「u2-cht/u3-cht/u6-cht/opendw」。完整策略與七階段見內文 + references/。
 ---
 
 # 老遊戲逆向 + 乾淨重製 Skill(階層式)

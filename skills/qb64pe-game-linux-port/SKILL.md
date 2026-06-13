@@ -1,6 +1,6 @@
 ---
 name: qb64pe-game-linux-port
-description: 用 QB64-PE + Docker 把 QuickBasic / GW-Basic 風 .bas 遊戲(尤其中文化版本)cross-compile 成 Linux native ELF + AppImage,並用 Wine 跨編成 Windows .exe + zip/7z。內建處理兩個 QB64-PE on Linux 必踩雷(Windows 反斜線路徑、QB64-PE 啟動自動 chdir 到 binary dir),以及完整 modular patch pipeline:中文點陣字 BDF→自家格式轉檔、自動存檔、作弊模式、Designer Review 視覺優化(片頭分色、熱鍵亮青、HP bar、minimap 雷達游標、開場字卡、死亡儀式、商店並列重排)。觸發條件:使用者想把 .bas / .qb / QuickBasic 4.5 / QB64 遊戲跑在 Linux/Windows、想包 AppImage、想做 Windows 跨編譯、需要中文字型升級、或想加入 cheat / 自動存檔 / UI 優化。產出:Dockerfile + 一鍵 build pipeline + 12 個 modular patch + Windows .exe 雙格式打包。基於 AK_CHT (Akalabeth 阿卡拉貝中文化, 2026-05) 完整移植經驗 v1.1。
+description: 用 QB64-PE + Docker 把 QuickBasic/.bas 遊戲(尤其中文化版)cross-compile 成 Linux ELF/AppImage,並 Wine 跨編 Windows .exe。內建 QB64-PE on Linux 兩大必踩雷 + 中文點陣字/自動存檔/作弊/UI 優化 modular patch pipeline。觸發:「.bas/.qb/QuickBasic/QB64 遊戲跑在 Linux/Windows」「包 AppImage」「Windows 跨編譯」「中文字型升級」「加 cheat/自動存檔」。完整 patch 清單見內文。
 ---
 
 # QB64-PE BASIC 遊戲 → Linux + Windows 跨平台移植 Skill
