@@ -24,6 +24,7 @@
 | [`dragon-wars-cht-remake`](skills/dragon-wars-cht-remake/SKILL.md) | 《火龍之戰》(Dragon Wars, 1989)繁中化 + C++20/SDL2 重寫:用 opendw 當 oracle 做逐指令差異測試、DATA1/DATA2 資產萃取(5-bit 文字/Huffman/場景圖去交錯)、CJK 渲染、Read Paragraph 防拷 | 「火龍之戰」「Dragon Wars」「opendw」「opendw_remake」「火龍之戰中文化」 |
 | [`panzer-general-wine`](skills/panzer-general-wine/SKILL.md) | 在 wine 跑《裝甲元帥》(Panzer General, Borland Pascal Win95) 完整解法:256 色 bypass(自製 `pgs.dll` PE forwarder)+ 兩個 nil-deref PE patch + 中文字型 substitute + Windows 端 `WING32.dll` 打包 | 「PG」「Panzer General」「裝甲元帥」「256 色才能執行」「exNilPtr」「缺 WING32.dll」 |
 | [`zak-fmtowns-zhtw`](skills/zak-fmtowns-zhtw/SKILL.md) | 《Zak McKracken》(FM-Towns) 繁中化完整 SOP:`scummtr -r` raw + CRLF 突破 CJK、ScummVM 8 處 patch 走 ZH_CHN 12×12 GBK 字型路徑、WQY 點陣字、GBK 0x5C escape transformer | 「Zak McKracken」「scummtr 不認 CJK」「Unknown function id 0xAB」「FM-Towns 中文」「chinese_gb16x12.fnt」 |
+| [`retro-game-remake`](skills/retro-game-remake/SKILL.md) | **階層式**老遊戲(CRPG)RE+乾淨重製方法論:反編當 oracle、破格式、FM Towns 美術/CDDA/EUP 音樂考古、CJK 重寫、headless 可破關+**連通分量可達性**驗證、Docker 跨平台+Mac CI 打包、引擎/資料分離。SKILL.md 精簡+踩雷,references/ 6 檔按需讀 | 「重製/反組譯/中文化老遊戲」「破解遊戲資料格式」「抽 FM Towns/DOS 美術音樂」「u2-cht/u3-cht/u6-cht/Ultima」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
