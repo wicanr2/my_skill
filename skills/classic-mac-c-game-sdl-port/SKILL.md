@@ -1,6 +1,6 @@
 ---
 name: classic-mac-c-game-sdl-port
-description: 把 Classic Mac (Carbon/QuickDraw/CoreFoundation) 的 C 遊戲原始碼移植成 SDL2 的 Linux + Windows 跨平台執行檔,並做繁體中文化。保留上游 C 遊戲邏輯,以 shim 取代 Mac API:QuickDraw→SDL2 (CGrafPtr→SDL_Surface/Texture)、CoreFoundation→輕量 shim、Toolbox→SDL 事件/檔案、Theme 繪字→SDL_ttf CJK。內建處理 Classic Mac→SDL 移植六大必踩雷(最關鍵:**shim 函式缺 prototype → 上游隱式宣告回 int → 64-bit 指標截斷**、`-fpascal-strings`、UTF-8 被 &0x7F 砍、上游 ISO-8859 編碼、Pascal string→UTF-8、intra-TU objcopy 失效),以及中文化文字漏斗、多平台 tileset 切換、F1 指令表/F2 顏色濾鏡/F3 圖塊切換、CFPreferences 持久化、game-tester 截圖驗證、Docker AppImage + clang mingw Windows 打包。觸發條件:使用者要把 LairWare / 1980s Mac remake / Carbon C 遊戲(出現 CGrafPtr、CopyBits、NewGWorld、CFStringRef、Pascal string `"\p..."`、UDrawThemePascalString、GetResource、FSSpec 等)跑在 Linux/Windows、用 SDL2 取代繪圖、做中文化、加復古顯示模式、或打包 AppImage/Windows zip。產出:src/compat (QuickDraw shim) + src/platform_sdl (平台層) + mac_shim.h (prototype 集中) + patches/ (上游中文化修改) + Docker build pipeline + game-tester 腳本。基於 u3-cht (Ultima III: Exodus, LairWare Mac 版 → SDL2 中文化, 2026-06) 完整移植經驗 v1.0。
+description: 把 Classic Mac (Carbon/QuickDraw/CoreFoundation) C 遊戲移植成 SDL2 Linux/Windows + 繁中化(保留上游邏輯,shim 取代 Mac API)。內建六大必踩雷(最關鍵:shim 缺 prototype→64-bit 指標截斷)。觸發:出現 `CGrafPtr`/`CopyBits`/`NewGWorld`/`CFStringRef`/Pascal string `\p..`/`GetResource`/`FSSpec`、做 LairWare/Mac remake 中文化、SDL2 取代 QuickDraw、打包 AppImage/Windows。完整 shim 對照與打包見內文。
 ---
 
 # Classic Mac C 遊戲 → SDL2 跨平台移植 + 中文化 Skill
