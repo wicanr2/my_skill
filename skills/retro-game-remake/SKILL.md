@@ -27,7 +27,7 @@ Ghidra 反編原版 binary ──(只當「行為真值 oracle」,抽演算法,�
 | 3. 美術/音訊考古 | 各版本 tileset/sprite、FM Towns TIF、CD 音樂、音效抽取 | `references/03-asset-archaeology.md` |
 | 4. 乾淨引擎 + 中文化 | deep modules 垂直切片;CJK 雙層渲染;UTF-8 覆蓋層翻譯 | `references/04-engine-localization.md` |
 | 5. 驗證 | headless 確定性回歸;可破關鏈;**正常玩法可達性** | `references/05-verification.md` |
-| 6. 打包 | Docker first;引擎/資料分離;AppImage/Windows/Mac CI | `references/06-packaging.md` |
+| 6. 打包 | Docker first;引擎/資料分離;AppImage/Windows/Mac CI/Android APK(觸控) | `references/06-packaging.md` |
 | 7. 攻略/文件 | 玩家向 README + 工程文件分離;繁中攻略 | (見各 repo;README 玩家向、ENGINEERING.md 技術) |
 
 ## ⚠️ 最痛的踩雷(這些用時間換來的,務必記住)
