@@ -1,6 +1,6 @@
 ---
 name: rise-of-the-dragon-cht
-description: 把 ScummVM DGDS 引擎遊戲（Rise of the Dragon / Heart of China / Willy Beamish）做繁體中文化 + 全平台打包的完整 SOP。當使用者談到「Rise of the Dragon」「火龍之吼」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「TTM 字串」「STORE AREA」「電腦/視訊電話畫面英文」「捷運站名沒翻」「對話名牌英文」「Android APK 注入遊戲」「liboboe.so not found」「eglCreateWindowSurface」「全平台 FULL 打包」等情境觸發。
+description: 把 ScummVM DGDS 引擎遊戲（Rise of the Dragon / Heart of China / Willy Beamish）做繁體中文化 + 全平台打包的完整 SOP。當使用者談到「Rise of the Dragon」「火龍之吼」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「TTM 字串」「STORE AREA」「電腦/視訊電話畫面英文」「捷運站名沒翻」「對話名牌英文」「Android APK 注入遊戲」「liboboe.so not found」「eglCreateWindowSurface」「全平台 FULL 打包」「片頭標題加中文/中文副標」「中國之心/威利奇遇記 title」「drawTitleSubtitle」「毛筆/楷書/草書字型繁體國覆蓋」等情境觸發。
 ---
 
 # Rise of the Dragon（ScummVM DGDS）繁中化 + 全平台 ship 完整 SOP
@@ -177,10 +177,42 @@ DGDS **最新版**（SDS/DDS ` 1.224`）。同 overlay 機制,但版本比 HOC �
   `assets/assets/games/willybeamish` + 補 `liboboe.so`/`libc++_shared.so`(可從 ROTD `build/android_libs/` 直接 cp,arm64 共用)。
 - **wine 測 Windows exe 的雷**：`WINEPREFIX` 要在 `$HOME`(不能 `/tmp`,wine 拒絕);`WINEDLLOVERRIDES="mscoree,mshtml="`
   跳過 mono/gecko 安裝對話框;先 `wineboot --init` 等完成再跑;autopilot 的 `saveShot` PNG 在 Windows 會寫 0-byte → 改用 `import` 截 X root。
+  **但某些環境 wine prefix 初始化不全(`could not load kernel32.dll, status c0000135`)→ exe 根本跑不起來**;這非 exe 問題,
+  別卡在 wine。**fallback = build provenance**:exe 時間戳在改碼之後 + `build_windows.sh` 每次 clean rebuild(刪 .o/configure/make)
+  + 同一份 patched source 的 Linux build 已實機驗證 → 即可判定 Windows exe 含該功能(stripped exe 的 `strings` 找不到符號是正常)。
+
+## 10. 片頭標題中文副標 overlay（在英文 logo 下疊中文片名）
+
+需求型態:片頭定格的英文藝術字標題（HOC "HEART OF CHINA" / Willy "Willy Beamish"）下方疊一行
+中文片名（中國之心 / 威利奇遇記)。**第四條繪字路徑**,跟 §1 三條無關,獨立做法:
+
+- **Hook 點 = `present2x` 疊在 hi-res 層**(`dgds.cpp` `flushDeferred` 之後),**不是**改遊戲自己的
+  片頭繪製碼。`CJKSupport::drawTitleSubtitle(dst)` 在 640×400 CLUT8 buffer 上畫。
+- **latch 在標題背景檔名**:`isCJK() && _backgroundFile.hasPrefixIgnoreCase("TITLE")`(HOC 是 `TITLE.SCR`;
+  Willy latch `TVNNI/INTROHW/NITTIT` + `_titleTicks` 短閂橋接定格時的 bg 翻頁)。
+  ⚠️ **找對 bg 名**:加暫時 `warning("%s", _backgroundFile.c_str())` 跑片頭看序列(DYNAMIX.SCR→**TITLE.SCR**)。
+- **⚠️ 別 hook 錯路徑**:HOC `hoc_intro.cpp draw2()` 是**捲動 cinematic**(選「播放片頭」才走、`init()` 載
+  `xx.scr`),**不是開機就定格的 attract 標題**。attract 標題是 TTM 畫在 `TITLE.SCR` 上(TTM drawScreen op 才
+  setBackgroundFile;HocIntro 直接 drawScreen 不設)。一開始 hook draw2 → debug 顯示 draw2 從沒被呼叫。
+- **同一張 bg 內分相 → 像素取樣**:`TITLE.SCR` 先閃遊戲原生毛筆中國之心、再定格英文 logo。只想在英文那相畫:
+  **別偵測紅色「HEART OF」**(古地圖銅棕底偏紅會誤判),改**偵測毛筆相獨有的青綠 ink**(低中區 y≈300 取樣,
+  `r<110 && g>110 && b>110` 計數 > 閾值 → 是毛筆相 → `return` 不畫)。
+- **大字/毛筆字 → 編譯進引擎的 1bpp 遮罩**(別用 24×24 Big5 點陣字,太小又非書法):`tools/build_title_mask.py`
+  用毛筆 TTF 把片名渲成 1bpp 遮罩 → 產 `engines/dgds/hoc_title_glyphs.h`(免外部資產、全平台自動帶);
+  `drawTitleSubtitle` blit 遮罩:8 向 offset 畫深色描邊 + 金色填,色用 `nearestPalIdx(pal,r,g,b)` 從**當下標題
+  調色盤**挑最近 index(金 ~245,208,120;深邊 ~26,30,40)。font-agnostic,換字只重跑工具。
+- **⚠️ 繁體毛筆字覆蓋陷阱**:開源行書/草書(ZhiMangXing/LiuJianMaoCao/MaShanZheng)都是**簡體取向 → 只有
+  「中之心」缺繁體「國」**(`fontTools getBestCmap` 驗 3/4)。唯 **AR PL UKai(楷書毛筆)** 四字繁體全備。
+  傳統字片名用 UKai 楷書毛筆;真・繁體草書開源字幾乎不存在(要更草只能混字或自備)。
+- **patch 要含新檔**:`hoc_title_glyphs.h` 是新檔,`git diff HEAD` 不含未追蹤檔 → 先 `git add` 再 `git diff HEAD`
+  才會以 new-file 進 patch;`patch -p1 --dry-run` 在 pristine base 驗證乾淨套用。
+- **打包雷(換引擎後重打必踩)**:① `package_full.sh do_windows` 只在 exe 不存在才重編 → **刪 `dist/hoc-cht-windows-*`
+  快取**強制 mingw 重建,否則包到舊 exe(無新功能)。② Android `inject_android.sh` docker build >400s,**別包
+  `timeout 400 ... | tail`**(pipe 把 timeout 退出碼蓋成 0,中途被砍還以為成功)→ 背景無 timeout 跑、等 `SIGNED OK`。
 
 ## When to apply / NOT
 
-- **Apply**：ROTD 或其他 DGDS 遊戲（Heart of China、Willy Beamish）的 ScummVM 中文化、TTM/對話/名牌英文殘留、TTM 持久層 bug、Android 注入打包、全平台 ship。
+- **Apply**：ROTD 或其他 DGDS 遊戲（Heart of China、Willy Beamish）的 ScummVM 中文化、TTM/對話/名牌英文殘留、TTM 持久層 bug、**片頭標題中文副標 overlay**、Android 注入打包、全平台 ship。
 - **NOT**：非 DGDS 的 ScummVM 引擎（SCUMM 看 `zak-fmtowns-zhtw`）；非 ScummVM 老遊戲（看 `classic-mac-c-game-sdl-port` / `qb64pe-game-linux-port`）。
 
 ## Reference
