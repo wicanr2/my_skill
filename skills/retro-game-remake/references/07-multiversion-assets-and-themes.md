@@ -30,6 +30,21 @@
 - **theme-aware sprite/viewport**：戰鬥/第一人稱載美術時依當前 theme 選來源 + 套對應 palette；缺檔**回退預設 theme**並誠實標 partial。
 - **置中 + backdrop 陷阱**:某版 sprite 套自帶盤時，backdrop 的 DOS 索引（sky/ground）在新盤下會變怪色（如橘）→ 該 theme 改純黑底；不同尺寸 sprite 要**置中**而非固定左上落點（DOS 維持原落點保 golden）。
 
+### viewport / sprite 圖塊重組:slot 對映 > 尺寸匹配(Dragon Wars Amiga 第一人稱實戰)
+
+把另一版的「第一人稱 viewport 圖塊」接進引擎時,**用 slot 索引對映,不要用尺寸最近匹配**。
+
+- **症狀**:Amiga 地牢牆面接進來後「亂貼圖」——圖塊散落、透視碎裂。根因:引擎用「DOS template 尺寸 → Amiga 子圖塊裡挑尺寸最接近的」來選圖塊,把近/中/遠的同尺寸牆面挑錯 slot。
+- **正解**:抽取工具是按 offset 表序(= 引擎 pointer-table 的 sprite_offset slot 序)抽出子圖塊的,**圖塊 index 應 = slot index**(本例 `blockidx = (sprite_offset-4)/2`),不是尺寸。改回 slot 對映後粗暴錯位立刻消失、側牆正確收斂。
+- **🔑 你自己的抽取工具 docstring 就是 oracle**:這條對映關係**早就寫在抽取腳本的 docstring 裡**(「blockidx = (sprite_offset-4)/2」),只是引擎端沒照做。在引擎裡重新猜多版本對映前,**先回頭讀抽取工具的 docstring/註解**——當初抽的人通常記了 index 語意。
+
+### 受阻時的乾淨退路:「重著色正確幾何」勝過「忠實重組破碎幾何」
+
+slot 對映修好錯位後,可能還有**落點**問題:另一版圖塊尺寸 ≠ 參考版 sprite,直接套參考版 xpos/ypos 仍重疊/破洞,要完全對齊得逆出該版引擎的 blit 錨點演算法 → **無界 RE**。ROI 紀律下的乾淨退路:
+
+- **沿用參考版(byte-faithful)的透視幾何,只換 palette** 來營造另一版氛圍。本例:Amiga 第一人稱 = DOS golden 精確透視 + 一套「青藍石牆 / 棕地板」的 Amiga 風格盤 → 透視 100% 收斂、視覺仍是 Amiga 藍石地城、完全不破碎。**「把正確的幾何重著色」遠勝「把破碎的幾何忠實重組」**;誠實標示為 remake 加值,原生圖塊成果保留待後續逆向。
+- **直方圖驅動配色**:要設計重著色盤,先 dump framebuffer 在目標區域的**索引直方圖**,得知「哪個 palette index 承載哪種表面」(石牆/地板/天花),再依索引語意設計新盤,不要憑空猜色號。
+
 ## 3. 多輪逆向「何時收手」(ROI 紀律)
 
 硬格式（如 X68000 `.PKH` 標題）可能**每一輪都推翻上一輪的靜態假設**（以為 plane 交錯→其實 chunky；以為有參數表→其實檔頭垃圾）。教訓:
