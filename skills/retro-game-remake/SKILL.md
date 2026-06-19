@@ -30,6 +30,11 @@ Ghidra 反編原版 binary ──(只當「行為真值 oracle」,抽演算法,�
 | 6. 打包 | Docker first;引擎/資料分離;AppImage/Windows/Mac CI/Android APK(觸控) | `references/06-packaging.md` |
 | 7. 攻略/文件 | 玩家向 README + 工程文件分離;繁中攻略 | (見各 repo;README 玩家向、ENGINEERING.md 技術) |
 
+## 進階(跨階段加值)
+
+- **多版本素材考古 + 遊戲中 Theme 切換 + 多輪 RE 何時收手** → `references/07-multiversion-assets-and-themes.md`。抽 Amiga/X68000/PC-98 各版美術音樂(format-cracking 速查:同血緣常同壓縮容器、Amiga planar-sequential、X68000 chunky/PKH、nibble-swap SJIS、PCM)、做 F8 主題切換(per-theme palette、256 色 post-process)、硬格式多輪逆向的 ROI 紀律(靜態臆測屢錯→全程式模擬;設上限、誠實暫停)。
+- **多 agent 並行 + 存活性紀律** → rule `35-background-agent-container-liveness`(禁背景 sentinel/無界 dump/GUI viewer;以活躍 process/branch commit/SendMessage 回應判活死)。
+
 ## ⚠️ 最痛的踩雷(這些用時間換來的,務必記住)
 
 1. **debug hook 會遮住真 bug**。可破關回歸測試常用 debug hook(發全道具/瞬移/強制進城)繞過正常行走 → **測得過卻不能正常玩**。
