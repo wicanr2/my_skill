@@ -38,6 +38,7 @@
 | [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
 | [`mac-app-cross-pack`](skills/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」 |
 | [`my-skill-merge`](skills/my-skill-merge/SKILL.md) | 把本機 `~/.claude/` 的 rules/skills/agents/personas 同步進本公開 repo,**內建客戶機密 denylist + 去識別化**,push 前列 diff 等確認(review 不 copy-paste) | 「merge ~/.claude 進 my_skill」「同步 skill 到 GitHub」「更新 my_skill repo」「跑 my-skill-merge」 |
+| [`dev-setup-bundle`](skills/dev-setup-bundle/SKILL.md) | 把專案開發環境打包成可攜 dev-setup(source+完整 git+Dockerfile+腳本+素材),**重點是內含 Claude 對話記錄+記憶**,讓另一台電腦 `claude -r`/`--continue` 接續同一個對話繼續工作;附 `previous-work.md` 工作交接 + 跨機 session 路徑編碼眉角(同路徑/改名/`--resume <UUID>`);排除可重建的 `build/` 與 docker images | 「打包開發環境」「dev-setup」「搬到另一台機器繼續」「讓 claude -r 在別台接續」「開發環境包含素材重新打包」「session handoff bundle」 |
 
 ### cocomo-estimate 一句話
 
