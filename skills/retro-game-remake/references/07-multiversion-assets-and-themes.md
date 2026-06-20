@@ -13,8 +13,14 @@
 - **X68000 `.PIX`**:headerless **chunky 4bpp**（2px/byte，high nibble first），stride 用 **byte-autocorrelation** 還原。
 - **X68000 文字（MONS 等）**:**nibble-swapped Shift-JIS**（`nibswap(b)=((b<<4)|(b>>4))&0xFF` → cp932）。
 - **X68000 GVRAM blit**:可能是 **chunky-word**（每 word 直接=色號，**非 plane 分離、不需 deinterleave**），stride 常 1024 words/line。別預設 planar。
-- **PCM 音效**：8-bit **signed** mono（波形/Goertzel 主頻分析確認是真音訊非雜訊）；轉 WAV 入庫。
-- **音樂**常是 **68k 機械碼播放器 + 音符表**（如 Amiga `.tune` "MANIACS of NOISE"）或 PC-speaker PIT 方波 → 需模擬/音符解碼，多半 **deferred**。
+- **PCM 音效**：8-bit **signed** mono（波形/Goertzel 主頻分析確認是真音訊非雜訊）；轉 WAV 入庫。**SFX 化**：原始音效庫常是 1–3s 持續音，當事件音（門/撞牆/命中）太長 → 播放時截短到 ~0.3–0.7s + 尾端線性淡出（防 click），**保留完整 WAV 不改檔**。
+
+### 音樂:渲染 > 即時模擬;先確認 DOS「音樂」是不是其實是音效
+
+- **別即時模擬 68k 自訂音樂播放器**。Amiga 自訂音樂（`.tune`，如 "MANIACS of NOISE"）= 68k 機械碼播放器 + 內嵌曲目。正解是**離線渲染成音檔**:用 **UADE**（Unix Amiga Delitracker Emulator）把 Amiga 自訂格式播成 WAV——**不需 Kickstart ROM**（避開授權）、認得多數知名 player。再讓引擎循環播放渲染好的音檔。「remake 渲染成音檔」勝「即時逆向播放器格式」。
+- **DOS「PC speaker 音樂」常常其實是音效**:反組譯該位址確認——若是 `OUT` 到 PIT `0x43`/`0x40`（設方波 + 除頻）就是**單發音效播放碼**,不是音符表旋律。先確認音樂到底存不存在,別假設（Dragon Wars DOS 版根本沒有背景音樂）。
+- **引擎端 BGM 模式**:music 頻道在 audio callback 循環混音（gain 壓在 SFX 之下）;**依遊戲 state 每幀 idempotent 切曲**（title/explore/combat/ending）;缺檔/靜音/無裝置一律 **no-op**（不影響 build/CI）。素材渲染與引擎播放**解耦**——引擎先就緒、放好 WAV 即播。
+- **沙箱網路陷阱**:程式碼託管站（github/gitlab）可能被 auth 牆擋而 apt 鏡像可用 → 渲染工具（UADE）抓不到。對策:引擎端先做好 + 附**本機渲染 recipe**（`uade123 -w` + ffmpeg 轉 mono 22050），不卡在環境網路。
 
 ### 原檔不入庫、工具可重現
 原始 `.DIM/.adf/.PIX/.PKH/DRAGON.*` 一律 gitignore；只入庫**解碼後資產**（PNG/.spr/WAV）+ **可重現的抽取工具**（docker python/pillow）+ 文件。磁碟取檔：`.DIM`→去 256B header→Human68k FAT12；`.adf`→FS-UAE/WHDLoad HD 的 `data/`。
@@ -43,7 +49,15 @@
 slot 對映修好錯位後,可能還有**落點**問題:另一版圖塊尺寸 ≠ 參考版 sprite,直接套參考版 xpos/ypos 仍重疊/破洞,要完全對齊得逆出該版引擎的 blit 錨點演算法 → **無界 RE**。ROI 紀律下的乾淨退路:
 
 - **沿用參考版(byte-faithful)的透視幾何,只換 palette** 來營造另一版氛圍。本例:Amiga 第一人稱 = DOS golden 精確透視 + 一套「青藍石牆 / 棕地板」的 Amiga 風格盤 → 透視 100% 收斂、視覺仍是 Amiga 藍石地城、完全不破碎。**「把正確的幾何重著色」遠勝「把破碎的幾何忠實重組」**;誠實標示為 remake 加值,原生圖塊成果保留待後續逆向。
-- **直方圖驅動配色**:要設計重著色盤,先 dump framebuffer 在目標區域的**索引直方圖**,得知「哪個 palette index 承載哪種表面」(石牆/地板/天花),再依索引語意設計新盤,不要憑空猜色號。
+- **直方圖驅動配色 + 校準自真機截圖,別憑空調**:要設計重著色盤,先 dump framebuffer 目標區域的**索引直方圖**得知「哪個 index 承載哪種表面」(石牆/地板/天花),再**對著真機官方截圖取樣**那些表面的實際 RGB。教訓:我先憑印象調青藍,被打槍兩次——真機其實是**土黃磚牆**。**且要挑對參考畫面**:同一版不同區域配色不同(Dragon Wars Amiga「Mines」是灰石、「Purgatory」起始區是土黃),**校準到玩家開局第一印象的起始區**最有記憶點。索取一張真機截圖當對位/對色真值,勝過任何臆測。
+
+### 打破單盤隔閡:RGB 區域覆寫(remake 不必受原版 16 色所限)
+
+當「背景(主題盤)+ 前景物件(自帶盤)」需同框、但兩者色域在單一 16 色盤衝突時(本例:土黃地牢牆 + 鮮豔藍蜘蛛,套牆盤則蜘蛛被 nearest-color 洗淡、套蜘蛛盤則牆變紅磚橘地)——**remake 可以在 RGB 層合成,不必被單盤綁死**:
+
+- 顯示層加一個 **region RGB 覆寫**:`compose()` 把 fb→RGB 上傳 texture **前**,把指定矩形像素直接換成呼叫端算好的 RGB(隨 texture 一起整數放大),用後清除(僅本幀)。
+- 呼叫端各自轉 RGB 再疊:背景(牆)以主題盤轉 RGB、前景(怪物)以自帶盤逐像素轉 RGB 疊上(透明色露出背景),整塊 set 進 region 覆寫。UI/面板維持主題盤畫進 fb。
+- 結果:鮮豔前景 + 正確背景同框,**對齊真機構圖**,且不動既有單盤 golden 路徑(DOS 維持原樣)。原版受硬體 16 色所限只能二選一,remake 沒這限制——這正是「打破技術隔閡」該用的地方。
 
 ## 3. 多輪逆向「何時收手」(ROI 紀律)
 
