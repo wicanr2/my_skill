@@ -45,6 +45,7 @@ docker `pip install --break-system-packages capstone`。線性掃要**遇壞 byt
 反組譯原版該位址(.COM 檔案 offset = 位址−0x100)→ 逐行 ASM 對映 VM state → **照已實作的孿生 op
 借定址** → 實作 + **vm_selftest 逐指令自證**(無 oracle 時唯一驗證)→ **動態 trace 掃全 script 找「用在哪」**
 (常推翻「逆不出 set 來源」:取得端多在共享/對話 script,不在地圖格 script)。
-- 完整 SOP + Heineman 引擎(火龍之戰/Bard's Tale 同血脈)VM 資料區/定址速查:見 knowledge-base
-  `domain/dragon-wars-bardstale-opcode-re.md`。**Bard's Tale 系列中文化可直接遷移**(同引擎,opcode 編號異、定址形同)。
+- 完整 SOP + Heineman 引擎(火龍之戰/Bard's Tale 同血脈)VM 資料區/定址速查 + 已逆出 op 範本
+  (op_64/65/67 物品 CRUD、0x4754 物品簽章比對、char_data↔char_ext 重疊雷、event↔party 持久化):
+  見 `references/08-null-opcode-heineman-engine.md`。**Bard's Tale 系列中文化可直接遷移**(同引擎,opcode 編號異、定址形同)。
 - 誠實:逆得出標真值;子程式沒逆出就標 ⚠️ 部分 + 記卡點;順手把「已實作卻仍標 NULL」的 op 更正。
