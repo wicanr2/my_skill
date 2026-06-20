@@ -38,3 +38,13 @@ docker `pip install --break-system-packages capstone`。線性掃要**遇壞 byt
 - RNG:多為 LCG `seed = seed*0x343fd + 0x269ec3`。
 - 戰鬥命中/傷害/掉落、狀態效果(麻痺/睡眠)計時器、亂數機率 → 抽公式後在引擎重寫,再用回歸對照。
 - 用「字串錨定」導航:先在反編裡找已知文字(訊息、選單),回溯誰引用它 → 定位那段邏輯。
+
+## bytecode VM 的「NULL opcode」破解(反編沒逆出的 op)
+反編的 opcode dispatch 表常把部分 op 標 **NULL**(未逆出)→ script 跑到即 halt;中後期 quest 物品/旗標
+取得端常卡這。**NULL op 沒 C oracle,但原版 binary 反組譯本身即真值**:查 dispatch 表取 handler 位址 →
+反組譯原版該位址(.COM 檔案 offset = 位址−0x100)→ 逐行 ASM 對映 VM state → **照已實作的孿生 op
+借定址** → 實作 + **vm_selftest 逐指令自證**(無 oracle 時唯一驗證)→ **動態 trace 掃全 script 找「用在哪」**
+(常推翻「逆不出 set 來源」:取得端多在共享/對話 script,不在地圖格 script)。
+- 完整 SOP + Heineman 引擎(火龍之戰/Bard's Tale 同血脈)VM 資料區/定址速查:見 knowledge-base
+  `domain/dragon-wars-bardstale-opcode-re.md`。**Bard's Tale 系列中文化可直接遷移**(同引擎,opcode 編號異、定址形同)。
+- 誠實:逆得出標真值;子程式沒逆出就標 ⚠️ 部分 + 記卡點;順手把「已實作卻仍標 NULL」的 op 更正。
