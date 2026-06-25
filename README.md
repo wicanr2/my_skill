@@ -77,6 +77,7 @@ $j.items | ForEach-Object {
 | [`40-learning-loop`](rules/40-learning-loop.md) | 探索/除錯/重構的 learning loop:定義 goal/constraint/可驗證成功標準,先做最小測試,每輪更新假設,先驗證再下結論 |
 | [`50-ubiquitous-language`](rules/50-ubiquitous-language.md) | DDD ubiquitous language:每個 repo 維護 `CONTEXT.md` 術語表,人與 agent 共用同一套詞,降低 verbosity 與返工 |
 | [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
+| [`62-static-provenance-trace`](rules/62-static-provenance-trace.md) | 靜態溯源紀律:問「這值/設定/字串從哪來」別反射性下「封死/要動態/看不出來」——錨定實例→找 sink→運算元反向追到靜態源(表/header 欄位/config);搜尋落空=換 query 非不存在;動態手段只留給真正 runtime-only。`60` 的互補(查來源 vs 驗修法) |
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
 | [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 老遊戲（1990s 經典）繁中化專案 README 三層 voice register（Hero 信 / Magazine 編輯人聲 / Technical 工程文件）+ 1990s 雜誌風 SOP + 譯名考古感 + TOC sync checklist。萃取自 openxcom-cht v2.27 review。 |
 | [`82-cross-platform-port-verification`](rules/82-cross-platform-port-verification.md) | 跨平台打包(Linux/Win/macOS/Android)驗證紀律:目標平台先自己重現(Win→Wine,別先要 backtrace)、驗實際打包產物、缺資料 NULL-safe 回退;6 類分歧雷(log 嚴重度因平台異/相對路徑雙重前綴/能跑的變體遮 bug/唯讀 cwd/編譯器嚴格度/CI 架構)+ Wine·verbose flag·addr2line 手法 |
