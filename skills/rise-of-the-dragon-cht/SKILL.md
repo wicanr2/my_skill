@@ -1,6 +1,6 @@
 ---
 name: rise-of-the-dragon-cht
-description: 把 ScummVM DGDS 引擎遊戲（Rise of the Dragon / Heart of China / Willy Beamish）做繁體中文化 + 全平台打包的完整 SOP。當使用者談到「Rise of the Dragon」「火龍之吼」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「TTM 字串」「STORE AREA」「電腦/視訊電話畫面英文」「捷運站名沒翻」「對話名牌英文」「Android APK 注入遊戲」「liboboe.so not found」「eglCreateWindowSurface」「全平台 FULL 打包」「片頭標題加中文/中文副標」「中國之心/威利奇遇記 title」「drawTitleSubtitle」「毛筆/楷書/草書字型繁體國覆蓋」等情境觸發。
+description: 把 ScummVM DGDS 引擎遊戲（Rise of the Dragon / Heart of China / Willy Beamish）做繁體中文化 + 全平台打包的完整 SOP。當使用者談到「Rise of the Dragon」「火龍之吼」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「TTM 字串」「STORE AREA」「電腦/視訊電話畫面英文」「捷運站名沒翻」「對話名牌英文」「Android APK 注入遊戲」「liboboe.so not found」「eglCreateWindowSurface」「全平台 FULL 打包」「dist-all 重打包」「片頭標題加中文/中文副標」「中國之心/威利奇遇記 title」「drawTitleSubtitle」「毛筆/楷書/草書字型繁體國覆蓋」「日文字幕模式/F8 日文」「Shift-JIS 點陣字」「Big5+SJIS 第二編碼字型」「whisper 聽寫日配/Sega CD 語音字幕」等情境觸發。
 ---
 
 # Rise of the Dragon（ScummVM DGDS）繁中化 + 全平台 ship 完整 SOP
@@ -94,6 +94,18 @@ CI（`.github/workflows/build.yml`）只編**引擎 + 資產**（無遊戲）。
 **改引擎 → 全平台重編**（Mac/Android 走 CI push,Linux/Win/AppImage 本地）。**只改翻譯 → 重建 zh.dtr 部署各包的 zh.dtr**（Linux `share/rotd-cht/`、Win/Mac `extra/`、Android bundle、AppImage 在映像內）。每次部署後 `find dist -name zh.dtr -exec md5sum` 確認全一致。
 
 **安全鐵則**：遊戲/BIOS/disc/`dist/`/`game_en/`/`screenshots/` 全 gitignore,**永不 push**。CI 只產引擎+資產。完整包標「請勿散布」。
+
+### 7b. 改引擎後 dist-all 重打包的編排（D9 實戰）
+
+改引擎要重出**全五包**時,順序很重要 —— Mac/Android 的 binary 是 **CI 從 patch 編的**,本機只有 Linux binary:
+
+1. **先 push patch**（`patches/dgds-cjk.patch` 從 scummvm-src `git diff HEAD -- engines/dgds` 重產）→ 觸發 CI 重編 Mac/Android 的新 binary。**不 push 就沒有含新功能的 Mac/Android binary**;把新模式的資產注入**舊** CI binary 沒用（engine 根本沒載入那條路徑,新 enum 也沒進 `_avail`）。
+2. **CI 跑的同時**（~8 分）本機平行做:重打 Linux base bundle → `build_windows.sh`（Docker mingw,本機 binary 已含改動）→ `package_full.sh linux/appimage/windows`。AppImage 繼承 Linux bundle 的 `share/rotd-cht/`,只要先重打 Linux base 就會帶新資產。
+3. **CI 完成** → `gh run download <id> -n rotd-cht-android -n rotd-cht-macos -D dist/ci` → `package_full.sh mac`（套 CI `.app`）+ `inject_android.sh`（注入 CI base APK）。
+4. **`gh run list` 沒有 `--branch`**,用 `gh run list --limit N`;`gh run view <id>` 看 ARTIFACTS。
+- **新語言/資產要同步進每個 asset list**（漏一個那平台就沒新模式）:`package_linux.sh` ASSETS、`build_windows.sh` extra 迴圈、`build_macos.sh` cp、`inject_android.sh` refresh 迴圈、`package_full.sh` mac graft。**CI 不建 de.dtr/ja.dtr**（來源 JSON 是 gitignore 的版權 RE 素材）→ Mac graft + Android refresh 從本機 `build/` 補。
+- **`nohup … &` 背景陷阱**:`nohup cmd & echo started` 的 task 會**立刻 exit 0**（那是 launcher 不是 build）。真正的 build detached 在跑 → 別信 launcher 的「completed」,用 `pgrep -f build_windows.sh` + 輸出檔時間戳確認真的跑完。改用 harness 的 `run_in_background`(可被追蹤)更穩。
+- **dev+materials tarball**:`tar -I pigz -cf ~/rotd-cht-DEV+MATERIALS.tar.gz --exclude='…/dist' --exclude='…/segacd_ja/disc.bin' --exclude='…/segacd_ja/rotd_01.iso' -C ~ rise-of-the-dragon`。放 repo **外**(sibling)保持 dist/ 乾淨 + 避免自己包自己;含整套語音來源/素材/disc → 可在他機重建(語音全進 → 1.4G)。
 
 ## 8. Heart of China（HOC）與 ROTD 的差異 ── 換遊戲必看
 
@@ -210,9 +222,25 @@ DGDS **最新版**（SDS/DDS ` 1.224`）。同 overlay 機制,但版本比 HOC �
   快取**強制 mingw 重建,否則包到舊 exe(無新功能)。② Android `inject_android.sh` docker build >400s,**別包
   `timeout 400 ... | tail`**(pipe 把 timeout 退出碼蓋成 0,中途被砍還以為成功)→ 背景無 timeout 跑、等 `SIGNED OK`。
 
+## 11. 第二編碼字型：Big5 + Shift-JIS 共存 = 日文字幕模式（D9）
+
+把日文（或任何非 Big5）字幕接成 **F8 第 N 個顯示模式**。關鍵:**一個引擎、兩套雙位元組編碼**,draw path 依當下字型的 encoding 旗標分派查表。
+
+- **字幕語料來自 whisper 聽寫**:日版 Sega CD 是**真人日配 audio**(非文字),用 `faster-whisper` 聽寫成 `ja.dtr`(DTRN,`lang=3`,Shift-JIS bytes)。**繞過卡關的日文自訂編碼文字 RE**(SD4 是聲音不是文字)。聽寫稿用字有出入但結構/時間軸對得上每句 → 對翻譯也是一手語料。
+- **選編碼看覆蓋率**:同一份日文台詞,**Shift-JIS 覆蓋 99.7%**(3/1006 失敗) vs Big5 只 13%。換語言先做覆蓋率測試決定編碼,別預設 Big5。
+- **字型** `tools/build_jp_font.py`:Shift-JIS-indexed 24×24,`encoding=1`,從 Noto Sans CJK JP(ttc `index=0`)。SJIS 雙位元組→線性索引:lead `0x81-0x9F`→0-30 / `0xE0-0xFC`→31-59;trail `0x40-0x7E`→0-62 / `0x80-0xFC`→63-188(無 0x7F);`index = leadoff*189 + trailoff`(60×189 = 11340 槽)。
+- **引擎改動**(cjk.h/cpp):
+  - `BitmapFont` 加 `byte encoding`(0 Big5 / 1 SJIS);`loadFont` 存進去(原本讀掉丟棄那個 byte)。
+  - free fn `sjisLinearIndex()`/`isSjisLead()` + member `charIndex(b1,b2)`/`isLeadByte(b)` 依 active font 的 `_enc` 分派;`selectActiveFont()` 設 `_enc = fnt.encoding`。
+  - **draw path 三處**(`stringWidth`/`wrapText`/`drawDeferredLine`)把硬寫的 `big5LinearIndex`/`isBig5Lead` 換成 `charIndex`/`isLeadByte` → 同一條路徑中文吃 Big5、日文吃 SJIS。
+  - `load()` 多 `loadFont("dragon_ja24.dcjk")` + `loadTranslations("ja.dtr")`,兩者都在才 push `kDispJA` 進 `_avail`;`activeOverlay()` 處理 `kDispJA`→`_ja`。
+  - **⚠️ 硬寫 Big5 的地方要 guard**:`drawTitleSubtitle`(城市獵人是硬寫 Big5 索引,畫在 active `_glyphs` 上)在 `_enc != 0`(SJIS 字型 active)時 `return` —— 否則 Big5 索引餵進 SJIS 字型 → 亂碼。
+- **驗證(headless autopilot)**:`autopilot.txt` `lang N`(DisplayMode 序:0 EN/Orig,1 ZH24,2 ZH16,3 DE,4 JA)→ `dlg <num>` → `shot <name>`,`scripts/qa_run.sh` 在 Xvfb 跑,Read PNG 看字。**JA→ZH→JA 來回切**驗證 font/overlay 選擇無 regression(切回 ZH 要正確重選 Big5 字型 + zh overlay,名牌也要恢復中文)。
+- **README 敘事 payoff**:whisper 聽寫那段(原本只當「日文語料副產品」)→ 現在是**可玩的第五顯示模式**,把「外掛素材」變成「真功能」;showcase 放一張日文實機截圖,voice/segacd 段交叉引用。
+
 ## When to apply / NOT
 
-- **Apply**：ROTD 或其他 DGDS 遊戲（Heart of China、Willy Beamish）的 ScummVM 中文化、TTM/對話/名牌英文殘留、TTM 持久層 bug、**片頭標題中文副標 overlay**、Android 注入打包、全平台 ship。
+- **Apply**：ROTD 或其他 DGDS 遊戲（Heart of China、Willy Beamish）的 ScummVM 中文化、TTM/對話/名牌英文殘留、TTM 持久層 bug、**片頭標題中文副標 overlay**、**第二編碼字型/日文字幕模式（Big5+SJIS 共存）**、Android 注入打包、全平台 ship。
 - **NOT**：非 DGDS 的 ScummVM 引擎（SCUMM 看 `zak-fmtowns-zhtw`）；非 ScummVM 老遊戲（看 `classic-mac-c-game-sdl-port` / `qb64pe-game-linux-port`）。
 
 ## Reference
