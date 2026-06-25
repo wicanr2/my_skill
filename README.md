@@ -39,6 +39,10 @@
 | [`mac-app-cross-pack`](skills/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」 |
 | [`my-skill-merge`](skills/my-skill-merge/SKILL.md) | 把本機 `~/.claude/` 的 rules/skills/agents/personas 同步進本公開 repo,**內建客戶機密 denylist + 去識別化**,push 前列 diff 等確認(review 不 copy-paste) | 「merge ~/.claude 進 my_skill」「同步 skill 到 GitHub」「更新 my_skill repo」「跑 my-skill-merge」 |
 | [`dev-setup-bundle`](skills/dev-setup-bundle/SKILL.md) | 把專案開發環境打包成可攜 dev-setup(source+完整 git+Dockerfile+腳本+素材),**重點是內含 Claude 對話記錄+記憶**,讓另一台電腦 `claude -r`/`--continue` 接續同一個對話繼續工作;附 `previous-work.md` 工作交接 + 跨機 session 路徑編碼眉角(同路徑/改名/`--resume <UUID>`);排除可重建的 `build/` 與 docker images | 「打包開發環境」「dev-setup」「搬到另一台機器繼續」「讓 claude -r 在別台接續」「開發環境包含素材重新打包」「session handoff bundle」 |
+| [`retro-game-playtest`](skills/retro-game-playtest/SKILL.md) | 老遊戲 remake/移植「正常玩家路徑」實機驗證(game tester):專治「CI 全綠但玩家一開就壞」—預設視角錯/唯讀 cwd 不存檔/視窗縮放偏移/dump 時機遮真相,**跨平台分歧章**(Win/Mac 用 Wine/VM 重現、log 嚴重度因平台異、相對路徑雙重前綴、addr2line 跨平台定位) | 「game tester」「實機驗證」「能不能玩」「進去就壞/卡住/不存檔」「驗證 remake 可玩性」 |
+| [`retro-keyboard-to-touch`](skills/retro-keyboard-to-touch/SKILL.md) | 鍵盤老遊戲/SDL C 引擎移植到 Android/觸控的方法論:不重寫輸入,讀引擎每畫面 keymap 動態渲染 context-aware 觸控控制,手指事件合成 SDLK_* 餵回原事件迴圈 | 「老遊戲移植到 Android」「鍵盤遊戲改觸控」「SDL2 android-project 移植」「觸控覆蓋層/UX 設計」 |
+| [`first-principles-tech-notes`](skills/first-principles-tech-notes/SKILL.md) | 建立/擴展「第一性原理+圖文並茂」技術知識庫 GitHub repo:每主題一篇 markdown、概念配手繪 SVG、研究 sub-agent 查證、專家+學生審查、worklist 一項一項做 | 「整理某領域筆記成 repo」「把 X 主題寫成第一性原理教學」「一項一項做我監看」「ASCII 圖升級 SVG」 |
+| [`proposal-writer`](skills/proposal-writer/SKILL.md) | 多 agent 分章節撰寫/精鍊長篇計畫書(送審/技術整合/展會提案):含文獻驗證、技術校正、術語中文化、執行摘要、md→docx 產出 | 「寫/改/審計畫書」「研究白皮書」「展會提案」「多 agent 分章節長文件」 |
 
 ### cocomo-estimate 一句話
 
@@ -74,6 +78,10 @@ $j.items | ForEach-Object {
 | [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
 | [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 老遊戲（1990s 經典）繁中化專案 README 三層 voice register（Hero 信 / Magazine 編輯人聲 / Technical 工程文件）+ 1990s 雜誌風 SOP + 譯名考古感 + TOC sync checklist。萃取自 openxcom-cht v2.27 review。 |
+| [`82-cross-platform-port-verification`](rules/82-cross-platform-port-verification.md) | 跨平台打包(Linux/Win/macOS/Android)驗證紀律:目標平台先自己重現(Win→Wine,別先要 backtrace)、驗實際打包產物、缺資料 NULL-safe 回退;6 類分歧雷(log 嚴重度因平台異/相對路徑雙重前綴/能跑的變體遮 bug/唯讀 cwd/編譯器嚴格度/CI 架構)+ Wine·verbose flag·addr2line 手法 |
+| [`86-proposal-writing`](rules/86-proposal-writing.md) | 研究/技術計畫書撰寫:定位先行(可否證主張+假說)、範圍誠實、標準結構、評估協議、文獻真實性(WebSearch 驗 arxiv/DOI 不憑記憶)、對照原始碼校正、中文不夾雜、執行摘要;多 agent 分章節 + md→docx pipeline |
+| [`90-plain-language`](rules/90-plain-language.md) | 白話寫作七準則:結論先行(BLUF)、短句常用詞、術語即時翻譯、具體勝抽象、數據配「所以呢」、自然不貼標籤、不犧牲正確性。對外/客戶/管理層文件逐條套 |
+| [`91-deslop-ai-writing`](rules/91-deslop-ai-writing.md) | 去 AI 味反面清單:AI 詞黑名單、copula 迴避、權威揭示腔、格言公式、粗體列表症、filler/hedging;draft→audit→final 去 slop 審查 loop + 防改過頭的 false-positive 清單。來源 Wikipedia「Signs of AI writing」 |
 
 ## Personas(agent 人格)
 
@@ -111,7 +119,11 @@ my_skill/
 │   ├── 50-ubiquitous-language.md
 │   ├── 60-feedback-loop-priority.md
 │   ├── 70-deep-modules.md
-│   └── 80-retro-cht-readme-polish.md
+│   ├── 80-retro-cht-readme-polish.md
+│   ├── 82-cross-platform-port-verification.md
+│   ├── 86-proposal-writing.md
+│   ├── 90-plain-language.md
+│   └── 91-deslop-ai-writing.md
 ├── personas/                       # agent 人格 (system persona)
 │   ├── hermes-research-collaborator.md
 │   └── patient-technical-teacher.md
