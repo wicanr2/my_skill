@@ -1,6 +1,6 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 機,在 GitHub Actions macOS-14 runner ship SDL 1.2/C++ 老遊戲的 macOS universal `.app`+`.dmg`。涵蓋 arm64+x86_64 universal build、SDL 1.2 source build、`std::unary_function` C++14 fallback、dylibbundler、WSL `mkisofs -hfs` 產 DMG、Gatekeeper quarantine 解除。觸發:「Mac DMG build」「macos-14 universal binary」「SDL 1.2 brew 沒了」「std::unary_function 找不到」「APFS DMG Windows 讀不到」「補 Mac 版」。完整 CI 流程見內文。
+description: 不用 Mac 機,在 GitHub Actions macOS-14 runner ship SDL 1.2/C++ 老遊戲的 macOS universal `.app`+`.dmg`。涵蓋 arm64+x86_64 universal build、SDL 1.2 source build、`std::unary_function` C++14 fallback、dylibbundler、WSL `mkisofs -hfs` 產 DMG、Gatekeeper quarantine 解除。觸發:「Mac DMG build」「macos-14 universal binary」「SDL 1.2 brew 沒了」「std::unary_function 找不到」「APFS DMG Windows 讀不到」「補 Mac 版」「macOS x86_64 / Intel job 一直 queued / 編不起來」「macos-13 退役改 macos-15-intel」。完整 CI 流程見內文(含 runner 退役踩雷,見「四個常踩雷」#4)。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
@@ -266,11 +266,16 @@ chmod +x /Applications/Game.app/Contents/MacOS/Game
 
 `.dmg` 公版可推 GitHub Releases。`*-with-data.*` 純本機，**絕不推 git**（版權）。
 
-## 三個常踩雷
+## 四個常踩雷
 
 1. **`bin/game` lipo 失敗**：CMake 直接產 `.app` bundle，binary 在 `app/Contents/MacOS/<name>`，不在 `bin/`。檢查 CMake `set_target_properties(... MACOSX_BUNDLE TRUE)`。
 2. **PowerShell heredoc commit message 中文 parser error**：commit message 含中文時 `git commit -m "..."` 在 PowerShell 5.1 會被 cp950 codec 弄爛，改用 `git commit -F commit_msg.txt`（檔案 UTF-8 BOM）。
 3. **WSL /tmp 跨 session 蒸發**：build 中途如果 WSL session 重啟，`/tmp/mac_inject_*` 全沒。把 build + package 串成一個 bash 指令（用 `&&` 鏈），別分段跑。
+4. **runner 標籤被退役 → job 永遠 queued(不是失敗,是「永遠排不到」)**：
+   - **症狀**:某個 matrix job 一直停在 `queued`、從不轉 `in_progress`,而同一 run 的別的 job 正常跑完。**永遠排隊 ≠ 排隊塞車**:塞車最終會跑;標籤無效則永遠排不到、也不會報錯。看到「卡很久」別只 `gh run cancel` 了事 —— 先查**標籤是否還存在**。
+   - **根因 + 修法**:GitHub 退役了該 runner image。**`macos-13`(Intel)已於 2025-12-04 退役** → 用它的 x86_64 job 永遠 queued。**改用 `macos-15-intel`**(GitHub 給 Intel 的新標籤,撐到約 2027 秋 macOS 15 退役、Apple Intel 支援結束)。`macos-14`+ 一律是 Apple Silicon(arm64)。
+   - **更好的解法 = 本 skill 的主路線**:用單一 `macos-14` runner + **universal binary**(`-arch arm64 -arch x86_64`,見段 1.4)一次出雙架構,**根本不碰 Intel runner** → 對「Intel runner 退役」這類事件免疫。會踩到 #4 的,多半是改用了「per-arch matrix(macos-14 + macos-13)」而非 universal,等於沒照本 skill 的 best practice。
+   - **元教訓**:CI 排隊狀態要分清「塞車(會好)」vs「標籤死掉(永遠卡)」。把後者當前者、反覆 cancel 而不查根因,可能拖好幾天才發現。對應 `rules/60-feedback-loop-priority`(先建可驗證訊號)與第一性原理「先確認自己懂它為何卡住,再下結論」。
 
 ## 案例（已驗證）
 
