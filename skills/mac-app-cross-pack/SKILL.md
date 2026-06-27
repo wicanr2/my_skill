@@ -1,6 +1,6 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 機,在 GitHub Actions macOS-14 runner ship SDL 1.2/C++ 老遊戲的 macOS universal `.app`+`.dmg`。涵蓋 arm64+x86_64 universal build、SDL 1.2 source build、`std::unary_function` C++14 fallback、dylibbundler、WSL `mkisofs -hfs` 產 DMG、Gatekeeper quarantine 解除。觸發:「Mac DMG build」「macos-14 universal binary」「SDL 1.2 brew 沒了」「std::unary_function 找不到」「APFS DMG Windows 讀不到」「補 Mac 版」「macOS x86_64 / Intel job 一直 queued / 編不起來」「macos-13 退役改 macos-15-intel」。完整 CI 流程見內文(含 runner 退役踩雷,見「四個常踩雷」#4)。
+description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
@@ -99,7 +99,26 @@ for pkg in SDL-${SDL_VER} SDL_image-${IMG_VER} SDL_mixer-${MIX_VER} SDL_gfx-${GF
 done
 ```
 
-**Universal Binary**：`-arch arm64 -arch x86_64` 一次餵兩個 target，產生的 dylib `lipo` 能看到兩 slice。
+**Universal Binary**：`-arch arm64 -arch x86_64` 一次餵兩個 target，產生的 dylib `lipo` 能看到兩 slice。⚠️ **這招只對 CMake / 直接吃 CFLAGS 的 build 有效**。**autoconf 專案(尤其 ScummVM)單次雙弧會炸** configure 版本解析(`-mmacosx-version-min` 餵進去 → `integer expression expected`),那邊要改成「**每弧 native 各編一次 + `lipo -create` 合併**」——見 `retro-game-cht-package` skill(patched-ScummVM 漢化三平台打包)。
+
+### 1.2b SDL2 也別用 brew（sdl2-compat → SDL3 雷，[HARD]）
+
+**[HARD] SDL2 程式的 macOS CI 不要 `brew install sdl2`，改源碼編 pinned 真 SDL2。** 2026-06 起 Homebrew 把 `sdl2` 換成 **sdl2-compat** —— 一個 ~0.5MB 的「SDL2 API 架在 SDL3 上」shim，**runtime 才 `dlopen` libSDL3**。dylibbundler 只打包**靜態連結**相依,不會把 runtime dlopen 的 `libSDL3` 放進 `.app` → 玩家端 **「Failed loading SDL3 library」/ 黑畫面**。同一份 CI 腳本,brew 哪天換內容就突然壞,且**本機(有裝 SDL3)測不出來**。
+
+- **一眼辨識**:拆 `.app/Contents/libs`(或 `Frameworks`),`libSDL2-2.0.0.dylib` **~0.5MB = sdl2-compat shim**(壞);**~2MB = 真 SDL2**(好)。`otool -L libSDL2 | grep -i SDL3` 有命中就是 shim。
+- **修法**:從 release tarball 編 pinned 真 SDL2(`2.30.9`)+ SDL2_image + SDL2_mixer 到一個 prefix,`-DCMAKE_PREFIX_PATH`/`PATH` 指過去。**只連必要 codec**:image 用 `--enable-stb-image`(PNG/JPG,不連 libpng)、mixer 視需要(很多老引擎自帶合成器走 `Mix_HookMusic`,WAV 用 `Mix_LoadWAV` 即內建 → **mixer 可零外部 codec**,`--disable-music-*` 全關)。`-mmacosx-version-min=13.4` 讓 dylib 對舊 Mac 相容(brew bottle 是為 runner 的新 macOS 編的,deployment target 太高)。
+- **x86_64 slice**:在 Apple Silicon runner 上用 `arch -x86_64 /bin/sh build.sh`(Rosetta,toolchain 原生 x86_64,configure run-tests 能跑)比 autotools `--host=` cross 穩。
+- **防呆**:腳本結尾斷言 `otool -L "$PREFIX/lib/libSDL2-2.0.0.dylib" | grep -qi SDL3 && exit 1`,把 shim 擋在 CI。
+
+```sh
+SDL_VER=2.30.9; IMG_VER=2.8.2; MIX_VER=2.8.0; MIN=13.4
+export CFLAGS="-arch $ARCH -mmacosx-version-min=$MIN" CXXFLAGS="$CFLAGS" LDFLAGS="$CFLAGS"
+# SDL2 core → make install --prefix=$P ; then PATH=$P/bin:$PATH
+# SDL2_image: ./configure --with-sdl-prefix=$P --disable-png --disable-jpg ... --enable-stb-image
+# SDL2_mixer: ./configure --with-sdl-prefix=$P --disable-music-ogg --disable-music-midi ...（引擎自帶合成器時全關）
+```
+
+來源:`open-king-bounty-cht` issue #3(brew 換 sdl2-compat 的實戰根因)、`freesynd-cht` `ci/build-sdl2-from-source.sh`(零 mixer codec：引擎用 ADLMIDI + `Mix_HookMusic`)。
 
 ### 1.3 C++14 fallback（Xcode 15 Clang 把 1990s 程式碼弄壞）
 
@@ -266,16 +285,11 @@ chmod +x /Applications/Game.app/Contents/MacOS/Game
 
 `.dmg` 公版可推 GitHub Releases。`*-with-data.*` 純本機，**絕不推 git**（版權）。
 
-## 四個常踩雷
+## 三個常踩雷
 
 1. **`bin/game` lipo 失敗**：CMake 直接產 `.app` bundle，binary 在 `app/Contents/MacOS/<name>`，不在 `bin/`。檢查 CMake `set_target_properties(... MACOSX_BUNDLE TRUE)`。
 2. **PowerShell heredoc commit message 中文 parser error**：commit message 含中文時 `git commit -m "..."` 在 PowerShell 5.1 會被 cp950 codec 弄爛，改用 `git commit -F commit_msg.txt`（檔案 UTF-8 BOM）。
 3. **WSL /tmp 跨 session 蒸發**：build 中途如果 WSL session 重啟，`/tmp/mac_inject_*` 全沒。把 build + package 串成一個 bash 指令（用 `&&` 鏈），別分段跑。
-4. **runner 標籤被退役 → job 永遠 queued(不是失敗,是「永遠排不到」)**：
-   - **症狀**:某個 matrix job 一直停在 `queued`、從不轉 `in_progress`,而同一 run 的別的 job 正常跑完。**永遠排隊 ≠ 排隊塞車**:塞車最終會跑;標籤無效則永遠排不到、也不會報錯。看到「卡很久」別只 `gh run cancel` 了事 —— 先查**標籤是否還存在**。
-   - **根因 + 修法**:GitHub 退役了該 runner image。**`macos-13`(Intel)已於 2025-12-04 退役** → 用它的 x86_64 job 永遠 queued。**改用 `macos-15-intel`**(GitHub 給 Intel 的新標籤,撐到約 2027 秋 macOS 15 退役、Apple Intel 支援結束)。`macos-14`+ 一律是 Apple Silicon(arm64)。
-   - **更好的解法 = 本 skill 的主路線**:用單一 `macos-14` runner + **universal binary**(`-arch arm64 -arch x86_64`,見段 1.4)一次出雙架構,**根本不碰 Intel runner** → 對「Intel runner 退役」這類事件免疫。會踩到 #4 的,多半是改用了「per-arch matrix(macos-14 + macos-13)」而非 universal,等於沒照本 skill 的 best practice。
-   - **元教訓**:CI 排隊狀態要分清「塞車(會好)」vs「標籤死掉(永遠卡)」。把後者當前者、反覆 cancel 而不查根因,可能拖好幾天才發現。對應 `rules/60-feedback-loop-priority`(先建可驗證訊號)與第一性原理「先確認自己懂它為何卡住,再下結論」。
 
 ## 案例（已驗證）
 
