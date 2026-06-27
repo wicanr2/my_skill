@@ -99,7 +99,7 @@ for pkg in SDL-${SDL_VER} SDL_image-${IMG_VER} SDL_mixer-${MIX_VER} SDL_gfx-${GF
 done
 ```
 
-**Universal Binary**：`-arch arm64 -arch x86_64` 一次餵兩個 target，產生的 dylib `lipo` 能看到兩 slice。
+**Universal Binary**：`-arch arm64 -arch x86_64` 一次餵兩個 target，產生的 dylib `lipo` 能看到兩 slice。⚠️ **這招只對 CMake / 直接吃 CFLAGS 的 build 有效**。**autoconf 專案(尤其 ScummVM)單次雙弧會炸** configure 版本解析(`-mmacosx-version-min` 餵進去 → `integer expression expected`),那邊要改成「**每弧 native 各編一次 + `lipo -create` 合併**」——見 `retro-game-cht-package` skill(patched-ScummVM 漢化三平台打包)。
 
 ### 1.2b SDL2 也別用 brew（sdl2-compat → SDL3 雷，[HARD]）
 
