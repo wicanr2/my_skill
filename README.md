@@ -1,12 +1,17 @@
 # my_skill
 
 <p align="center">
-  <img src="assets/signature_preview.png" alt="原來是個胖仔 / wicanr2 chibi pixel art signature" width="384">
+  <img src="assets/family-all.png" alt="wicanr2 一家四口 像素/十字繡風格家庭合照" width="440">
 </p>
 
 <p align="center">
-  <em>原來是個胖仔 (wicanr2) — chibi pixel art 簽名</em><br>
-  <sub>原始 48×24 8bpp paletted PNG，源自 <a href="https://github.com/wicanr2/openxcom-cht">openxcom-cht</a> 專案主選單簽名整合，這裡 8× 放大顯示</sub>
+  <img src="assets/me-bro.png" alt="我跟哥哥" width="220">
+  <img src="assets/me-bro-sis.png" alt="我跟哥哥妹妹" width="220">
+  <img src="assets/bro-sis.png" alt="哥哥妹妹" width="220">
+</p>
+
+<p align="center">
+  <em>wicanr2 一家 — 像素 / 十字繡風格家庭合照</em>
 </p>
 
 ---
