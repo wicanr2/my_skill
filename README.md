@@ -90,10 +90,11 @@ $j.items | ForEach-Object {
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
 | [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 老遊戲（1990s 經典）繁中化專案 README 三層 voice register（Hero 信 / Magazine 編輯人聲 / Technical 工程文件）+ 1990s 雜誌風 SOP + 譯名考古感 + TOC sync checklist。萃取自 openxcom-cht v2.27 review。 |
 | [`82-cross-platform-port-verification`](rules/82-cross-platform-port-verification.md) | 跨平台打包(Linux/Win/macOS/Android)驗證紀律:目標平台先自己重現(Win→Wine,別先要 backtrace)、驗實際打包產物、缺資料 NULL-safe 回退;6 類分歧雷(log 嚴重度因平台異/相對路徑雙重前綴/能跑的變體遮 bug/唯讀 cwd/編譯器嚴格度/CI 架構)+ Wine·verbose flag·addr2line 手法 |
+| [`83-retro-completeness-over-roi`](rules/83-retro-completeness-over-roi.md) | 老遊戲素材抽取/移植[HARD]:完整性>投報(文物保存不能談 ROI),不預先砍版本/資產、卡關記錄方法續做別寫「低投報」;**別漏看資產檔**——同類檔先 `strings EXE\|grep ext` 列舉全(別假設單檔含全部:漏一個檔=子系統用錯來源還報「完成」) |
 | [`86-proposal-writing`](rules/86-proposal-writing.md) | 研究/技術計畫書撰寫:定位先行(可否證主張+假說)、範圍誠實、標準結構、評估協議、文獻真實性(WebSearch 驗 arxiv/DOI 不憑記憶)、對照原始碼校正、中文不夾雜、執行摘要;多 agent 分章節 + md→docx pipeline |
 | [`90-plain-language`](rules/90-plain-language.md) | 白話寫作七準則:結論先行(BLUF)、短句常用詞、術語即時翻譯、具體勝抽象、數據配「所以呢」、自然不貼標籤、不犧牲正確性。對外/客戶/管理層文件逐條套 |
 | [`91-deslop-ai-writing`](rules/91-deslop-ai-writing.md) | 去 AI 味反面清單:AI 詞黑名單、copula 迴避、權威揭示腔、格言公式、粗體列表症、filler/hedging;draft→audit→final 去 slop 審查 loop + 防改過頭的 false-positive 清單。來源 Wikipedia「Signs of AI writing」 |
-| [`93-promo-video-original-assets`](rules/93-promo-video-original-assets.md) | 推廣影片[HARD]鐵則:配樂/音效一律用**原版實際素材**(CD-DA/模擬器錄原版/官方 OST),不可用自寫合成器逼近頂替;比對音色用第一性原理(ffprobe/頻譜/provenance)不憑記憶。配 skill `game-promo-video-ffmpeg` |
+| [`93-promo-video-original-assets`](rules/93-promo-video-original-assets.md) | 推廣影片[HARD]鐵則:配樂/音效一律用**原版實際素材**(CD-DA/模擬器錄原版/官方 OST),不可用自寫合成器逼近頂替;比對音色用第一性原理(ffprobe/頻譜/provenance)不憑記憶。**IP 但書**:用原版音樂≠可任意散布——個人保存 OK、對外公開先 flag 著作權。配 skill `game-promo-video-ffmpeg` |
 
 ## Personas(agent 人格)
 
@@ -134,6 +135,7 @@ my_skill/
 │   ├── 70-deep-modules.md
 │   ├── 80-retro-cht-readme-polish.md
 │   ├── 82-cross-platform-port-verification.md
+│   ├── 83-retro-completeness-over-roi.md
 │   ├── 86-proposal-writing.md
 │   ├── 90-plain-language.md
 │   └── 91-deslop-ai-writing.md
