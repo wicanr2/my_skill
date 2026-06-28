@@ -28,6 +28,7 @@
 | [`rise-of-the-dragon-cht`](skills/rise-of-the-dragon-cht/SKILL.md) | ScummVM **DGDS 引擎**老遊戲(Rise of the Dragon / Heart of China / Willy Beamish)繁中化 + 全平台 ship 完整 SOP:engine-side overlay 攔截繪字→查表→點陣 CJK 疊 hi-res;三繪字路徑、DDS 對白(動態版本述詞通吃 1.211/1.216/1.224)、TTM 持久層(STORE AREA 模型)、名牌剝除+矮牌置中 clamp、對話框溢出自動長高、第二編碼字型(Big5+SJIS 共存)= 日文 F8 字幕模式(whisper 聽寫 Sega CD 日配)、時代雜誌攻略當術語 oracle、文化在地化、Windows/macOS/Android 全平台打包 | 「Rise of the Dragon」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「對話名牌英文」「威利奇遇記」「Willy Beamish」「TTM 字串」「Android APK 注入」「日文字幕/F8」「全平台 ship」 |
 | [`retro-game-cht-package`](skills/retro-game-cht-package/SKILL.md) | patched-ScummVM/SDL2 老遊戲漢化 → **三平台打包**:Linux 單檔 AppImage(slim 自備遊戲/full 內嵌開箱即玩)、Windows docker mingw cross(自編 SDL2 靜態、force LE 繞端序、objdump 遞迴收 DLL、zip)、macOS GitHub Actions(**autoconf 不能單次雙弧** → macos-14 + macos-15-intel 分弧 native 編 + lipo universal)。含 slim/full 版權切分、每包附繁中 使用說明.txt(SmartScreen/FUSE/quarantine 首跑雷)、`.app` 用 tar.gz | 「打包這個中文化」「Windows/AppImage/macOS 三平台」「docker mingw cross」「自編 SDL2」「Checking endianness unknown」「macos universal/Intel」「app 已損毀無法打開」「dist-all」 |
 | [`retro-game-remake`](skills/retro-game-remake/SKILL.md) | **階層式**老遊戲(CRPG)RE+乾淨重製方法論:反編當 oracle、破格式、FM Towns 美術/CDDA/EUP 音樂考古、CJK 重寫、headless 可破關+**連通分量可達性**驗證、Docker 跨平台+Mac CI 打包、引擎/資料分離。SKILL.md 精簡+踩雷,references/ 6 檔按需讀 | 「重製/反組譯/中文化老遊戲」「破解遊戲資料格式」「抽 FM Towns/DOS 美術音樂」「u2-cht/u3-cht/u6-cht/Ultima」 |
+| [`game-promo-video-ffmpeg`](skills/game-promo-video-ffmpeg/SKILL.md) | 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成 60–75 秒推廣短片;內建硬雷:**zoompan 幀數爆炸(燒滿 CPU)**、CPU 控制(--cpus/預建 image/veryfast/靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改靜態截圖、docker 字型/IM policy 雷;附 CPU-safe make.sh 骨架。配 `rules/93`(配樂用原版[HARD]) | 「做推廣片/trailer/宣傳片」「截圖+配樂合成影片」「ffmpeg 投影片/Ken Burns」「遊戲介紹影片」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
@@ -87,6 +88,7 @@ $j.items | ForEach-Object {
 | [`86-proposal-writing`](rules/86-proposal-writing.md) | 研究/技術計畫書撰寫:定位先行(可否證主張+假說)、範圍誠實、標準結構、評估協議、文獻真實性(WebSearch 驗 arxiv/DOI 不憑記憶)、對照原始碼校正、中文不夾雜、執行摘要;多 agent 分章節 + md→docx pipeline |
 | [`90-plain-language`](rules/90-plain-language.md) | 白話寫作七準則:結論先行(BLUF)、短句常用詞、術語即時翻譯、具體勝抽象、數據配「所以呢」、自然不貼標籤、不犧牲正確性。對外/客戶/管理層文件逐條套 |
 | [`91-deslop-ai-writing`](rules/91-deslop-ai-writing.md) | 去 AI 味反面清單:AI 詞黑名單、copula 迴避、權威揭示腔、格言公式、粗體列表症、filler/hedging;draft→audit→final 去 slop 審查 loop + 防改過頭的 false-positive 清單。來源 Wikipedia「Signs of AI writing」 |
+| [`93-promo-video-original-assets`](rules/93-promo-video-original-assets.md) | 推廣影片[HARD]鐵則:配樂/音效一律用**原版實際素材**(CD-DA/模擬器錄原版/官方 OST),不可用自寫合成器逼近頂替;比對音色用第一性原理(ffprobe/頻譜/provenance)不憑記憶。配 skill `game-promo-video-ffmpeg` |
 
 ## Personas(agent 人格)
 
@@ -140,6 +142,7 @@ my_skill/
     ├── classic-mac-c-game-sdl-port/
     ├── qb64pe-game-linux-port/  dragon-wars-cht-remake/
     ├── panzer-general-wine/  zak-fmtowns-zhtw/  rise-of-the-dragon-cht/   # 老遊戲繁中化/wine
+    ├── game-promo-video-ffmpeg/   # 遊戲推廣片 ffmpeg 合成(配 rules/93)
     ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
     ├── prompt-master/  english-prompt-coach/  ascii-matrix-scene/  organize-folder/
     └── mac-app-cross-pack/  my-skill-merge/

@@ -1,0 +1,146 @@
+---
+name: game-promo-video-ffmpeg
+description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成成 60–75 秒推廣短片 / trailer。內建本人用時間換來的硬地雷:**ffmpeg zoompan 幀數爆炸(燒滿 CPU 8 分鐘)**、CPU 控制(--cpus / 預建工具 image / veryfast / 靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改用靜態截圖、docker 內字型/IM policy 雷。觸發:「做推廣片/trailer/宣傳片」「把截圖+配樂合成影片」「ffmpeg 做投影片」「Ken Burns」「遊戲介紹影片」「promo video」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」。配 rulebook/93(配樂用原版真實素材的[HARD]鐵則)+ 各專案 docs/llm-promo-video-pipeline.md。
+---
+
+# game-promo-video-ffmpeg — 腳本化遊戲推廣片合成(地雷優先)
+
+> 這支管「**怎麼用 ffmpeg/IM 把片做出來、又不燒爆 CPU**」的工程實務。
+> 「素材來源真實性(配樂用原版、不自產)」的[HARD]鐵則在 `rules/93-promo-video-original-assets.md`;
+> 三段式 pipeline 總覽在各專案 `docs/llm-promo-video-pipeline.md`(u1-cht 起源)。本檔聚焦**踩過的雷 + 可重用骨架**。
+
+## 何時用
+做老遊戲 / remake / 中文化專案的推廣短片、trailer、README 影片。全程 docker(不污染系統)、不開剪輯軟體、可重跑、可 CI、LLM 看算繪幀迭代。
+
+## 三段 pipeline(總覽)
+`① 擷取(截圖/錄影/音樂)→ ② 素材(標題卡/字幕卡,程序生成)→ ③ ffmpeg 合成(投影片+字幕+轉場+配樂)`。
+每段一支腳本、輸入輸出是檔案。設計 token(色票/字體/母題)放 `make.sh` 最上面 = 換遊戲只改那幾行。
+
+---
+
+## ⚠️ 最痛的雷(用 CPU 與時間換來的,務必記住)
+
+### 1. [HARD] ffmpeg zoompan 幀數爆炸 — 一段 6 秒算成上萬幀、燒滿 CPU 8 分鐘
+**症狀**:合成卡住數分鐘、CPU 100%、容器不結束、output 一直空白。
+**根因**:`-loop 1 -t $S -i img` + `-vf "...,fps=$FPS,...,zoompan=...:d=$((FPS*S))"`。
+`fps` 濾鏡(或 `-loop 1 -t` 本身)先產生 `FPS*S` 個輸入幀,zoompan 的 `d` 是「**每個輸入幀**輸出 d 幀」
+→ 變成 `(FPS*S) × (FPS*S)` 幀,6 秒 25fps = 150×150 ≈ 22500 幀。**這是 zoompan 最惡名昭彰的陷阱**。
+**對策(擇一)**:
+- **最省、最穩(預設選這個)**:**不要 zoompan**,靜態圖 + 淡入淡出即可。promo 用投影片+fade 完全夠看:
+  ```bash
+  ffmpeg -y -loop 1 -i "$IMG" -t "$S" -r $FPS \
+    -vf "fade=t=in:st=0:d=0.5,fade=t=out:st=$(awk "BEGIN{print $S-0.5}"):d=0.5,format=yuv420p" \
+    -threads 2 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$OUT"
+  ```
+- **要動態才用 zoompan**:餵它**單一輸入幀**,`d` = 總幀數,輸出用 `-frames:v` 收(別放前置 `fps`、別用 `-t` 在 `-i` 前限輸入):
+  ```bash
+  ffmpeg -y -loop 1 -i "$IMG" \
+    -vf "zoompan=z='min(zoom+0.0006,1.06)':d=$((FPS*S)):s=${W}x${H}:fps=$FPS,fade=...,format=yuv420p" \
+    -frames:v $((FPS*S)) -threads 2 -c:v libx264 -preset veryfast "$OUT"
+  ```
+**先試靜態版確認流程通,再決定要不要加動態**——別一開始就 zoompan 然後卡住才 debug。
+
+### 2. CPU 控制(docker 影片合成務必套)
+- **`docker run --cpus=2`** 硬限核數(別讓 ffmpeg 吃滿所有核)。
+- ffmpeg 全部加 **`-preset veryfast -threads 2`**(promo 不需 crf 18 的慢 preset)。
+- **預建工具 image,別每次 apt**:`apt install ffmpeg imagemagick fonts-noto-cjk` 每跑一次裝 ~200MB =
+  大半時間花在這。裝一次 `docker commit` 成 `mom-video:latest`,之後重跑零安裝。
+- **長 docker run 會被 harness 自動轉背景**;跑壞要 `docker ps -q --filter ancestor=<img> | xargs -r docker kill` 收掉,
+  別讓爆炸的容器在背景燒。**有界**:`timeout` 包起來。
+
+### 3. [HARD] 配樂用原版/遊戲真實音訊,不自產(見 rulebook/93)
+**MIDI + SoundFont 的遊戲(如 Ebiten/Go 引擎)**:別 live 錄(Ebiten 非 SDL,沒 `SDL_AUDIODRIVER=disk`;
+xvfb 又沒音效卡)。**離線抽 + fluidsynth 算**最乾淨、可重現、音色一模一樣:
+1. 用引擎自己的 reader 把曲目的 **XMI/MIDI 抽成標準 .mid**(例:`xmi.ReadMidiFromCache(cache,"music.lbx",idx)` →
+   `smf.WriteFile("x.mid")`;先找「標題曲」index,如 MoM 的 `SongTitle=104`)。
+2. 用遊戲**實際載入的同一顆 SoundFont**(`TimGM6mb.sf2` 等)算 wav:
+   `fluidsynth -ni -F title.wav sf.sf2 title.mid`(docker 內 `apt install fluidsynth`)。
+- **SDL 遊戲**:`SDL_AUDIODRIVER=disk SDL_DISKAUDIOFILE=cap.raw ./game` 直接錄實機音樂 → `ffmpeg -f s16le -ar 44100 -ac 2 -i cap.raw out.wav`。
+- **驗證(鐵則 93-2)**:`ffmpeg -i x.wav -af volumedetect -f null /dev/null` 看 `mean_volume`/`max_volume` 非靜音、無 clipping、時長對。10KB/53s = 壞檔。
+
+### 4. 截圖:滑鼠驅動遊戲 → 用靜態截圖,別跟 xdotool 纏鬥
+- **先用專案既有截圖庫**(中文化專案通常 docs/img/ 已有 20+ 張)。夠了就別重錄。
+- 鍵盤驅動遊戲:`xdotool key` 編排可錄 live;**滑鼠驅動(選單/法術書/城市畫面靠點)**:xdotool 點座標脆,
+  改**靜態截圖 + Ken Burns/fade**(合成段本來就以截圖為主)。要新截圖就加極簡 render harness(SHOT/第 N 幀存 PNG),比驅動 UI 穩。
+- 截圖**保留遊戲原色不調色**,只在合成時加金框。
+
+### 5. docker 內字型 / ImageMagick policy
+- `fonts-noto-cjk` 只有 **Regular / Bold** 的 `.ttc`(**沒有 Medium/SemiBold**)——用前先 `ls` 確認字型路徑存在,否則 `convert` 報 `unable to read font` 整段沒輸出。
+- ImageMagick 預設 policy 可能擋 `@`/URL 讀檔:`sed -i 's/rights="none" pattern="@\*"/rights="read" pattern="@*"/' /etc/ImageMagick-6/policy.xml`(只讀本地檔仍安全)。
+- 中文字幕用**襯線**(Noto Serif CJK)較有質感;西方奇幻尤其(黑體=手遊味)。
+
+---
+
+## 可重用骨架(CPU-safe，靜態+fade 版)
+
+`make_promo.sh` —— 設計 token 放最上面(換皮只改這裡),函式 + 分鏡在下面:
+
+```bash
+#!/usr/bin/env bash
+set -eu
+# ===== 設計 token(換遊戲只改這段)=====
+BG='#1a1230'; BGD='#0c0818'; GOLD='#c9a227'; GOLDSH='#7a5c14'; BLOOD='#8c1c13'; CREAM='#f2ead2'
+FB=/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc      # 標題(先確認存在!)
+FR=/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc   # 字幕(沒有 Medium)
+W=1280; H=720; FPS=25; SHOT=/shots; OUT=/out; TMP=/tmp/c; mkdir -p "$TMP" "$OUT"
+
+card(){  # $1 out $2 中標 $3 英標 $4 副標 —— 深色徑向漸層 + 鎏金浮雕標題
+  convert -size ${W}x${H} "radial-gradient:#241844-${BGD}" -font "$FB" -gravity center \
+    -fill "$GOLDSH" -pointsize 92 -annotate +3+3 "$3" -fill "$GOLD" -pointsize 92 -annotate +0+0 "$3" \
+    -fill "$CREAM" -pointsize 64 -annotate +0+90 "$2" -fill "$BLOOD" -pointsize 30 -annotate +0+170 "$4" "$1"; }
+slide(){ # $1 out $2 screenshot $3 字幕 —— 截圖加金框置中 + 底部字幕
+  convert -size ${W}x${H} "gradient:${BG}-${BGD}" "$TMP/bg.png"
+  convert "$SHOT/$2" -resize x576 -bordercolor "$GOLD" -border 3 "$TMP/sc.png"
+  convert "$TMP/bg.png" \( "$TMP/sc.png" \) -gravity north -geometry +0+24 -composite \
+    -fill "#000000aa" -draw "rectangle 0,640 ${W},720" \
+    -font "$FR" -fill "$CREAM" -gravity south -pointsize 34 -annotate +0+30 "$3" "$1"; }
+kb(){    # $1 png $2 mp4 $3 秒 —— 靜態 + 淡入淡出(不用 zoompan!見雷 #1)
+  local FO; FO=$(awk "BEGIN{print $3-0.5}")
+  ffmpeg -y -loglevel error -loop 1 -i "$1" -t "$3" -r $FPS \
+    -vf "fade=t=in:st=0:d=0.5,fade=t=out:st=$FO:d=0.5,format=yuv420p" \
+    -threads 2 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$2"; }
+
+# ===== 分鏡(LLM 依專案填截圖/字幕)=====
+card  "$TMP/00.png" '工作魔法大帝' 'Master of Magic' '重現經典 · 全程繁體中文'
+slide "$TMP/01.png" overworld.png  '踏遍雙重位面的廣袤疆土'
+# ... 更多 slide ...
+card  "$TMP/99.png" '工作魔法大帝' 'Master of Magic' '繁體中文版 · 免費開源 · github.com/...'
+
+# ===== concat + 鋪配樂(afade)=====
+LIST="$TMP/list.txt"; : > "$LIST"
+for f in 00 01 99; do kb "$TMP/$f.png" "$TMP/s_$f.mp4" 7; echo "file '$TMP/s_$f.mp4'" >> "$LIST"; done
+ffmpeg -y -loglevel error -f concat -safe 0 -i "$LIST" -threads 2 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$TMP/silent.mp4"
+DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$TMP/silent.mp4"); FO=$(awk "BEGIN{print $DUR-3}")
+ffmpeg -y -loglevel error -i "$TMP/silent.mp4" -i /music/title.wav \
+  -filter_complex "[1:a]atrim=0:$DUR,afade=t=in:st=0:d=2,afade=t=out:st=$FO:d=3[a]" \
+  -map 0:v -map "[a]" -threads 2 -c:v libx264 -preset veryfast -c:a aac -b:a 192k -shortest -movflags +faststart \
+  "$OUT/promo.mp4"
+```
+
+跑法:
+```bash
+# 一次性建工具 image
+docker run --cpus=2 --name vb debian:bookworm-slim bash -c \
+  'apt-get update -qq && apt-get install -y -qq ffmpeg imagemagick fonts-noto-cjk fluidsynth'
+docker commit vb game-video:latest && docker rm vb
+# 合成(限 2 核)
+docker run --rm --cpus=2 -v $PWD/img:/shots:ro -v /tmp/music:/music:ro -v /tmp/out:/out \
+  -v $PWD/make_promo.sh:/make.sh:ro game-video:latest bash /make.sh
+```
+
+---
+
+## 迭代(LLM 看圖)
+合成後 `ffmpeg -ss <t> -i promo.mp4 -frames:v 1 f.png` 抽 3–4 幀**讀圖**,檢查:標題糊不糊、字幕被裁沒、
+配色對不對、黑邊多不多(滿版截圖 vs 中央小圖)、節奏。改 token / 字幕 / 秒數重跑(靜態版很快)。
+字幕對比:深底上的暗紅副標常偏暗,改鎏金/米白更清楚。
+
+## 節奏 / 品味
+- 前段慢(標題 6s)、亮點段 6–8s/張、結尾留長音;整片 60–75s。
+- 截圖保原色只加框;標題鎏金浮雕(暗金陰影 + 主金 + 高光三層)不要螢光黃。
+- 配樂淡入 2s、淡出 3s;音色先 ffprobe 驗證非空白。
+
+## 來源
+工作魔法大帝(Master of Magic)繁中推廣片 2026-06-28:zoompan 幀數爆炸燒 8 分鐘 CPU、改靜態+fade 秒成;
+配樂用 remake 的 `music.lbx` XMI #104 + `TimGM6mb.sf2` fluidsynth 離線算(乾淨可重現)。
+配 `rules/93-promo-video-original-assets.md`(素材來源[HARD])、u1-cht `docs/llm-promo-video-pipeline.md`(pipeline 起源)、`retro-game-playtest`(截圖/可玩性)。
