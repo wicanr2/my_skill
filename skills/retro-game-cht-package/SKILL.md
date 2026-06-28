@@ -57,7 +57,7 @@ docker run --rm -v $PWD:/work -w /work debian:12-slim bash scripts/build_windows
   - ⚠️ **絕不單次 `-arch x86_64 -arch arm64 -mmacosx-version-min=...`**:min-version 會餵進 ScummVM configure 版本解析 → 炸 `test: ...integer expression expected`(~line 3228);**ScummVM configure 也沒有 `--extra-cflags/ldflags`**(寫了 "unrecognized option")。所以才要分弧 native + lipo。SDL2 靜態連結 → 無 dylib 要 bundle,lipo 後的 universal binary 自包。
 - 觸發 + 抓回:`gh workflow run build-macos.yml` → `gh run watch <id> --exit-status` → `gh run download <id>`。
 - `scripts/package_macos_local.sh <下載的.app>`:把 TTS 語音 + 你的遊戲資料注入 `.app/Contents/Resources/data/` → full `.app` 到 `dist-all/macos/`(個人自留)。
-- 細節(Gatekeeper `xattr -dr com.apple.quarantine`、APFS DMG Windows 讀不到改 `.tar.gz`、dylibbundler、.dmg 產法)見 `mac-app-cross-pack` skill。⚠️ **關鍵分歧**:`mac-app-cross-pack` 是 **CMake** 遊戲(OpenXcom),`-arch arm64 -arch x86_64` **單次雙弧可行**;**ScummVM 是 autoconf**,單次雙弧會炸 configure 版本解析 → **必須分弧 native 編 + lipo**(本 skill)。同樣「runner 退役 → job queued」雷兩邊都有,對應 rule `42-reference-fidelity`(從會動的 reference 抄現用 runner 標籤)。
+- 細節(Gatekeeper `xattr -dr com.apple.quarantine`、APFS DMG Windows 讀不到改 `.tar.gz`、dylibbundler、.dmg 產法)見 `mac-app-cross-pack` skill。**⚠ 自編 SDL 用 dylibbundler 必踩雷**:from-source SDL 的 install name 是 `@rpath/...`,dylibbundler 解不到會**互動式無限 hang**(CI 卡到 timeout);**務必 `dylibbundler … -s "$PREFIX/lib" </dev/null`**(給搜尋路徑 + fail-fast),見 `mac-app-cross-pack` §1.5。CI 長 hang 別憑記憶換假設,用時間戳逐階段排除(§1.2d)。⚠️ **關鍵分歧**:`mac-app-cross-pack` 是 **CMake** 遊戲(OpenXcom),`-arch arm64 -arch x86_64` **單次雙弧可行**;**ScummVM 是 autoconf**,單次雙弧會炸 configure 版本解析 → **必須分弧 native 編 + lipo**(本 skill)。同樣「runner 退役 → job queued」雷兩邊都有,對應 rule `42-reference-fidelity`(從會動的 reference 抄現用 runner 標籤)。
 
 ## 玩家交付(distribution UX:每包附繁中 使用說明.txt)
 
