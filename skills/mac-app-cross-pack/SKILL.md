@@ -1,6 +1,6 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。
+description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」「dylibbundler 卡住 / 無限 Try again / can't get path for @rpath」「macOS CI hang / 卡 40 分鐘 / timeout」「自編 SDL_image 從源碼編很慢 / dav1d / libjxl」「macos-13 退役 / Intel job 一直 queued / 改 macos-15-intel」「CMake 4 policy version」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。CI 長 hang 定位法見 §1.2d、自編 SDL → dylibbundler `@rpath` 互動 hang [HARD] 見 §1.5。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
@@ -120,6 +120,26 @@ export CFLAGS="-arch $ARCH -mmacosx-version-min=$MIN" CXXFLAGS="$CFLAGS" LDFLAGS
 
 來源:`open-king-bounty-cht` issue #3(brew 換 sdl2-compat 的實戰根因)、`freesynd-cht` `ci/build-sdl2-from-source.sh`(零 mixer codec：引擎用 ADLMIDI + `Mix_HookMusic`)。
 
+### 1.2c 從源碼自編 SDL2(libsdl-org CMake 路線)的三個拖時間 / 卡編譯雷
+
+走 `libsdl-org/SDL_image` 等 **CMake + vendored 子模組**(非上面的 autoconf tarball)自編時,以下三點會讓 CI 從「1 分鐘」變「30 分鐘起跳」或直接 config 失敗:
+
+1. **[HARD] vendored 子模組是巨庫,別 `--recurse-submodules` 全 clone**:`SDL_image` 的 vendored deps 含 **dav1d(AVIF)、libjxl(JPEG-XL)、libavif、libwebp**,全 clone + 編是好幾百 MB / 數十分鐘。remake 通常**只用 PNG**。做法:`git clone --depth 1` 主庫後,**只選擇性 init 真正要的子模組**——
+   ```bash
+   git submodule update --init --depth 1 external/zlib external/libpng   # 只要這兩個
+   ```
+   並在 cmake 關掉其餘 codec:`-DSDL2IMAGE_AVIF=OFF -DSDL2IMAGE_JXL=OFF -DSDL2IMAGE_WEBP=OFF -DSDL2IMAGE_TIF=OFF -DSDL2IMAGE_JPG=OFF -DSDL2IMAGE_PNG=ON`。同理 `SDL_ttf` 只 init `external/freetype` + `-DSDL2TTF_HARFBUZZ=OFF`;`SDL_mixer` 不需 codec 時 `-DSDL2MIXER_WAVPACK=OFF -DSDL2MIXER_GME=OFF`。**實測:選擇性 submodule 後,4 個 SDL 庫在 macOS runner 1 分鐘內全編完。**
+2. **`SDL2MIXER_VORBIS` 是 enum 不是 bool**:填 `ON` 會 config error。要 OGG 用內建 `STB`(免外部庫):`-DSDL2MIXER_VORBIS=STB`;不要 OGG 就連這個都不用開。
+3. **CMake 4.x 拒絕 vendored 老 `cmake_minimum_required`**:freetype 等 vendored dep 的 `cmake_minimum_required(VERSION 3.0)` 在 CMake 4.x 直接報錯。全域加 **`-DCMAKE_POLICY_VERSION_MINIMUM=3.5`** 相容。
+
+### 1.2d [重要] CI 長 hang 怎麼定位——別憑空猜「哪一步慢」
+
+u1-cht 這次卡 40 分鐘,**前後猜錯三次**(以為是 codec 巨庫 → hdiutil → 「只能 brew」),全是憑印象換假設、白繞好幾輪。真正破案靠**時間戳逐階段排除**:
+
+- **每個 build 階段印 `date +%H:%M:%S` + 階段名**(`build_dep` 在 config / build / OK 各印一行)。CI 結束後抓 job log,把時間軸排出來,**快的步驟一個個劃掉,逼出吃掉大半時間的那一步**。本案一看就清楚:4 個 SDL 庫 09:17:09→09:18:04(1 分鐘全完),遊戲也秒編,**剩下 39 分鐘全被 dylibbundler 一步吃掉** → 根因瞬間收斂到 §1.5。
+- **「卡住」要先分類再動手**:是 **build 慢**(CPU 在跑、log 持續吐)、還是 **互動 hang**(log 卡在某行不動、在等 stdin,如 dylibbundler 的「Try again」)、還是 **runner 永遠 queued**(標籤死掉,見「常踩雷」#4)?三者修法完全不同,**先看 log 最後停在哪一行**再下結論,不要直接 `gh run cancel` 了事。
+- **元教訓**:CI hang 不要靠記憶/直覺換假設(「大概是 X 吧」改成「那大概是 Y 吧」),要先建**可觀測訊號**(時間戳)把範圍逼小。對應 `rules/60-feedback-loop-priority`(先建可驗證訊號再下結論)與第一性原理。
+
 ### 1.3 C++14 fallback（Xcode 15 Clang 把 1990s 程式碼弄壞）
 
 Xcode 15.4 的 Clang 預設 C++20，`std::unary_function` / `std::binary_function` C++17 後被移除，**1990s 程式碼會直接 build 不過**。修法：
@@ -162,10 +182,29 @@ lipo -info build/openxcom.app/Contents/MacOS/openxcom
 dylibbundler -od -b \
   -x build/openxcom.app/Contents/MacOS/openxcom \
   -d build/openxcom.app/Contents/Frameworks/ \
-  -p @executable_path/../Frameworks/
+  -p @executable_path/../Frameworks/ \
+  -s "$PREFIX/lib" </dev/null      # ← 自編 SDL 必加,見下方 [HARD]
 ```
 
 `-od` overwrite dir, `-b` copy binaries, `-x` 主 binary, `-d` 目標 Frameworks dir, `-p` rpath prefix。
+
+#### [HARD] 自編 SDL(非 brew)→ dylibbundler 會 **互動式無限 hang**,卡爆整個 CI
+
+**症狀**(u1-cht 2026-06-28 實測,卡 40 分鐘被 timeout 取消):job log 出現無限重複——
+
+```
+/!\ WARNING : can't get path for '@rpath/libSDL2-2.0.0.dylib'
+libSDL2-2.0.0.dylib does not exist. Try again
+libSDL2-2.0.0.dylib does not exist. Try again   ← 無限刷直到 timeout
+```
+
+**根因**:自編(from-source)的 SDL dylib,其 install name 是相對的 `@rpath/libSDL2-2.0.0.dylib`(不是 brew 那種絕對路徑 `/opt/homebrew/lib/...`)。dylibbundler 解不到 `@rpath` 的實體 → **進互動模式問使用者「實體在哪」**;CI 沒有 stdin → 永遠等不到輸入 → 無限「Try again」。**brew 版的 dylib 是絕對路徑故不中招——這正是為何會誤判成「只有 brew 能成功、自編不行」**(實際上自編完全能成,只是 dylibbundler 沒被告知搜尋路徑)。
+
+**修法(兩個都要)**:
+- **`-s "$PREFIX/lib"`**:把自編 prefix 的 lib 目錄加進 dylibbundler 搜尋路徑,讓它自己解到 `@rpath` 實體(`$PREFIX` = 你自編 SDL 系列 `--prefix` / `CMAKE_INSTALL_PREFIX` 的位置)。多個 prefix 就多給幾個 `-s`。
+- **`</dev/null`**:保險絲。萬一仍有某個 dylib 解不到,讓 dylibbundler 讀到 EOF **fail-fast(報錯退出)而非 hang**;CI 立刻紅燈,你看得到根因,不會默默卡 40 分鐘。
+
+**驗證**:打包後拆 `.app/Contents/Frameworks/`,該有 `libSDL2-2.0.0.dylib` 等實體(~2MB 才是真 SDL2,~0.5MB 是 sdl2-compat shim,見 §1.2b);`otool -L Contents/MacOS/<bin> | grep SDL` 應指向 `@executable_path/../Frameworks/`。**Frameworks 是空的 = dylibbundler 根本沒收到 → 在別人機器上一定黑畫面/閃退**。
 
 ### 1.6 .dmg + **.tar.gz 雙保險**
 
@@ -285,11 +324,17 @@ chmod +x /Applications/Game.app/Contents/MacOS/Game
 
 `.dmg` 公版可推 GitHub Releases。`*-with-data.*` 純本機，**絕不推 git**（版權）。
 
-## 三個常踩雷
+## 常踩雷
 
 1. **`bin/game` lipo 失敗**：CMake 直接產 `.app` bundle，binary 在 `app/Contents/MacOS/<name>`，不在 `bin/`。檢查 CMake `set_target_properties(... MACOSX_BUNDLE TRUE)`。
 2. **PowerShell heredoc commit message 中文 parser error**：commit message 含中文時 `git commit -m "..."` 在 PowerShell 5.1 會被 cp950 codec 弄爛，改用 `git commit -F commit_msg.txt`（檔案 UTF-8 BOM）。
 3. **WSL /tmp 跨 session 蒸發**：build 中途如果 WSL session 重啟，`/tmp/mac_inject_*` 全沒。把 build + package 串成一個 bash 指令（用 `&&` 鏈），別分段跑。
+4. **runner 標籤被退役 → job 永遠 queued(不是失敗,是「永遠排不到」)**：
+   - **症狀**:某個 matrix job 一直停在 `queued`、從不轉 `in_progress`,而同一 run 的別的 job 正常跑完。**永遠排隊 ≠ 排隊塞車**:塞車最終會跑;標籤無效則永遠排不到、也不會報錯。看到「卡很久」別只 `gh run cancel` 了事 —— 先查**標籤是否還存在**。
+   - **根因 + 修法**:GitHub 退役了該 runner image。**`macos-13`(Intel)已於 2025-12-04 退役** → 用它的 x86_64 job 永遠 queued。**改用 `macos-15-intel`**(GitHub 給 Intel 的新標籤,撐到約 2027 秋)。`macos-14`+ 一律是 Apple Silicon(arm64)。
+   - **更好的解法 = 本 skill 主路線**:單一 `macos-14` + **universal binary**(`-arch arm64 -arch x86_64`,見 §1.4)一次出雙架構,根本不碰 Intel runner → 對「Intel runner 退役」免疫。會踩 #4 的多半是改用了 per-arch matrix 而非 universal。
+   - **元教訓**:CI 排隊狀態要分清「塞車(會好)」vs「標籤死掉(永遠卡)」。對應 `rules/60-feedback-loop-priority` 與第一性原理。
+5. **dylibbundler 互動 hang 卡爆 CI(自編 SDL)**:見 §1.5 [HARD]。`@rpath` install name 解不到 → 無限「Try again」→ 40 分鐘 timeout。修法 `-s "$PREFIX/lib" </dev/null`。**這是「自編 SDL 在 CI 不行、只能 brew」這個錯誤結論的真正來源**——不是自編不行,是少給了搜尋路徑。
 
 ## 案例（已驗證）
 
