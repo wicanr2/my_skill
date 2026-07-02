@@ -150,6 +150,52 @@ docker run --rm --cpus=2 -v $PWD/img:/shots:ro -v /tmp/music:/music:ro -v /tmp/o
 - 對白卡可附**英文原文小字**(中文大、英文小灰)——秀翻譯又有層次。
 > 判斷:抽 4 幀做 montage 讀圖,若四格「長得都一樣」就是還太單調,回去換版面/配色。
 
+## 每片一個 theme:從遊戲本身萃取風格(避免部部同款 — 重要)
+
+> 「版面變化」解決**一部片內**的單調;本節解決**片與片之間**長得一樣。
+> 鐵則:**設計 token 不准沿用上一部片的**。每片開拍前先跑一次「theme 萃取」,產出這部片專屬的 `theme.sh`。
+
+### 1. Token 從遊戲本身來(不是憑喜好挑)
+
+| Token | 來源 | 萃取法 |
+|---|---|---|
+| 背景漸層兩端色 | 實機截圖的 dominant colors | `convert shot.png -resize 100x100 -colors 8 -depth 8 -format %c histogram:info:- \| sort -rn` → 取像素數多且**最暗**者做深端,次暗做淺端 |
+| accent 色(標題/框線) | 遊戲 UI / logo 的強調色 | 同上 histogram 取**飽和度最高**者;或直接吸 logo 主色 |
+| 文字色 | 截圖中的字幕/亮色 | 取最亮的非白色;確保與背景對比夠 |
+| 標題字體氣質 | 遊戲文類+時代 | 西方奇幻→Serif;科幻/賽博→Sans 或等寬;日系/童話→圓體;軍事/硬派→heavy Bold;喜劇可 Serif+傾斜註記 |
+| 版面母題(motif) | 遊戲 UI 元素 | 借遊戲的框:羊皮紙捲軸、魔法陣、軍規檔案框線、CRT 掃描線、石雕邊框——用 IM 畫進 `bg()`/`card()` |
+| 節奏(每段秒數) | 文類 | 喜劇 4–5s 快切+對白卡多;史詩 7–8s 長鏡頭;恐怖 變速(長靜+短突) |
+| 轉場 dip 色 | 主題色 | fade 不一定過黑——dip-to-color 用背景深端色,整片色調統一 |
+
+### 2. theme.sh 檔案化(換遊戲=寫 theme,不動 pipeline)
+
+把 make_promo.sh 頂部的 token 區抽成獨立 `theme.sh`,合成腳本 `source` 它:
+```bash
+# theme.sh — 每片一份,給 theme 取個名字錨定決策(如「羊皮紙與墨水」「軍規檔案」「星圖藍」)
+THEME_NAME="羊皮紙與墨水"
+BG_DEEP='#1a1006'; BG_LITE='#3a2a12'; ACCENT='#b8860b'; TEXT='#f4e8c8'; DIM='#8a7a5a'
+FONT_TITLE=...Serif...; FONT_BODY=...
+PACE_CARD=5; PACE_CLIP=8            # 節奏
+MOTIF=scroll                        # bg()/card() 依此畫母題
+```
+
+### 3. 敘事結構庫(選一個「和上一部不同」的骨架)
+
+| 骨架 | 結構 | 適合 |
+|---|---|---|
+| A 工程敘事 | 問題→解法→證據→CTA | 中文化/修復類(Simon 用過) |
+| B 世界觀巡禮 | 場景輪播+一句世界觀/張 | 畫面美、地圖大的遊戲 |
+| C 對白精選輯 | 對白卡為主、截圖為輔 | 喜劇/文字冒險 |
+| D 前後對照 | 原版 vs 新版 split/交替 | remake、HD 化、漢化 |
+| E live 混剪 | 實機錄影當主角、字卡穿插 | 有 x11grab 錄影的 |
+
+### 4. 差異化驗收(硬條件)
+
+- 開拍前寫下「與上一部片的差異至少 3 項」(配色來源、母題、節奏、敘事骨架任選)。
+- 完成後:新舊兩部各抽 4 幀 montage **並排看**——若認不出是兩部不同的片=失敗,回去換 theme。
+- 反例教訓:MoM(深紫鎏金/魔法史詩)之後 Simon 直接沿用紫金模板,被使用者點名「千篇一律」。
+  Simon 該用的是自己的 theme:英式喜劇→羊皮紙暖木色+快切+對白卡為主(骨架 C/E)。
+
 ## SDL disk-audio 錄原版遊戲音樂當 BGM(補雷 #3)
 SDL 遊戲用 `SDL_AUDIODRIVER=disk` 錄原版音樂時兩個雷:
 1. **`SDL_DISKAUDIODELAY=0` = 全速輸出、非即時**:mixer 以 CPU 全速跑,55s wall-clock 可灌出**數小時**音訊、檔案數 GB,音高正確但「量」爆炸。→ 錄完**掃描整段找有聲窗**(逐 30s `ffmpeg volumedetect` 看 mean_volume,**別假設音樂在前 N 秒**;實例:前 80s 全 -91dB 靜音,音樂在 7900s+),截 60–75s 當 BGM,再刪 GB 大檔。
