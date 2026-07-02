@@ -83,6 +83,7 @@ $j.items | ForEach-Object {
 |------|------|
 | [`40-learning-loop`](rules/40-learning-loop.md) | 探索/除錯/重構的 learning loop:定義 goal/constraint/可驗證成功標準,先做最小測試,每輪更新假設,先驗證再下結論 |
 | [`42-reference-fidelity`](rules/42-reference-fidelity.md) | 參考保真度:使用者指定「參考 X 專案」時,動手前先讀 X 的實際設定、逐項照抄其 proven values(runner 版本/依賴/旗標),偏離要有講得出口的理由;外部版本標籤(CI runner image 等)會退役不能憑記憶寫死;「CI job queued 很久+執行 0s」=runner 標籤退役非程式 bug。源自沒抄 willy 的 macos-14 寫成退役 macos-13 卡死 |
+| [`45-model-cost-division-of-labor`](rules/45-model-cost-division-of-labor.md) | 模型成本分工:貴模型留給判斷/寫作,對碼核實/盤點/grep 比對等粗活用便宜模型(`/model` 切換或 sub-agent 指定 `model: haiku/sonnet`);不預設 fan-out review agent;筆記寫到「夠用」就停(長尾登 PLAN 被動維護);review 文件抽可驗證斷言回 code grep(配 `63`) |
 | [`50-ubiquitous-language`](rules/50-ubiquitous-language.md) | DDD ubiquitous language:每個 repo 維護 `CONTEXT.md` 術語表,人與 agent 共用同一套詞,降低 verbosity 與返工 |
 | [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
 | [`62-static-provenance-trace`](rules/62-static-provenance-trace.md) | 靜態溯源紀律:問「這值/設定/字串從哪來」別反射性下「封死/要動態/看不出來」——錨定實例→找 sink→運算元反向追到靜態源(表/header 欄位/config);搜尋落空=換 query 非不存在;動態手段只留給真正 runtime-only。`60` 的互補(查來源 vs 驗修法) |
@@ -130,6 +131,8 @@ my_skill/
 ├── README.md
 ├── rules/                          # 通用工作方法論 (放 ~/.claude/rules/)
 │   ├── 40-learning-loop.md
+│   ├── 42-reference-fidelity.md
+│   ├── 45-model-cost-division-of-labor.md
 │   ├── 50-ubiquitous-language.md
 │   ├── 60-feedback-loop-priority.md
 │   ├── 63-truth-in-code-not-stale-markers.md
