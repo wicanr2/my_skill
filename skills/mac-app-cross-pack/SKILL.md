@@ -1,6 +1,6 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」「dylibbundler 卡住 / 無限 Try again / can't get path for @rpath」「macOS CI hang / 卡 40 分鐘 / timeout」「自編 SDL_image 從源碼編很慢 / dav1d / libjxl」「macos-13 退役 / Intel job 一直 queued / 改 macos-15-intel」「CMake 4 policy version」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。CI 長 hang 定位法見 §1.2d、自編 SDL → dylibbundler `@rpath` 互動 hang [HARD] 見 §1.5。
+description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」「dylibbundler 卡住 / 無限 Try again / can't get path for @rpath」「macOS CI hang / 卡 40 分鐘 / timeout」「自編 SDL_image 從源碼編很慢 / dav1d / libjxl」「macos-13 退役 / Intel job 一直 queued / 改 macos-15-intel」「CMake 4 policy version」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。CI 長 hang 定位法見 §1.2d、自編 SDL → dylibbundler `@rpath` 互動 hang [HARD] 見 §1.5。另涵蓋「`error: unrecognized option: CXXFLAGS=-arch`(ScummVM configure 非 autoconf,flags 走 env-var)」見 §1.2、「universal binary 但 Frameworks SDL2 是單弧/非-fat(per-arch+lipo 後 dylibbundler 只抓一弧)→ 改手動 bundle + 雙弧斷言」見 §1.5。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
@@ -99,7 +99,9 @@ for pkg in SDL-${SDL_VER} SDL_image-${IMG_VER} SDL_mixer-${MIX_VER} SDL_gfx-${GF
 done
 ```
 
-**Universal Binary**：`-arch arm64 -arch x86_64` 一次餵兩個 target，產生的 dylib `lipo` 能看到兩 slice。⚠️ **這招只對 CMake / 直接吃 CFLAGS 的 build 有效**。**autoconf 專案(尤其 ScummVM)單次雙弧會炸** configure 版本解析(`-mmacosx-version-min` 餵進去 → `integer expression expected`),那邊要改成「**每弧 native 各編一次 + `lipo -create` 合併**」——見 `retro-game-cht-package` skill(patched-ScummVM 漢化三平台打包)。
+**Universal Binary**：`-arch arm64 -arch x86_64` 一次餵兩個 target，產生的 dylib `lipo` 能看到兩 slice。⚠️ **這招只對 CMake / 直接吃 CFLAGS 的 build 有效**。**autoconf 專案(尤其 ScummVM)單次雙弧會炸** configure 版本解析(`-mmacosx-version-min` 餵進去 → `integer expression expected`),那邊要改成「**每弧 native 各編一次 + `lipo -create` 合併**」(x86_64 弧在 Apple Silicon runner 上走 `arch -x86_64` Rosetta,arch 值須與 runner 一致)——見 `retro-game-cht-package` skill(patched-ScummVM 漢化三平台打包)。
+
+> **[HARD] ScummVM 的 `configure` 不是 autoconf,`CXXFLAGS`/`LDFLAGS` 只能走環境變數,不能當 `KEY=VALUE` 位置參數。** 它是手寫 shell script,開頭 `SAVED_CXXFLAGS=$CXXFLAGS` 從環境讀;把 `CXXFLAGS="-arch arm64" ./configure ...` 當**引數**傳會直接 `error: unrecognized option: CXXFLAGS=-arch`。正解:`CXXFLAGS="-arch $arch -mmacosx-version-min=$MIN" LDFLAGS="..." ./configure --enable-engine=... --with-sdl-prefix=...`(flags 放前綴)。**同一輪腳本裡 SDL2 是 autoconf,`CFLAGS=... LDFLAGS=...` 當引數吃得下** → 很容易誤以為 ScummVM 也吃、SDL2 過了卻卡在 ScummVM configure。Linux 端先驗一次 patch 套用+configure(用 Linux-valid flag 如 `-O2` 代 `-arch`)可提前抓到這個介面差異,省一輪 mac runner。
 
 ### 1.2b SDL2 也別用 brew（sdl2-compat → SDL3 雷，[HARD]）
 
@@ -205,6 +207,24 @@ libSDL2-2.0.0.dylib does not exist. Try again   ← 無限刷直到 timeout
 - **`</dev/null`**:保險絲。萬一仍有某個 dylib 解不到,讓 dylibbundler 讀到 EOF **fail-fast(報錯退出)而非 hang**;CI 立刻紅燈,你看得到根因,不會默默卡 40 分鐘。
 
 **驗證**:打包後拆 `.app/Contents/Frameworks/`,該有 `libSDL2-2.0.0.dylib` 等實體(~2MB 才是真 SDL2,~0.5MB 是 sdl2-compat shim,見 §1.2b);`otool -L Contents/MacOS/<bin> | grep SDL` 應指向 `@executable_path/../Frameworks/`。**Frameworks 是空的 = dylibbundler 根本沒收到 → 在別人機器上一定黑畫面/閃退**。
+
+#### [HARD] per-arch+lipo 路線:dylibbundler 會把 universal binary 的 SDL2 退化成**單弧非-fat**
+
+「每弧各編一次 + lipo」(§1.2 的 autoconf/ScummVM 路線)時,兩弧各自 `--with-sdl-prefix` 指向**不同** prefix(`sdl-arm64` / `sdl-x86_64`),所以 lipo 後的 universal `scummvm` **兩個 slice 各自參照不同的 SDL2 載入路徑**。dylibbundler 只會解析並複製其中**一弧的非-fat dylib** → 主 binary 是 universal,但 `Frameworks/libSDL2-2.0.0.dylib` 卻是 **x86_64(或 arm64)單弧** → 另一半使用者一開就閃退。**CI 只查「有沒有 dylib / 是不是 shim」會綠燈放行,查不到這個。**
+
+**修法:這條路線別用 dylibbundler,改手動 bundle(SDL2 通常是唯一非系統 dylib,png/freetype/vorbis 全關掉時)**:
+```bash
+# 1) 先 lipo 出 universal SDL2 放進 Frameworks
+lipo -create "$SDL_ARM/lib/libSDL2-2.0.0.dylib" "$SDL_X86/lib/libSDL2-2.0.0.dylib" -output "$FW"
+install_name_tool -id "@executable_path/../Frameworks/libSDL2-2.0.0.dylib" "$FW"
+# 2) 對主 binary 的兩個舊 prefix 路徑各 -change 一次(每次只改到對應 slice)
+install_name_tool -change "$SDL_ARM/lib/libSDL2-2.0.0.dylib" "@executable_path/../Frameworks/libSDL2-2.0.0.dylib" MacOS/scummvm
+install_name_tool -change "$SDL_X86/lib/libSDL2-2.0.0.dylib" "@executable_path/../Frameworks/libSDL2-2.0.0.dylib" MacOS/scummvm
+# 3) install_name_tool 改過必須 ad-hoc 重簽,否則載入/Gatekeeper 失敗
+codesign --force --sign - "$FW"; codesign --force --sign - MacOS/scummvm
+```
+
+**驗證要斷言「雙弧」,不能只查存在**:`lipo -info` 對**主 binary 與 Frameworks 內 SDL2 都要**看到 `arm64` 且 `x86_64`,任一非雙弧就 `exit 1`;再 `otool -L MacOS/scummvm` 確認無殘留 build 期絕對路徑(`_macbuild`/`sdl-arm64` 之類)。這道防呆就是擋「CI 綠燈但玩家端壞掉」的關鍵。
 
 ### 1.6 .dmg + **.tar.gz 雙保險**
 
