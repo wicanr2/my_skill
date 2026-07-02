@@ -91,6 +91,7 @@ $j.items | ForEach-Object {
 | [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 老遊戲（1990s 經典）繁中化專案 README 三層 voice register（Hero 信 / Magazine 編輯人聲 / Technical 工程文件）+ 1990s 雜誌風 SOP + 譯名考古感 + TOC sync checklist。萃取自 openxcom-cht v2.27 review。 |
 | [`82-cross-platform-port-verification`](rules/82-cross-platform-port-verification.md) | 跨平台打包(Linux/Win/macOS/Android)驗證紀律:目標平台先自己重現(Win→Wine,別先要 backtrace)、驗實際打包產物、缺資料 NULL-safe 回退;6 類分歧雷(log 嚴重度因平台異/相對路徑雙重前綴/能跑的變體遮 bug/唯讀 cwd/編譯器嚴格度/CI 架構)+ Wine·verbose flag·addr2line 手法 |
 | [`83-retro-completeness-over-roi`](rules/83-retro-completeness-over-roi.md) | 老遊戲素材抽取/移植[HARD]:完整性>投報(文物保存不能談 ROI),不預先砍版本/資產、卡關記錄方法續做別寫「低投報」;**別漏看資產檔**——同類檔先 `strings EXE\|grep ext` 列舉全(別假設單檔含全部:漏一個檔=子系統用錯來源還報「完成」) |
+| [`84-scummvm-talkie-cht-fusion`](rules/84-scummvm-talkie-cht-fusion.md) | ScummVM/AGOS talkie 老遊戲繁中化(Simon/Feeble/Waxworks):[HARD] 先驗來源版本字幕完整度(talkie 版常缺字幕→用 floppy 完整文字+CD 語音融合)、注入以行 id 為 key(非英文比對,救語音-only 行)、重用引擎內建反組譯器對齊兩版、DOSBox-in-docker 目錄熱抽換跑原版安裝解自訂壓縮、CJK 24px 加大引擎文字緩衝、硬編碼 UI 加 ZH 分支 |
 | [`86-proposal-writing`](rules/86-proposal-writing.md) | 研究/技術計畫書撰寫:定位先行(可否證主張+假說)、範圍誠實、標準結構、評估協議、文獻真實性(WebSearch 驗 arxiv/DOI 不憑記憶)、對照原始碼校正、中文不夾雜、執行摘要;多 agent 分章節 + md→docx pipeline |
 | [`90-plain-language`](rules/90-plain-language.md) | 白話寫作七準則:結論先行(BLUF)、短句常用詞、術語即時翻譯、具體勝抽象、數據配「所以呢」、自然不貼標籤、不犧牲正確性。對外/客戶/管理層文件逐條套 |
 | [`91-deslop-ai-writing`](rules/91-deslop-ai-writing.md) | 去 AI 味反面清單:AI 詞黑名單、copula 迴避、權威揭示腔、格言公式、粗體列表症、filler/hedging;draft→audit→final 去 slop 審查 loop + 防改過頭的 false-positive 清單。來源 Wikipedia「Signs of AI writing」 |
@@ -136,6 +137,7 @@ my_skill/
 │   ├── 80-retro-cht-readme-polish.md
 │   ├── 82-cross-platform-port-verification.md
 │   ├── 83-retro-completeness-over-roi.md
+│   ├── 84-scummvm-talkie-cht-fusion.md
 │   ├── 86-proposal-writing.md
 │   ├── 90-plain-language.md
 │   └── 91-deslop-ai-writing.md

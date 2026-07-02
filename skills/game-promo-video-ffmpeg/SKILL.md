@@ -1,6 +1,6 @@
 ---
 name: game-promo-video-ffmpeg
-description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成成 60–75 秒推廣短片 / trailer。內建本人用時間換來的硬地雷:**ffmpeg zoompan 幀數爆炸(燒滿 CPU 8 分鐘)**、CPU 控制(--cpus / 預建工具 image / veryfast / 靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改用靜態截圖、docker 內字型/IM policy 雷。觸發:「做推廣片/trailer/宣傳片」「把截圖+配樂合成影片」「ffmpeg 做投影片」「Ken Burns」「遊戲介紹影片」「promo video」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」。配 rulebook/93(配樂用原版真實素材的[HARD]鐵則)+ 各專案 docs/llm-promo-video-pipeline.md。
+description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成成 60–75 秒推廣短片 / trailer。內建本人用時間換來的硬地雷:**ffmpeg zoompan 幀數爆炸(燒滿 CPU 8 分鐘)**、CPU 控制(--cpus / 預建工具 image / veryfast / 靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改用靜態截圖、docker 內字型/IM policy 雷。觸發:「做推廣片/trailer/宣傳片」「把截圖+配樂合成影片」「ffmpeg 做投影片」「Ken Burns」「遊戲介紹影片」「promo video」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」。配 rules/93(配樂用原版真實素材的[HARD]鐵則)+ 各專案 docs/llm-promo-video-pipeline.md。
 ---
 
 # game-promo-video-ffmpeg — 腳本化遊戲推廣片合成(地雷優先)
@@ -48,7 +48,7 @@ description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)
 - **長 docker run 會被 harness 自動轉背景**;跑壞要 `docker ps -q --filter ancestor=<img> | xargs -r docker kill` 收掉,
   別讓爆炸的容器在背景燒。**有界**:`timeout` 包起來。
 
-### 3. [HARD] 配樂用原版/遊戲真實音訊,不自產(見 rulebook/93)
+### 3. [HARD] 配樂用原版/遊戲真實音訊,不自產(見 rules/93)
 **MIDI + SoundFont 的遊戲(如 Ebiten/Go 引擎)**:別 live 錄(Ebiten 非 SDL,沒 `SDL_AUDIODRIVER=disk`;
 xvfb 又沒音效卡)。**離線抽 + fluidsynth 算**最乾淨、可重現、音色一模一樣:
 1. 用引擎自己的 reader 把曲目的 **XMI/MIDI 抽成標準 .mid**(例:`xmi.ReadMidiFromCache(cache,"music.lbx",idx)` →
@@ -140,7 +140,24 @@ docker run --rm --cpus=2 -v $PWD/img:/shots:ro -v /tmp/music:/music:ro -v /tmp/o
 - 截圖保原色只加框;標題鎏金浮雕(暗金陰影 + 主金 + 高光三層)不要螢光黃。
 - 配樂淡入 2s、淡出 3s;音色先 ffprobe 驗證非空白。
 
+## 版面變化(避免千篇一律 — 重要)
+單一「漸層底 + 置中小截圖 + 底部字幕」重複 12 段會很單調。**準備 5–6 種版面函式輪流用**:
+- **分幕配色**:依敘事段落換背景主題(intro 紫 / 問題 暗紅 / 解法 青綠 / 展示 / 結尾金),同一 `bg()` 吃 `theme` 參數。
+- **滿版截圖 `slide_full`**(`-resize WxH^ -extent` 填滿 + 下三分之一字幕條)vs **框內截圖 `slide_frame`**(金框置中)——兩者交替,別全用同一種。
+- **大引號對白卡 `dcard`**:左對齊 + 巨型半透明引號 `"` + 場景標,和「置中標題卡 `card`」明顯不同視覺。
+- **前後對比 `split_ba`**:左右分割(中文 | 英文,中間金色 F8 + ◀▶),秀「切換」類功能超直觀。
+- **一兩段 Ken Burns 動態**穿插在靜態之間(用單幀安全法,見雷 #1),讓節奏有呼吸;不要全片靜止也不要全片都動。
+- 對白卡可附**英文原文小字**(中文大、英文小灰)——秀翻譯又有層次。
+> 判斷:抽 4 幀做 montage 讀圖,若四格「長得都一樣」就是還太單調,回去換版面/配色。
+
+## SDL disk-audio 錄原版遊戲音樂當 BGM(補雷 #3)
+SDL 遊戲用 `SDL_AUDIODRIVER=disk` 錄原版音樂時兩個雷:
+1. **`SDL_DISKAUDIODELAY=0` = 全速輸出、非即時**:mixer 以 CPU 全速跑,55s wall-clock 可灌出**數小時**音訊、檔案數 GB,音高正確但「量」爆炸。→ 錄完**掃描整段找有聲窗**(逐 30s `ffmpeg volumedetect` 看 mean_volume,**別假設音樂在前 N 秒**;實例:前 80s 全 -91dB 靜音,音樂在 7900s+),截 60–75s 當 BGM,再刪 GB 大檔。
+2. **音樂驅動要明確指定否則靜音**:引擎 headless 預設可能選 null MIDI → 只有稀疏 sfx。ScummVM AGOS 要 `-e adlib --music-volume=255` 才出音樂。
+
 ## 來源
+魔法師西蒙(Simon)CD×Floppy 融合繁中推廣片 2026-07:多版面(分幕配色/滿版/框內/大引號/F8 前後對比/Ken Burns)破除單調;
+配樂用 SDL `disk` 錄原版 AdLib 音樂(`-e adlib`,全速灌爆需掃描找有聲窗)。
 工作魔法大帝(Master of Magic)繁中推廣片 2026-06-28:zoompan 幀數爆炸燒 8 分鐘 CPU、改靜態+fade 秒成;
 配樂用 remake 的 `music.lbx` XMI #104 + `TimGM6mb.sf2` fluidsynth 離線算(乾淨可重現)。
 配 `rules/93-promo-video-original-assets.md`(素材來源[HARD])、u1-cht `docs/llm-promo-video-pipeline.md`(pipeline 起源)、`retro-game-playtest`(截圖/可玩性)。
