@@ -20,20 +20,23 @@
 
 ## Skills
 
+> 指向 `knowledge-base/retro-cht/…` 的列是**已降級的按需資產**(遊戲/retro 中文化類):不自動載入,由 [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) router 依觸發表指路,以壓低 `~/.claude` 每 session 的常駐 token;指向 `skills/…` 的才是常駐 skill。
+
 | Skill | 用途 | 觸發時機 |
 |-------|------|----------|
+| [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) | 逆向工程 + 老遊戲中文化/移植/remake 的**按需路由**:把 14 個遊戲/retro 資產(已降級為 `knowledge-base/retro-cht/`)與 retro craft rules 依觸發表指路,只留 1 個常駐入口省 token | 「逆向工程」「老遊戲中文化/移植/remake」「特定遊戲(火龍之戰/Zak/孟波/裝甲元帥…)」「game tester」「做遊戲推廣片」「ESC/F10 離開鍵」「Mac DMG 打包」「COCOMO 工時估算」 |
 | [`kneron-edge-ai-integration`](skills/kneron-edge-ai-integration/SKILL.md) | **階層式** 把 YOLO/物件偵測整合部署到耐能 Kneron NPU (KL730/720) 的 SOP + 必踩雷:量化崩潰根因 (raw-logit 須用 mmse 非 percentage=1.0)、kneron-mmdetection docker 6 坑、ONNX→NEF、decode+NMS、逐 channel 驗收、記憶體/CPU 上限。SKILL.md 精簡+三大致命雷,references/ 4 檔按需讀 | 「YOLO 跑在耐能/Kneron NPU」「KL730/KL720 部署」「ONNX 轉 NEF」「NPU 量化後輸出全 0/崩潰」「kneron-mmdetection 環境」「edge AI 晶片整合物件偵測」 |
 | [`github-weekly-radar`](skills/github-weekly-radar/SKILL.md) | 每週彙整 GitHub 近期重要**新**專案 + senior-PM 重要性評估 | 「這週 github 重要新專案」「新 repo 週報」「trending 摘要」 |
-| [`cocomo-estimate`](skills/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
-| [`classic-mac-c-game-sdl-port`](skills/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
-| [`qb64pe-game-linux-port`](skills/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
-| [`dragon-wars-cht-remake`](skills/dragon-wars-cht-remake/SKILL.md) | 《火龍之戰》(Dragon Wars, 1989)繁中化 + C++20/SDL2 重寫:用 opendw 當 oracle 做逐指令差異測試、DATA1/DATA2 資產萃取(5-bit 文字/Huffman/場景圖去交錯)、CJK 渲染、Read Paragraph 防拷 | 「火龍之戰」「Dragon Wars」「opendw」「opendw_remake」「火龍之戰中文化」 |
-| [`panzer-general-wine`](skills/panzer-general-wine/SKILL.md) | 在 wine 跑《裝甲元帥》(Panzer General, Borland Pascal Win95) 完整解法:256 色 bypass(自製 `pgs.dll` PE forwarder)+ 兩個 nil-deref PE patch + 中文字型 substitute + Windows 端 `WING32.dll` 打包 | 「PG」「Panzer General」「裝甲元帥」「256 色才能執行」「exNilPtr」「缺 WING32.dll」 |
-| [`zak-fmtowns-zhtw`](skills/zak-fmtowns-zhtw/SKILL.md) | 《Zak McKracken》(FM-Towns) 繁中化完整 SOP:`scummtr -r` raw + CRLF 突破 CJK、ScummVM 8 處 patch 走 ZH_CHN 12×12 GBK 字型路徑、WQY 點陣字、GBK 0x5C escape transformer | 「Zak McKracken」「scummtr 不認 CJK」「Unknown function id 0xAB」「FM-Towns 中文」「chinese_gb16x12.fnt」 |
-| [`rise-of-the-dragon-cht`](skills/rise-of-the-dragon-cht/SKILL.md) | ScummVM **DGDS 引擎**老遊戲(Rise of the Dragon / Heart of China / Willy Beamish)繁中化 + 全平台 ship 完整 SOP:engine-side overlay 攔截繪字→查表→點陣 CJK 疊 hi-res;三繪字路徑、DDS 對白(動態版本述詞通吃 1.211/1.216/1.224)、TTM 持久層(STORE AREA 模型)、名牌剝除+矮牌置中 clamp、對話框溢出自動長高、第二編碼字型(Big5+SJIS 共存)= 日文 F8 字幕模式(whisper 聽寫 Sega CD 日配)、時代雜誌攻略當術語 oracle、文化在地化、Windows/macOS/Android 全平台打包 | 「Rise of the Dragon」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「對話名牌英文」「威利奇遇記」「Willy Beamish」「TTM 字串」「Android APK 注入」「日文字幕/F8」「全平台 ship」 |
+| [`cocomo-estimate`](knowledge-base/retro-cht/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
+| [`classic-mac-c-game-sdl-port`](knowledge-base/retro-cht/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows 移植 + 中文化(含 CF prototype 截斷等六大雷) | 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化 |
+| [`qb64pe-game-linux-port`](knowledge-base/retro-cht/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
+| [`dragon-wars-cht-remake`](knowledge-base/retro-cht/dragon-wars-cht-remake/SKILL.md) | 《火龍之戰》(Dragon Wars, 1989)繁中化 + C++20/SDL2 重寫:用 opendw 當 oracle 做逐指令差異測試、DATA1/DATA2 資產萃取(5-bit 文字/Huffman/場景圖去交錯)、CJK 渲染、Read Paragraph 防拷 | 「火龍之戰」「Dragon Wars」「opendw」「opendw_remake」「火龍之戰中文化」 |
+| [`panzer-general-wine`](knowledge-base/retro-cht/panzer-general-wine/SKILL.md) | 在 wine 跑《裝甲元帥》(Panzer General, Borland Pascal Win95) 完整解法:256 色 bypass(自製 `pgs.dll` PE forwarder)+ 兩個 nil-deref PE patch + 中文字型 substitute + Windows 端 `WING32.dll` 打包 | 「PG」「Panzer General」「裝甲元帥」「256 色才能執行」「exNilPtr」「缺 WING32.dll」 |
+| [`zak-fmtowns-zhtw`](knowledge-base/retro-cht/zak-fmtowns-zhtw/SKILL.md) | 《Zak McKracken》(FM-Towns) 繁中化完整 SOP:`scummtr -r` raw + CRLF 突破 CJK、ScummVM 8 處 patch 走 ZH_CHN 12×12 GBK 字型路徑、WQY 點陣字、GBK 0x5C escape transformer | 「Zak McKracken」「scummtr 不認 CJK」「Unknown function id 0xAB」「FM-Towns 中文」「chinese_gb16x12.fnt」 |
+| [`rise-of-the-dragon-cht`](knowledge-base/retro-cht/rise-of-the-dragon-cht/SKILL.md) | ScummVM **DGDS 引擎**老遊戲(Rise of the Dragon / Heart of China / Willy Beamish)繁中化 + 全平台 ship 完整 SOP:engine-side overlay 攔截繪字→查表→點陣 CJK 疊 hi-res;三繪字路徑、DDS 對白(動態版本述詞通吃 1.211/1.216/1.224)、TTM 持久層(STORE AREA 模型)、名牌剝除+矮牌置中 clamp、對話框溢出自動長高、第二編碼字型(Big5+SJIS 共存)= 日文 F8 字幕模式(whisper 聽寫 Sega CD 日配)、時代雜誌攻略當術語 oracle、文化在地化、Windows/macOS/Android 全平台打包 | 「Rise of the Dragon」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「對話名牌英文」「威利奇遇記」「Willy Beamish」「TTM 字串」「Android APK 注入」「日文字幕/F8」「全平台 ship」 |
 | [`retro-game-cht-package`](skills/retro-game-cht-package/SKILL.md) | patched-ScummVM/SDL2 老遊戲漢化 → **三平台打包**:Linux 單檔 AppImage(slim 自備遊戲/full 內嵌開箱即玩)、Windows docker mingw cross(自編 SDL2 靜態、force LE 繞端序、objdump 遞迴收 DLL、zip)、macOS GitHub Actions(**autoconf 不能單次雙弧** → macos-14 + macos-15-intel 分弧 native 編 + lipo universal)。含 slim/full 版權切分、每包附繁中 使用說明.txt(SmartScreen/FUSE/quarantine 首跑雷)、`.app` 用 tar.gz | 「打包這個中文化」「Windows/AppImage/macOS 三平台」「docker mingw cross」「自編 SDL2」「Checking endianness unknown」「macos universal/Intel」「app 已損毀無法打開」「dist-all」 |
-| [`retro-game-remake`](skills/retro-game-remake/SKILL.md) | **階層式**老遊戲(CRPG)RE+乾淨重製方法論:反編當 oracle、破格式、FM Towns 美術/CDDA/EUP 音樂考古、CJK 重寫、headless 可破關+**連通分量可達性**驗證、Docker 跨平台+Mac CI 打包、引擎/資料分離。SKILL.md 精簡+踩雷,references/ 6 檔按需讀 | 「重製/反組譯/中文化老遊戲」「破解遊戲資料格式」「抽 FM Towns/DOS 美術音樂」「u2-cht/u3-cht/u6-cht/Ultima」 |
-| [`game-promo-video-ffmpeg`](skills/game-promo-video-ffmpeg/SKILL.md) | 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成 60–75 秒推廣短片;內建硬雷:**zoompan 幀數爆炸(燒滿 CPU)**、CPU 控制(--cpus/預建 image/veryfast/靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改靜態截圖、docker 字型/IM policy 雷;附 CPU-safe make.sh 骨架。配 `rules/93`(配樂用原版[HARD]) | 「做推廣片/trailer/宣傳片」「截圖+配樂合成影片」「ffmpeg 投影片/Ken Burns」「遊戲介紹影片」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」 |
+| [`retro-game-remake`](knowledge-base/retro-cht/retro-game-remake/SKILL.md) | **階層式**老遊戲(CRPG)RE+乾淨重製方法論:反編當 oracle、破格式、FM Towns 美術/CDDA/EUP 音樂考古、CJK 重寫、headless 可破關+**連通分量可達性**驗證、Docker 跨平台+Mac CI 打包、引擎/資料分離。SKILL.md 精簡+踩雷,references/ 6 檔按需讀 | 「重製/反組譯/中文化老遊戲」「破解遊戲資料格式」「抽 FM Towns/DOS 美術音樂」「u2-cht/u3-cht/u6-cht/Ultima」 |
+| [`game-promo-video-ffmpeg`](knowledge-base/retro-cht/game-promo-video-ffmpeg/SKILL.md) | 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成 60–75 秒推廣短片;內建硬雷:**zoompan 幀數爆炸(燒滿 CPU)**、CPU 控制(--cpus/預建 image/veryfast/靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改靜態截圖、docker 字型/IM policy 雷;附 CPU-safe make.sh 骨架。配 `rules/93`(配樂用原版[HARD]) | 「做推廣片/trailer/宣傳片」「截圖+配樂合成影片」「ffmpeg 投影片/Ken Burns」「遊戲介紹影片」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
@@ -41,14 +44,14 @@
 | [`vercel-sandbox`](skills/vercel-sandbox/SKILL.md) | 在 Vercel Sandbox microVM 內跑 agent-browser + Chrome | 「Vercel Sandbox browser」「microVM Chrome」 |
 | [`prompt-master`](skills/prompt-master/SKILL.md) | 為任何 AI 工具生成優化 prompt(LLM/Cursor/Midjourney/coding agent) | 「寫/改/優化 prompt」 |
 | [`english-prompt-coach`](skills/english-prompt-coach/SKILL.md) | user 用英文下 prompt 時,任務前附 (1) 自然改寫版 (2) 中文修正解析表,當日常英文寫作練習;ON/OFF toggle 跨 session 沿用 | 「start coaching」「開始 coach」「再幫我看英文」「stop coaching」 |
-| [`ascii-matrix-scene`](skills/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
+| [`ascii-matrix-scene`](knowledge-base/retro-cht/ascii-matrix-scene/SKILL.md) | 全螢幕終端 ASCII art 動畫(Matrix 雨 + 3D turnaround + sprite 縱隊) | 「做 ASCII 動畫」「matrix 風格」「終端螢幕保護」 |
 | [`organize-folder`](skills/organize-folder/SKILL.md) | 整理目錄為「客戶→類型」兩層結構 + 機密辨識(pem/key/token→機密區) | 「整理 XX 目錄」「重組資料夾」「歸位散落檔案」 |
-| [`mac-app-cross-pack`](skills/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」「`unrecognized option: CXXFLAGS=-arch`」「Frameworks SDL2 單弧/非-fat」 |
+| [`mac-app-cross-pack`](knowledge-base/retro-cht/mac-app-cross-pack/SKILL.md) | 不用 Mac 開發機 ship macOS universal `.app` + `.dmg`：GitHub Actions macos-14 build → Windows/WSL 注入本地版權資料 → mkisofs -hfs 產 hybrid HFS+ DMG → Gatekeeper xattr quarantine | 「Mac DMG build」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「`std::unary_function`」「dylibbundler」「APFS DMG Windows 讀不到」「WSL2 hfsplus」「mkisofs -hfs」「補 Mac 版」「`unrecognized option: CXXFLAGS=-arch`」「Frameworks SDL2 單弧/非-fat」 |
 | [`my-skill-merge`](skills/my-skill-merge/SKILL.md) | 把本機 `~/.claude/` 的 rules/skills/agents/personas 同步進本公開 repo,**內建客戶機密 denylist + 去識別化**,push 前列 diff 等確認(review 不 copy-paste) | 「merge ~/.claude 進 my_skill」「同步 skill 到 GitHub」「更新 my_skill repo」「跑 my-skill-merge」 |
 | [`dev-setup-bundle`](skills/dev-setup-bundle/SKILL.md) | 把專案開發環境打包成可攜 dev-setup(source+完整 git+Dockerfile+腳本+素材),**重點是內含 Claude 對話記錄+記憶**,讓另一台電腦 `claude -r`/`--continue` 接續同一個對話繼續工作;附 `previous-work.md` 工作交接 + 跨機 session 路徑編碼眉角(同路徑/改名/`--resume <UUID>`);排除可重建的 `build/` 與 docker images | 「打包開發環境」「dev-setup」「搬到另一台機器繼續」「讓 claude -r 在別台接續」「開發環境包含素材重新打包」「session handoff bundle」 |
-| [`retro-game-playtest`](skills/retro-game-playtest/SKILL.md) | 老遊戲 remake/移植「正常玩家路徑」實機驗證(game tester):專治「CI 全綠但玩家一開就壞」—預設視角錯/唯讀 cwd 不存檔/視窗縮放偏移/dump 時機遮真相,**跨平台分歧章**(Win/Mac 用 Wine/VM 重現、log 嚴重度因平台異、相對路徑雙重前綴、addr2line 跨平台定位) | 「game tester」「實機驗證」「能不能玩」「進去就壞/卡住/不存檔」「驗證 remake 可玩性」 |
+| [`retro-game-playtest`](knowledge-base/retro-cht/retro-game-playtest/SKILL.md) | 老遊戲 remake/移植「正常玩家路徑」實機驗證(game tester):專治「CI 全綠但玩家一開就壞」—預設視角錯/唯讀 cwd 不存檔/視窗縮放偏移/dump 時機遮真相,**跨平台分歧章**(Win/Mac 用 Wine/VM 重現、log 嚴重度因平台異、相對路徑雙重前綴、addr2line 跨平台定位) | 「game tester」「實機驗證」「能不能玩」「進去就壞/卡住/不存檔」「驗證 remake 可玩性」 |
 | [`verification-fidelity`](skills/verification-fidelity/SKILL.md) | **階層式** 宣稱「修好/驗過」前的驗證忠實度自檢:在真的會壞的環境/碼頁/locale 重現(別用寬鬆替身)、別拿 stale binary 當證據、靜態檢查≠runtime、改 render 座標要**同步改 hit-test 並真的互動**、在地化會戳破引擎隱藏假設。`60-feedback-loop-priority` 的另一半。SKILL.md 精簡六問+心法,references/cases.md 四則真實踩雷按需讀 | 「驗過了嗎/真的修好了嗎」「為何 tester/玩家又找到 bug」「跨環境(OS/locale/碼頁)、在地化驗證」「UI 座標/縮放/命中判定改動」「重打出貨前最後一關」 |
-| [`retro-keyboard-to-touch`](skills/retro-keyboard-to-touch/SKILL.md) | 鍵盤老遊戲/SDL C 引擎移植到 Android/觸控的方法論:不重寫輸入,讀引擎每畫面 keymap 動態渲染 context-aware 觸控控制,手指事件合成 SDLK_* 餵回原事件迴圈 | 「老遊戲移植到 Android」「鍵盤遊戲改觸控」「SDL2 android-project 移植」「觸控覆蓋層/UX 設計」 |
+| [`retro-keyboard-to-touch`](knowledge-base/retro-cht/retro-keyboard-to-touch/SKILL.md) | 鍵盤老遊戲/SDL C 引擎移植到 Android/觸控的方法論:不重寫輸入,讀引擎每畫面 keymap 動態渲染 context-aware 觸控控制,手指事件合成 SDLK_* 餵回原事件迴圈 | 「老遊戲移植到 Android」「鍵盤遊戲改觸控」「SDL2 android-project 移植」「觸控覆蓋層/UX 設計」 |
 | [`first-principles-tech-notes`](skills/first-principles-tech-notes/SKILL.md) | 建立/擴展「第一性原理+圖文並茂」技術知識庫 GitHub repo:每主題一篇 markdown、概念配手繪 SVG、研究 sub-agent 查證、專家+學生審查、worklist 一項一項做 | 「整理某領域筆記成 repo」「把 X 主題寫成第一性原理教學」「一項一項做我監看」「ASCII 圖升級 SVG」 |
 | [`proposal-writer`](skills/proposal-writer/SKILL.md) | 多 agent 分章節撰寫/精鍊長篇計畫書(送審/技術整合/展會提案):含文獻驗證、技術校正、術語中文化、執行摘要、md→docx 產出 | 「寫/改/審計畫書」「研究白皮書」「展會提案」「多 agent 分章節長文件」 |
 
@@ -151,15 +154,20 @@ my_skill/
 │   └── patient-technical-teacher.md
 ├── reports/
 │   └── github-radar-<date>.html   # github-weekly-radar 產生的 HTML 週報
-└── skills/                         # 每個 skill 一個資料夾,內含 SKILL.md
-    ├── github-weekly-radar/  cocomo-estimate/
-    ├── classic-mac-c-game-sdl-port/
-    ├── qb64pe-game-linux-port/  dragon-wars-cht-remake/
-    ├── panzer-general-wine/  zak-fmtowns-zhtw/  rise-of-the-dragon-cht/   # 老遊戲繁中化/wine
-    ├── game-promo-video-ffmpeg/   # 遊戲推廣片 ffmpeg 合成(配 rules/93)
-    ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
-    ├── prompt-master/  english-prompt-coach/  ascii-matrix-scene/  organize-folder/
-    └── mac-app-cross-pack/  my-skill-merge/
+├── skills/                         # 常駐 skill,每個一個資料夾內含 SKILL.md
+│   ├── re-retro-cht-rulebook/      # 逆向/老遊戲中文化 按需路由 → knowledge-base/retro-cht
+│   ├── kneron-edge-ai-integration/  github-weekly-radar/  retro-game-cht-package/
+│   ├── verification-fidelity/  first-principles-tech-notes/  proposal-writer/
+│   ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
+│   ├── prompt-master/  english-prompt-coach/  organize-folder/
+│   └── my-skill-merge/  dev-setup-bundle/
+└── knowledge-base/
+    └── retro-cht/                  # 14 個降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
+        ├── dragon-wars-cht-remake/  zak-fmtowns-zhtw/  rise-of-the-dragon-cht/
+        ├── panzer-general-wine/  classic-mac-c-game-sdl-port/  qb64pe-game-linux-port/
+        ├── retro-game-remake/  retro-game-playtest/  retro-keyboard-to-touch/
+        ├── game-promo-video-ffmpeg/  esc-cancel-f10-quit-autosave/  ascii-matrix-scene/
+        └── mac-app-cross-pack/  cocomo-estimate/
 ```
 
 新增 skill:在 `skills/` 下開一個 kebab-case 資料夾,放一份有 frontmatter 的 `SKILL.md`,
