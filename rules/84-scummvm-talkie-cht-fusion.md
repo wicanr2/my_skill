@@ -48,5 +48,18 @@ retro 引擎的文字緩衝是照原版小字型算的——AGOS 字幕 sprite �
 查表攔不到。要在原始碼加 `case Common::ZH_TWN`(或以 `_chtActive` 判斷)提供 Big5 字串。防拷可用引擎內建
 `_copyProtection=false` 的自動填答路徑 bypass。前一版就漏了動詞列,導致「操作選單永遠英文」。
 
+## 7. ★先查有沒有 PC98 移植——有就白撿一套 CJK 高解析畫布★
+
+**做任何 ScummVM 老遊戲 CJK 中文化前,第一件事:查該引擎有沒有 PC98(或 FM-Towns)移植版。**
+PC98/FM-Towns 是日本平台,原生要顯示日文漢字,所以**引擎多半已內建「邏輯低解析 + 高解析疊層」的 dual-layer CJK 基礎設施**——直接沿用它,不用自己拉畫布、改幾十處座標。
+
+- **怎麼查**:grep 引擎原始碼 `kPlatformPC98` / `kPlatformFMTowns` / `_internalWidth` / `_scaleBuf` / `hi-res` / `dual layer`。命中就照它的路數擴到你的目標版本。
+- **AGOS 實例**(Elvira1 PC98,本次 Simon1 沿用):引擎已有
+  - `_internalWidth/_internalHeight`(= `initGraphics` 尺寸)與邏輯 `_screenWidth/Height` **分離**;PC98 時 `<<=1`(320×200→640×400)。
+  - `getBackendSurface()` 回**邏輯 320×200 `_backBuf`**(遊戲照原座標畫,零改動);`updateBackendSurface()` 把它 **2x 放大到螢幕,並用 640×400 `_scaleBuf` 疊層合成**(`v1 ? v1 : v0`:疊層有像素就蓋過放大底圖)。
+  - 游標 2x upscale、滑鼠 `_mouse >>= 1`(640→320 還原給 hitarea)都已為 PC98 寫好。
+- **做法**:把這些 `if (ELVIRA1 && PC98)` 條件 OR 上自己的旗標(如 `_chtHires`),在 init() 依「CHT 資產在場」預先決定並設 640×400;**中文字畫進 `_scaleBuf`(高解析疊層)** → 原生點陣、相對變小、清晰不擠(直接解掉 `81` 的「縮字 vs 塞不下」兩難)。
+- **為什麼贏**:自己在上游大引擎拉畫布要改 ~40 處繪製座標 + 滑鼠/游標/fade,破壞相容;PC98 那條路引擎已驗證過,只需擴條件 + 把 CJK 導到疊層。**先查 PC98,能白撿就別硬幹。**
+
 ## 驗收(呼應 `63`)
 以「實機看得到中文 + dump 未翻歸零」為準,不信任譯表自報條數。遊戲原檔/語音/磁片映像/英文文字萃取全程 gitignore,push 前精確 grep 複檢。
