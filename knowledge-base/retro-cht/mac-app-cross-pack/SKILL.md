@@ -1,6 +1,6 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」「dylibbundler 卡住 / 無限 Try again / can't get path for @rpath」「macOS CI hang / 卡 40 分鐘 / timeout」「自編 SDL_image 從源碼編很慢 / dav1d / libjxl」「macos-13 退役 / Intel job 一直 queued / 改 macos-15-intel」「CMake 4 policy version」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。CI 長 hang 定位法見 §1.2d、自編 SDL → dylibbundler `@rpath` 互動 hang [HARD] 見 §1.5。另涵蓋「`error: unrecognized option: CXXFLAGS=-arch`(ScummVM configure 非 autoconf,flags 走 env-var)」見 §1.2、「universal binary 但 Frameworks SDL2 是單弧/非-fat(per-arch+lipo 後 dylibbundler 只抓一弧)→ 改手動 bundle + 雙弧斷言」見 §1.5。
+description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」「dylibbundler 卡住 / 無限 Try again / can't get path for @rpath」「macOS CI hang / 卡 40 分鐘 / timeout」「自編 SDL_image 從源碼編很慢 / dav1d / libjxl」「macos-13 退役 / Intel job 一直 queued / 改 macos-15-intel」「CMake 4 policy version」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。CI 長 hang 定位法見 §1.2d、自編 SDL → dylibbundler `@rpath` 互動 hang [HARD] 見 §1.5。另涵蓋「`error: unrecognized option: CXXFLAGS=-arch`(ScummVM configure 非 autoconf,flags 走 env-var)」見 §1.2、「universal binary 但 Frameworks SDL2 是單弧/非-fat(per-arch+lipo 後 dylibbundler 只抓一弧)→ 改手動 bundle + 雙弧斷言」見 §1.5。另涵蓋「打包產物散在各處 / 統一放 dist-all / 清舊版打包省磁碟 / ship matrix 產物組織 / build 腳本輸出目錄」見「產物統一放 dist-all/」節。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
@@ -343,6 +343,18 @@ chmod +x /Applications/Game.app/Contents/MacOS/Game
 | **Mac** | **`*-mac.dmg`** (APFS, CI 產) | **`*-mac-with-data.tar.gz`** + **`*-mac-with-data.dmg`** (hybrid HFS, mkisofs 產) |
 
 `.dmg` 公版可推 GitHub Releases。`*-with-data.*` 純本機，**絕不推 git**（版權）。
+
+### 產物統一放 `dist-all/`（跨平台打包的輸出組織慣例）
+
+ship matrix 一多（Win zip / Linux AppImage / Mac tar.gz+dmg / 推廣片 / dev-setup 包），產物很容易散在 `dist/`、`dist-mac/`、`dist-mac-dl/`、專案根目錄各處，加上每個完整版都 100–160MB、每次重打就多一份舊的 → 磁碟很快被吃掉、也分不清哪個是最新。**慣例：所有可交付/可散布的打包一律輸出到單一 `dist-all/`**（`gitignore`，含版權資料不入庫）。
+
+- **每平台只留最新一份**；清舊版省空間 = 直接刪 `dist-all/` 內舊檔（不必去各處翻）。實例：一次清掉舊 macOS.zip/Windows.zip + mingw staging 目錄 + CI artifact 解壓，省約 990MB。
+- **build 腳本直接把最終產物寫進 `dist-all/`，中間 staging 自清**：mingw 的 portable 目錄壓成 zip 後 `rm -rf`、mac 的 `.app` 解壓/注入完 tar 後刪掉。別把肥大的 staging 留在磁碟。
+- **build 腳本要自足**：Windows 打包腳本自己 `cp -rL <遊戲資料>/* → game/` 再壓 zip（別靠手動先鋪好 `game/`，否則刪了 staging 就不可重現）。
+- **dev-setup 跨機接續包也放這裡**（見 skill `dev-setup-bundle`）：`*-dev-setup-YYYYMMDD.tar.zst` 與各平台完整版並列，一個目錄看完所有交付物。
+- 典型 `dist-all/` 內容：`*-x86_64.AppImage`、`*-win64.zip`、`*-mac.tar.gz`、`*-promo.mp4`、`*-dev-setup-*.tar.zst`。
+- **記錄慣例**：把這條寫進該專案的 `docs/DEV-SETUP.md`，並在 build 腳本標頭註明「產出：dist-all/…」，新 session / 換機才不會又散開。
+- **打包一律派便宜 subagent + model 跑**（build / 注入資料 / 壓縮 / 清舊版 / 解開產物驗證進遊戲全是機械可驗證工作）；旗艦只看最終「進遊戲」那張與 leak-scan 定案，別逐步手動跑。見 `rules/45`（模型成本分工）。
 
 ## 常踩雷
 
