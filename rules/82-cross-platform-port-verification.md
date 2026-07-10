@@ -29,3 +29,4 @@
 
 - 把原生程式打包成多平台、或收到「某平台開不起來 / 閃退,但別的平台正常」的回報。
 - 配 `retro-game-playtest`(可玩性 + 「跨平台分歧」章)、`retro-game-remake`(打包章)、`mac-app-cross-pack`(macOS DMG)、`60-feedback-loop-priority`(先建可重跑訊號)、`35-background-agent-container-liveness`(Wine/Xvfb/容器有界、不放生)。
+- 本規則管「驗**對的**打包產物在**它自己的**環境跑」;至於「打包產物**放哪、怎麼組織**」(ship matrix 統一輸出 `dist-all/`、清舊版省磁碟、build 腳本自足自清)是**組織慣例**、非 bug 紀律 → 見 kb `mac-app-cross-pack`「產物統一放 dist-all/」節,不在本規則。
