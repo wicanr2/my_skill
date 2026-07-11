@@ -34,6 +34,7 @@ description: 逆向工程 + 老遊戲中文化/移植/remake/素材抽取/逆向
 | 《火龍之戰》Dragon Wars 1989 繁中化 / opendw / opendw_remake / C++20·SDL2 重寫 / DATA1·DATA2 資產萃取 / Read Paragraph 防拷 / 逐指令差異測試 | `dragon-wars-cht-remake/SKILL.md` |
 | Zak McKracken(FM-Towns Steam)繁中化 / scummtr 不認 CJK / Unknown function id 0xAB·0xCF / Truncated escaping / chinese_gb16x12.fnt / SCUMM 中文化 / FM-Towns 中文 | `zak-fmtowns-zhtw/SKILL.md` |
 | Rise of the Dragon·火龍之吼·孟波 / Heart of China·中國之心 / Willy Beamish·威利奇遇記 / ScummVM DGDS·TTM 字串·STORE AREA / 電腦·視訊電話英文 / drawTitleSubtitle / Android APK 注入·liboboe.so·eglCreateWindowSurface | `rise-of-the-dragon-cht/SKILL.md` |
+| **ScummVM SCI 引擎中文化**(Sierra 老遊戲)/ 英雄傳奇·Quest for Glory·Hero's Quest·人生劇場 Jones in the Fast Lane / SCI0(EGA)·SCI1·SCI1.1(VGA)/ 內容比對替換·GfxFontChinese·Big5·ZH_TWN / SCI_DUMP_RES 抽字 / baked-art view·pic 中文化·.v56·.p56·sci_view.py / 向量 pic vs bitmap pic 難度 / **640×400 hi-res CJK 直繪·kFormat 動態組字翻譯·clipRectTranslated 疊繪·分色重繪** | `scummvm-sci-cht-localization/SKILL.md` |
 | Panzer General·裝甲元帥·PG-cht.exe(wine 老遊戲)/ 256 色才能執行 / exNilPtr / 缺 WING32.dll / 記憶體不足 | `panzer-general-wine/SKILL.md` |
 | Classic Mac(Carbon/QuickDraw/CoreFoundation)C 遊戲 → SDL2 / `CGrafPtr`·`CopyBits`·`NewGWorld`·`CFStringRef`·Pascal string `\p..`·`GetResource`·`FSSpec` / LairWare / SDL2 取代 QuickDraw | `classic-mac-c-game-sdl-port/SKILL.md` |
 | QB64-PE / .bas·.qb·QuickBasic 遊戲 → Linux ELF·AppImage / Wine 跨編 Windows exe / 中文點陣字·自動存檔·cheat modular patch | `qb64pe-game-linux-port/SKILL.md` |
