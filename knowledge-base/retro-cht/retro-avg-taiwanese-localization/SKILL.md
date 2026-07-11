@@ -150,6 +150,25 @@ AGI(Adventure Game Interpreter,LSL1 EGA 用 AGI 2.440)比 SCI 更老更簡單,�
 
 ---
 
+## 增量六:年齡/問答驗證「一次通過永久免答」(自動作答,雙引擎)
+
+老 AVG 開場常有防拷式**年齡+成人常識問答**,每次開機重考很煩。做法:通過一次後之後開機**自動答過**(片頭照留)。核心理念——**不是背答案(隨機抽題),是逆向出遊戲把「正解」暫存在哪,讓遊戲自己告訴引擎**。
+
+### 破解流程(先靜態後動態,rulebook 62/64)
+1. **靜態 dump 題庫資源**看格式:SCI `text.NNN`(LSL1 是 722/730/743…)`strings` 一看就懂——**每題文字第一個字元 = 正解編號(1-4)**。AGI 則在 LOGIC。
+2. **動態 probe** 找正解暫存的變數:在**每次繪字都會過的入口**掛暫時 probe 印出當前 room 的 script locals + 文字。SCI 在 `GfxText16::Box()` 讀 `getScriptIfLoaded(getScriptSegment(720))->getLocalsBegin()`;對照「每題後遊戲顯示 `Correct`」確認是哪一格 → **LSL1 是 script 720 的 `local[4]`=正解、`local[5]`=題序(換題才變,用來偵測新題)**。AGI 對應 `v93`(room 6)。
+3. **輸入方式看畫面提示,別假設統一**:年齡選單提示「Use the TAB key」→ **TAB 移動+ENTER**;a/b/c/d 問答 → **直接按字母鍵**(`'a'+(L4-1)`);片頭/警告 → **不主動注入**交玩家推進(保留片頭)。
+
+### 引擎實作要點
+- **合成鍵在事件輪詢前注入**:SCI `EventManager::getScummVMEvent()` 開頭先送 `chtVerifyPendingKey()`(TAB/ENTER/字母),回傳後才 poll 真實事件 → **優先於玩家輸入**(否則玩家亂按 ENTER 會誤選年齡選單焦點格 under 15 被踢)。偵測(`Box()` 內同步排隊)與注入之間**無事件迴圈空窗**,local 一設好就答;同題選項回顯用「佇列非空」擋重複、用 local[5] 未變擋重複。
+- **年齡選單選中間成人格容錯大**:目標「40 to 65」(TAB×3)而非「19 to 39」——TAB 差一格,鄰格 19-39/66-99 仍成人。
+- **「已通過」雙保險判定**:啟動時 `有存檔 || .chtok 旗標存在` → 啟用自動作答;每輪 `chtVerifyRoomTick()` 追蹤驗證 room 進出,**曾進又離開=通過**→寫 `.chtok`(**首次手動通過的玩家也會寫**,下次就自動)。全新玩家第一次仍手動,機制不失效。
+- **實機驗證(rulebook 65)**:log 應出現 `TAB×3`→每題 `auto-answer → Correct`→`left room 720 → now room 100`(進遊戲)→寫旗標;反向(無旗標)無 auto-answer、正常提示。
+
+> 完整逆向紀錄:本專案 `docs/45-sci-age-verify.md`(VGA/SCI)、`docs/40-agi-track.md` §7(EGA/AGI `v93`)。**通則:SCI 問答防拷幾乎都把正解存某 script local,dump 題庫看首欄+`Box()` probe 對照 locals 就能定位。**
+
+---
+
 ## 可複用清單(換一款靠哏的老 AVG)
 
 | 要素 | 這次做法 | 換遊戲要改 |
@@ -163,6 +182,7 @@ AGI(Adventure Game Interpreter,LSL1 EGA 用 AGI 2.440)比 SCI 更老更簡單,�
 | 標題疊圖 | .ovl 索引點陣,EGA 直寫 / VGA nearest-palette-map | 確認 display 實際尺寸!320 vs 640 |
 | 幽默在地化 | 風格聖經+統一譯名表+批次 subagent+合併驗證+譯名掃描+corrections | 梗庫換該語言文化;尺度先跟使用者校準 |
 | headless 擷取 | 關警告→輸入年齡→存檔 checkpoint→look 觸發 | 各遊戲防拷流程 |
+| 驗證一次免答 | dump 題庫看首欄=正解→`Box()` probe 對照 script locals 找正解格→合成鍵事件輪詢前注入(TAB 選單/字母問答)→存檔+旗標判定;離開驗證 room 寫旗標 | 各引擎正解暫存變數位置(AGI v93 / SCI local[4])與輸入方式 |
 | 打包 | AppImage/Windows(mingw,保 config.guess)/macOS CI(自編 SDL2 非 brew) | 見 mac-app-cross-pack、BUILD.md |
 
 ### [HARD] 通用慣例:所有 ScummVM 中文化都 enable MT-32
