@@ -78,6 +78,7 @@
 - **F8 中英切換**（雙引擎，玩家對照原文）：獨立旗標 `_chtLangOn`（**別重用 `_chtEnabled`**，它牽動 hires+Big5 gate）；F8 在事件入口攔截並消費；AGI 當前訊息框原地重繪（快取原文 + `drawMessageBox` 可重入），SCI 下一則生效。
 - **斷行**：Big5 是 2 byte，wrap 要以「顯示欄」算（1 中文字=1 欄），別按 byte（會提早斷行）。
 - **背景色**：Big5 填格用「原始意圖色」`_textAttrib.foreground/.background`，別用 `combined*`（含 invert 位會變灰底）。
+- **[HARD] 引擎硬寫 Big5 字串要 clang-safe**：C++ 字面值用 `\xNN`（別裸 byte）。**clang（macOS）的 `\x` 貪婪吃後續 hex 數字**：`\xNN` 直接接 hex 字元（0-9a-fA-F，含字母 A~F）會併吞成越界 → `hex escape sequence out of range`。典型：中文逗號 `，`(`\xA1\x41`) 接 `ESC`/`ENTER` → `\x41ESC`。**GCC/mingw 放過、只 macOS CI 的 clang 爆（本機 Linux 測不出）**。修法：字面值串接打斷 `"\xA1\x41" "ESC"`（位元組相同、不加字、可攜）。字元須在烘出的 Big5 字庫內（build_cht 從譯文 value 取字）。
 
 ---
 
@@ -112,14 +113,15 @@ Roland MT-32 遠優於 AdLib，老 Sierra 本就內附 MT32.DRV。**configure �
 1. **[HARD] 別 `brew install sdl2`**——2026-06 起 brew 的 sdl2 = **sdl2-compat shim**（runtime 才 `dlopen libSDL3`）；dylibbundler 只打包靜態相依、抓不到 libSDL3 → 玩家端 **「Failed loading SDL3 library」/ 黑畫面**。**本機有裝 SDL3 測不出來**、CI 也是哪天 brew 換內容才突然壞。→ **CI 自源碼編 pinned 真 SDL2**（如 2.30.9），universal 用「每弧各編 + `lipo -create`」。
 2. **[HARD] ScummVM configure 不是 autoconf 友善**：`CXXFLAGS=-arch ...` 直接餵會 `integer expression expected`/`unrecognized`。**CXXFLAGS/LDFLAGS 只能當環境變數餵**，不能塞 configure 參數。
 3. **universal 別單次雙 `-arch`**：autoconf 版本解析在雙弧下會炸。要**每弧 native 各編一次 + `lipo -create` 合併**；x86_64 弧在 Apple Silicon runner 上走 `arch -x86_64`(Rosetta)，arch 值須與 runner 一致。用**兩份獨立 per-arch checkout**（免共用 build 目錄互汙）。
-4. **`std::unary_function` 找不到**（Xcode 15 C++20 移除）：1990s 老碼會踩，需 patch。
+4. **clang 比 GCC/mingw 嚴（本機 Linux 測不出，只 macOS CI 爆）**：① `std::unary_function` 找不到（Xcode 15 C++20 移除），1990s 老碼需 patch；② **引擎硬寫的 Big5 `\xNN` 貪婪 escape 越界**（`，ESC`→`\x41ESC`>255 `hex escape out of range`），見 ④ 末條，修法字面值串接 `"\xA1\x41" "ESC"`。**凡在引擎硬寫 Big5/加 C++20 語法後，第一條 macOS CI 必實跑。**
 5. **依賴面保持最小**：AGI/SCI 裁剪配置只需自編 SDL2；zlib/curl 是 macOS 系統庫；libvorbis/FLAC/png/freetype 不需要（別多自編/brew）。
 6. **啟用新子系統（如 mt32emu）首次 CI 要盯**：跟 mingw 一樣可能缺 vendor 檔或觸發平台特有編譯錯——**動了 configure flag 後第一條 CI 一定實跑驗證**，別假設。
 7. **版本 drift**：SDL2 release tarball 網址、ScummVM pinned 版本、runner 映像（`macos-13` 退役、Intel job 改 `macos-15-intel`）會隨時間變，首次/久沒跑要微調 workflow。
 8. **dmg 相容**：APFS dmg 在 Windows/WSL 讀不到 → 同時產 `.tar.gz`(保 perm) + `.dmg`(mkisofs -hfs hybrid)。dylibbundler 偶爾無限「Try again / can't get path for @rpath」。
 9. **Gatekeeper**：未簽署 app 首次執行要 `xattr -dr com.apple.quarantine /Applications/ScummVM.app`（README 要寫）。
 10. **cht 資料 post-build 注入**：`game/` gitignore、CI 拿不到 → `package_macos_data.sh` 從版控 `fonts/`/`fonts_vga/` 快照注入（跟 Linux/Windows md5 一致才不 drift）。ROM 同理 CI 拿不到 → macOS 只開 mt32 能力、不設預設。
-11. **[HARD] CI 監控別用旗艦背景 poll**：派 **haiku/sonnet** 一次盯完整條（給 run id + `gh run watch <id> --exit-status`，**明確要求「不 block 到 exit 不准返回」**——便宜 agent 常誤判提早返回；或旗艦用 harness 追蹤的**背景 `gh run watch`** 指令自己盯）。見 rulebook `35`(liveness) + `45`(機械活分工)。
+11. **[HARD] CI 監控別用旗艦背景 poll**：派 **haiku/sonnet** 一次盯完整條（給 run id + `gh run watch <id> --exit-status`，**明確要求「不 block 到 exit 不准返回」**——便宜 agent 常誤判提早返回；或旗艦用 harness 追蹤的**背景 `gh run watch`** 指令自己盯，且**指令尾別接 `echo`/pipe** 否則 exit code 被蓋成 0、誤判成功——用 `WATCH_EXIT` 或 `gh run view --json conclusion` 確認）。見 rulebook `35`(liveness) + `45`(機械活分工)。
+12. **[雷] push 後立刻 `gh workflow run --ref main` 會 dispatch 在 push 前的 commit**（GitHub 的 main ref 未即時更新）→ CI 用舊碼白跑一輪。修法：觸發前 `git ls-remote origin main` 確認 remote HEAD 已是新 commit，或觸發後 `gh run view <id> --json headSha` 核對 headSha 等於你要的 commit 再等。
 
 ---
 
