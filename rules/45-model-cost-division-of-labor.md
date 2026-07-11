@@ -54,6 +54,7 @@
     整組 + 回報對照，旗艦只挑定案，不要旗艦一組一組手動試。
   - **批次驗證**：多檔 build/test/截圖、大量對照圖判讀。
   - **跨平台打包/重打包**：build AppImage / Windows zip / mac tar、注入遊戲資料、補資料檔、壓縮、清舊版、統一放 `dist-all/`，以及「解開產物→在其環境跑→驗證進遊戲」——**全程機械且可驗證**（gh / wine / headless 截圖 / grep log）。寫好腳本派便宜 agent 一次跑完，旗艦只看最終「進遊戲」那 1 張與 leak-scan 結果定案。（配 kb `mac-app-cross-pack`「dist-all」節、`rules/82` 跨平台驗證）
+  - **CI / GitHub Action 監控 + artifact 後處理**（[HARD]，使用者明示）：`gh run watch` 等 CI 跑完、`gh run download` 取 artifact、`gh release upload --clobber` 覆蓋資產、重建 `dist-all/`——**全是機械可驗證的等待與搬運**，旗艦不該用「背景 Bash job 每次 CI 收尾就重新喚醒主迴圈」的方式盯（每次喚醒都燒最貴的 token）。**一律派便宜 agent（haiku/sonnet）監控**：給它 run id / workflow 名 + 要做的後處理指令 + **有界 timeout**（`gh run watch` 本身會等到結束，配 `timeout` 上限，遵 `rules/35` liveness、禁無界 sentinel），它盯完 + 搬完 + 回報「哪些資產更新、時間戳、有無失敗」；旗艦只在它回報後看結論、決定要不要重跑。**旗艦自己只留**：定案（這版能不能發）、判 CI 失敗根因（要判斷力的部分）。（配 `rules/35` 背景 liveness、kb `mac-app-cross-pack` GitHub Actions 節）
 - **旗艦只留**：定案判斷（哪個效果對）、關鍵幀的最終確認（1-2 張，不逐幀）、規格與把關。
 - **少來回鐵則**：同一件事若旗艦已手動試 ≥2 次（重錄、重截、重調），立刻停手改「寫規格派 agent 跑完整組」。
 - **驗收從簡省 vision token**：能用文字/數據（ffprobe/wc/grep/像素 diff 數值）確認的就不抽圖；抽圖是

@@ -44,6 +44,9 @@ macOS .app + .dmg 必須在 macOS host 上 build
        xattr -dr com.apple.quarantine /Applications/Game.app
 ```
 
+> **[成本][HARD] 段 1→2 的「等 CI + 搬 artifact」派便宜 agent，旗艦別背景 poll**（使用者明示）。
+> `gh run watch` 等 macOS build 跑完（~18 分）、`gh run download` 取 `.dmg`/`.tar.gz`、`gh release upload --clobber` 覆蓋資產、重建 `dist-all/`——全是機械等待與搬運。**別用旗艦的背景 Bash job 每次 CI 收尾就重新喚醒主迴圈**（每次喚醒燒最貴的 token）。派 **haiku/sonnet** 一次盯完整條（給 run id + 後處理指令 + `timeout` 上限，遵 `rules/35` liveness、天然有界），只回報「哪些資產更新/時間戳/成敗」；旗艦只在回報後定案、判 CI 失敗根因。完整成本理由見 `rules/45` 機械活清單「CI / GitHub Action 監控」條；背景 liveness 見 `rules/35`。
+
 ## 段 1: GitHub Actions Universal Build
 
 ### 1.1 workflow skeleton
