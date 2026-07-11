@@ -19,6 +19,7 @@
 3. **舊版面座標重映射**:原始 UI/選單是為舊尺寸排的 → 加 `mapY()` / `mapX()` 比例映射,把 widget 位置換算到新畫布(例 400→480);寬不變時 X 不動,在原尺寸時為 no-op。
 4. **CJK 走獨立點陣路徑**:中文碼點用固定點陣 atlas(16/24)畫在新畫布;ASCII 仍走原字型路徑。UTF-8 在繪字迴圈解碼分流。
 5. **提供 crisp / smooth 兩種顯示版本**:nearest(銳利,推薦)與 bilinear(平滑 HD)做成不同 patch / 選項。
+6. **變體 —— 引擎已內建 upscale 模式時,別自改畫布常數,直繪 display buffer**:有些引擎本身就有「邏輯低解畫布 → display 高解緩衝」的 upscale 機制(如 ScummVM SCI 的 `GFX_SCREEN_UPSCALED_640x400`)。這時**不必也不該去改 `SCREEN_W/H`**——讓底圖照引擎既有 nearest 放大(原畫不動),但 CJK 字**跳過 logical→display 的 nearest,用 `putPixelOnDisplay` 之類 API 以整數倍直接畫進 display buffer**。效果:同畫面「英文/底圖 art 仍是放大的原畫、中文字銳利」。關鍵是認出引擎有沒有現成 upscale 咽喉點,有就站上去(改動更小、不破壞原 render 管線),沒有才回到第 1 點自改畫布常數。
 
 ## 踩雷 (gotchas)
 
@@ -36,4 +37,5 @@
 
 - **freesynd-cht**(極道梟雄,FreeSynd GPLv3):`patches/02-hd-640x480-crisp.patch`(640×480 + nearest + `Menu::mapY` 400→480)、`patches/03-hd-1024x768-smooth.patch`(1024×768 bilinear + SDL2 相容修正)。https://github.com/wicanr2/freesynd-cht
 - **master-of-orion-1-cht-1oom**(銀河霸主,1oom):320×200 → 640×480,底圖 pixel-scale,CJK 24×24。
+- **jones_in_the_fast_lane**(人生劇場,ScummVM SCI1 VGA):**變體(recipe 6)**——不改畫布常數,`ZH_TWN` 時切引擎既有 `GFX_SCREEN_UPSCALED_640x400`,art 照引擎 2× nearest,中文字用 32×30 hi-res 點陣以 `putPixelOnDisplay` 2× 直繪 display buffer。細節見 kb `scummvm-sci-cht-localization`「SCI1 增量②」。https://github.com/wicanr2/jones_in_the_fast_lane
 - 字型烘製 pipeline:`build_cjk_font.py`(TTF → 點陣 atlas 子集,見 `retro-game-remake` skill)。
