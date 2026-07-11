@@ -42,6 +42,7 @@ ScummVM 為韓/日/中版早內建 `Graphics::Big5Font`。站它肩膀上:
 - **硬換行**:SCI1.1 自動折行、**SCI0 不會**,EGA 對白用字面 `\n` 排版 → 譯文保留/跳脫 `\n`,引擎 `unescapeCht` 還原,否則擠一行或溢出。
 - **字串散在 script.***:除 `text.*`/`message.*`,SCI0 對白/選單常內嵌 `script.*`,要另掃(濾 SCI 符號名/CamelCase 類別名/bytecode 垃圾)。
 - **parser 指令不可翻**:SCI0 文字 parser,`look`、`hut of brown, now sit down`(咒語)等**玩家輸入的指令字串絕不翻**。準則:看到的翻,打字輸入的留原文。
+- **打字硬關就地附答案(跨版本,VGA 也適用)**:玩家**必須打對英文才過**的硬關(盜賊口令 `schwertfisch`、女巫咒語 `Hut of Brown, Now Sit Down`),光留原文中文玩家仍不知要打什麼 → 譯文問句後**就地補英文答案**:「盜賊的密碼是什麼?**(輸入:schwertfisch)**」。答案維持 **ASCII**(過 Big5 烘製不變、parser 仍比對得到;`schwertfisch` 這種德文字翻成中文就打不進去)。⚠**先分辨硬關 vs 玩笑關**:Erasmus「三道謎題」答對答錯**都被傳送進去**(致敬《巨蟒與聖杯》的「to SPELL with you」雙關),不是真門檻 → **別附「正解」誤導**玩家以為必須答對。做法沉澱成 repo 內 `docs/70-passwords-and-riddles.md`(全關卡問題中/英+答案表)。
 
 ## baked-art(問題 C)—— SCI0/SCI1.1 分水嶺(最硬)
 **第一性原理:為何 SCI0 pic 向量、SCI1.1 bitmap**
@@ -50,6 +51,7 @@ ScummVM 為韓/日/中版早內建 `Graphics::Big5Font`。站它肩膀上:
 
 **這如何決定難度**
 - **VGA(bitmap)= 可做,已驗證**:烘進圖的英文=一塊像素,可**擦掉重繪**。自製 `tools/sci_view.py` 解/編 SCI1.1 view(`.v56`)/pic(`.p56`),**對 ScummVM 解碼器逐像素驗證當 oracle**,重繪屬性表/海報/職業選擇/標題/credits。手法:①金色花體 cel(亮金漸層 `#ffeabc→#e0af54`+深描邊 `#2a1606`);②pic inpaint(模糊塗抹去英文保底紋漸層無接縫,再疊中文)。透明:PNG `alpha==0`→ cel clearKey。
+- **★烘 pic 標籤還不夠——runtime view overlay 會對撞**:引擎除了畫 pic 背景,常在**同位置** runtime 疊畫另一個 view 的逐項 cel(如角色創建屬性列的 mnemonic 首字母 S/I/A/V/L/M,兩 loop = 常態/選取兩色狀態)。原版設計裡這字母兼作「屬性名首字母 + 可選取縮寫鍵」;你把 pic 標籤烘成中文「力量」後,英文 overlay 仍蓋在第一個字上 → 「S量」醜疊字。**修法:把冗餘 overlay cel 全清空**(同尺寸 `alpha=0` PNG → clearKey 透明,`sci_view.py encode --replace`),露出 pic 中文;**別去翻它**(pic 已有完整標籤,翻了反而重複)。清空只動美術、不動點選/快捷邏輯,**兩色 loop 都要清**否則選取時英文冒出。診斷:`decode` 整個 view → montage 全 cel + `identify` 印尺寸,認出哪個 loop 是 overlay(小 8–14px 單字元 = mnemonic)。教訓:**「烘完 pic 就以為做完」會漏掉 runtime 疊上去的另一個 view**——實機截 live 畫面對照 pic 單獨 render,差異處就是 overlay。
 - **EGA(SCI0)= 別急著判死局,先 render pic 判定**:直覺以為海報字是向量筆畫→不可行。**關鍵訣竅**:`SCI_DUMP_PIC` 把 pic 單獨 render——baked 英文**在 pic 裡**=向量(難);**pic 裡空白**=文字是**獨立 view cel 疊上去**(可編!)。英雄傳奇 EGA 的選單海報(view 100 loop0)、職業選擇(view 506 loop1)都是 view cel。→ 另建 `tools/sci0_view.py`(SCI0 EGA view 解/編碼:4-bit cel + `(run:4,color:4)` RLE,轉錄自 `view.cpp`,對真引擎 `getBitmap` 逐像素驗+round-trip 位元組一致),只用原 cel 既有 EGA 色重繪,實機驗證:徵求英雄/前往/史畢柏格村、選擇你的英雄/戰士/法師/盜賊。**真正無解的只有「向量筆畫畫出來的字」。**
 
 ## SCI1(純 VGA)增量 —— 素材:人生劇場(Jones in the Fast Lane, 1990)
@@ -89,7 +91,8 @@ runtime 用 `kFormat`/StrCat 組出來的字(如「Goal Points = 200 !」=`kForm
 1. 引擎加 `ZH_TWN`+`GfxFontChinese`+`GfxText16` 查表 hook(幾乎照搬)。
 2. `SCI_DUMP_RES` 抽字 → TSV → `build_cht.py`。
 3. **判版本 SCI0(EGA)/SCI1/SCI1.1(VGA)** → 決定 baked-art 可行性與工具;SCI1 純 VGA 比照 SCI1.1 走 bitmap 重繪。
-4. VGA:`sci_view.py` 解/編 view/pic,逐像素對 oracle 驗證後重繪。
+4. VGA:`sci_view.py` 解/編 view/pic,逐像素對 oracle 驗證後重繪。**烘完 pic 標籤要實機截 live 畫面**對照 pic 單獨 render——差異=runtime 疊上的另一個 view overlay(mnemonic 之類),冗餘的就清空 cel(透明)。
+5b. **打字硬關**:玩家必須打對英文才過的關(口令/咒語),譯文問句後就地附 ASCII 英文答案;先分辨硬關 vs 玩笑關(後者別附正解誤導)。
 5. EGA:先判 baked 英文在 view(可能可編)還是向量 pic(可能不可行)再投入。
 6. **啟用中文**:SCI1 走 target config `language=tw`(非 CLI);detector 補 ZH_TWN→EN_ANY 例外。
 7. **hi-res 遊戲**:切 640×400、中文字 `putPixelOnDisplay` 2x 直繪(清晰);小烘字疊繪定位用 `clipRectTranslated`。
