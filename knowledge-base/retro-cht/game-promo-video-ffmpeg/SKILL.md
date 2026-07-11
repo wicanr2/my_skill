@@ -1,12 +1,12 @@
 ---
 name: game-promo-video-ffmpeg
-description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成成 60–75 秒推廣短片 / trailer。內建本人用時間換來的硬地雷:**ffmpeg zoompan 幀數爆炸(燒滿 CPU 8 分鐘)**、CPU 控制(--cpus / 預建工具 image / veryfast / 靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改用靜態截圖、docker 內字型/IM policy 雷。觸發:「做推廣片/trailer/宣傳片」「把截圖+配樂合成影片」「ffmpeg 做投影片」「Ken Burns」「遊戲介紹影片」「promo video」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」。配 rules/93(配樂用原版真實素材的[HARD]鐵則)+ 各專案 docs/llm-promo-video-pipeline.md。
+description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成成 60–75 秒推廣短片 / trailer。內建本人用時間換來的硬地雷:**ffmpeg zoompan 幀數爆炸(燒滿 CPU 8 分鐘)**、CPU 控制(--cpus / 預建工具 image / veryfast / 靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改用靜態截圖、docker 內字型/IM policy 雷。觸發:「做推廣片/trailer/宣傳片」「把截圖+配樂合成影片」「ffmpeg 做投影片」「Ken Burns」「遊戲介紹影片」「promo video」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」。配 rulebook/93(配樂用原版真實素材的[HARD]鐵則)+ 各專案 docs/llm-promo-video-pipeline.md。
 ---
 
 # game-promo-video-ffmpeg — 腳本化遊戲推廣片合成(地雷優先)
 
 > 這支管「**怎麼用 ffmpeg/IM 把片做出來、又不燒爆 CPU**」的工程實務。
-> 「素材來源真實性(配樂用原版、不自產)」的[HARD]鐵則在 `rules/93-promo-video-original-assets.md`;
+> 「素材來源真實性(配樂用原版、不自產)」的[HARD]鐵則在 `rulebook/93-promo-video-original-assets.md`;
 > 三段式 pipeline 總覽在各專案 `docs/llm-promo-video-pipeline.md`(u1-cht 起源)。本檔聚焦**踩過的雷 + 可重用骨架**。
 
 ## 何時用
@@ -48,7 +48,7 @@ description: 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)
 - **長 docker run 會被 harness 自動轉背景**;跑壞要 `docker ps -q --filter ancestor=<img> | xargs -r docker kill` 收掉,
   別讓爆炸的容器在背景燒。**有界**:`timeout` 包起來。
 
-### 3. [HARD] 配樂用原版/遊戲真實音訊,不自產(見 rules/93)
+### 3. [HARD] 配樂用原版/遊戲真實音訊,不自產(見 rulebook/93)
 **MIDI + SoundFont 的遊戲(如 Ebiten/Go 引擎)**:別 live 錄(Ebiten 非 SDL,沒 `SDL_AUDIODRIVER=disk`;
 xvfb 又沒音效卡)。**離線抽 + fluidsynth 算**最乾淨、可重現、音色一模一樣:
 1. 用引擎自己的 reader 把曲目的 **XMI/MIDI 抽成標準 .mid**(例:`xmi.ReadMidiFromCache(cache,"music.lbx",idx)` →
@@ -112,10 +112,12 @@ for f in 00 01 99; do kb "$TMP/$f.png" "$TMP/s_$f.mp4" 7; echo "file '$TMP/s_$f.
 ffmpeg -y -loglevel error -f concat -safe 0 -i "$LIST" -threads 2 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$TMP/silent.mp4"
 DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$TMP/silent.mp4"); FO=$(awk "BEGIN{print $DUR-3}")
 ffmpeg -y -loglevel error -i "$TMP/silent.mp4" -i /music/title.wav \
-  -filter_complex "[1:a]atrim=0:$DUR,afade=t=in:st=0:d=2,afade=t=out:st=$FO:d=3[a]" \
-  -map 0:v -map "[a]" -threads 2 -c:v libx264 -preset veryfast -c:a aac -b:a 192k -shortest -movflags +faststart \
+  -filter_complex "[1:a]aloop=loop=-1:size=2000000000,atrim=0:$DUR,afade=t=in:st=0:d=2,afade=t=out:st=$FO:d=3[a]" \
+  -map 0:v -map "[a]" -threads 2 -c:v libx264 -preset veryfast -c:a aac -b:a 192k -movflags +faststart \
   "$OUT/promo.mp4"
 ```
+
+> ⚠️ **配樂比影片短 → `-shortest` 會砍掉結尾卡(慘雷)**。單段配樂常只有 40 幾秒;一旦後來加內容(多幾張金句卡)把影片撐到 50 秒+,舊寫法 `[1:a]atrim=0:$DUR ... -shortest` 的 atrim 無法把 44 秒音樂延長到 51 秒,`-shortest` 便以較短的音軌為準,把影片尾端(整張結尾卡!)一起截掉。症狀:`ffprobe` 出來視訊/音訊都變成配樂長度、結尾卡不見。**解法:先 `aloop=loop=-1:size=<大數>` 把配樂無限循環,再 `atrim=0:$DUR` 剪到影片長度,並拿掉 `-shortest`**(視訊音訊已等長)。改完務必 `ffprobe -select_streams v/a` 確認兩者 == 分鏡總長。
 
 跑法:
 ```bash
@@ -206,4 +208,4 @@ SDL 遊戲用 `SDL_AUDIODRIVER=disk` 錄原版音樂時兩個雷:
 配樂用 SDL `disk` 錄原版 AdLib 音樂(`-e adlib`,全速灌爆需掃描找有聲窗)。
 工作魔法大帝(Master of Magic)繁中推廣片 2026-06-28:zoompan 幀數爆炸燒 8 分鐘 CPU、改靜態+fade 秒成;
 配樂用 remake 的 `music.lbx` XMI #104 + `TimGM6mb.sf2` fluidsynth 離線算(乾淨可重現)。
-配 `rules/93-promo-video-original-assets.md`(素材來源[HARD])、u1-cht `docs/llm-promo-video-pipeline.md`(pipeline 起源)、`retro-game-playtest`(截圖/可玩性)。
+配 `rulebook/93-promo-video-original-assets.md`(素材來源[HARD])、u1-cht `docs/llm-promo-video-pipeline.md`(pipeline 起源)、`retro-game-playtest`(截圖/可玩性)。
