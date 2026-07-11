@@ -98,12 +98,28 @@ Roland MT-32 遠優於 AdLib，老 Sierra 本就內附 MT32.DRV。**configure �
 - **[HARD] 完整遊戲包不上 GitHub**；GitHub repo 只放 **patch-only**（引擎 patch + 中文資料，不含遊戲資源）。
 - **完整包集中放 `dist-all/`**（gitignore）。平台：**Windows / macOS / AppImage**。
   - Windows：`scummvm-win/`（獨立 mingw source 樹）configure `--host=x86_64-w64-mingw32 ...`（**去 --disable-mt32emu**）+ make → `scummvm.exe`；`package_windows.sh` 附完整 DLL（SDL2.dll、libwinpthread-1.dll）+ 遊戲 + ROM + .bat。**[HARD] source 複製勿排除 `config.guess`/`config.sub`**（否則 endianness unknown）。
-  - macOS：**GitHub Actions CI**（`.github/workflows/build-macos.yml`）；**自編 SDL2**（別用 brew sdl2-compat）；universal = 每弧各編 + `lipo`。CI 拿不到本機 ROM → 只開 mt32 能力不設預設。
+  - macOS：見下方「macOS CI 常見雷」專段（**這條最常出問題**）。
   - AppImage：`package_appimage.sh`，`--appimage-extract-and-run` 免 FUSE。
 - **引擎改動後 scummvm-win 要同步**：它是純目錄（無 .git）。從 `scummvm-src`（git checkout）`for f in $(git diff --name-only HEAD); do cp ...`（連 untracked fontchinese）即同步 patch 改動的檔。
   - **[雷] 啟用新子系統時補 vendor 靜態檔**：上法只補「patch 改動的檔」。啟用先前停用的子系統（如 `mt32emu`）時，其 vendor 靜態標頭可能在 scummvm-win **缺席**（當初停用時被剪）→ mingw 編譯報 `MT32EMU_VERSION_MAJOR/MINOR/PATCH` 未宣告。具體：`audio/softsynth/mt32/config.h`（Munt 版本標頭，內容跨平台相同、scummvm-src 有 git 追蹤）。修法：從 scummvm-src 補該檔。**更穩**：啟用新子系統後編譯前，`diff -rq scummvm-src/audio/softsynth/mt32 scummvm-win/audio/softsynth/mt32`（濾掉 `.o/.dwo/.d` build 產物）比對缺檔補回。
 - patch 維護：改完引擎 `cd scummvm-src && git diff HEAD -- engines/agi > patches/0001-*.patch`（SCI 同理 0002）。scummvm-src 是 pinned commit 的 git checkout，`git diff HEAD` 即完整 patch。
 - 相關規則：mingw/macOS 細節見 rulebook `82-cross-platform-port-verification` + `mac-app-cross-pack` skill；完整性優先見 `83-retro-completeness-over-roi`。
+
+### macOS CI 常見雷（**最常壞的一環，動 build/CI 前先讀**；深水區 → kb `mac-app-cross-pack`）
+
+> 前提：macOS `.app`/`.dmg` **只能在 macOS host build**（codesign/hdiutil/iconutil 都 macOS 限定），走 GitHub Actions `macos-14`(Apple Silicon) runner。**本機 Linux 測不出這些雷**（尤其 SDL、Gatekeeper），只能靠 CI 實跑。
+
+1. **[HARD] 別 `brew install sdl2`**——2026-06 起 brew 的 sdl2 = **sdl2-compat shim**（runtime 才 `dlopen libSDL3`）；dylibbundler 只打包靜態相依、抓不到 libSDL3 → 玩家端 **「Failed loading SDL3 library」/ 黑畫面**。**本機有裝 SDL3 測不出來**、CI 也是哪天 brew 換內容才突然壞。→ **CI 自源碼編 pinned 真 SDL2**（如 2.30.9），universal 用「每弧各編 + `lipo -create`」。
+2. **[HARD] ScummVM configure 不是 autoconf 友善**：`CXXFLAGS=-arch ...` 直接餵會 `integer expression expected`/`unrecognized`。**CXXFLAGS/LDFLAGS 只能當環境變數餵**，不能塞 configure 參數。
+3. **universal 別單次雙 `-arch`**：autoconf 版本解析在雙弧下會炸。要**每弧 native 各編一次 + `lipo -create` 合併**；x86_64 弧在 Apple Silicon runner 上走 `arch -x86_64`(Rosetta)，arch 值須與 runner 一致。用**兩份獨立 per-arch checkout**（免共用 build 目錄互汙）。
+4. **`std::unary_function` 找不到**（Xcode 15 C++20 移除）：1990s 老碼會踩，需 patch。
+5. **依賴面保持最小**：AGI/SCI 裁剪配置只需自編 SDL2；zlib/curl 是 macOS 系統庫；libvorbis/FLAC/png/freetype 不需要（別多自編/brew）。
+6. **啟用新子系統（如 mt32emu）首次 CI 要盯**：跟 mingw 一樣可能缺 vendor 檔或觸發平台特有編譯錯——**動了 configure flag 後第一條 CI 一定實跑驗證**，別假設。
+7. **版本 drift**：SDL2 release tarball 網址、ScummVM pinned 版本、runner 映像（`macos-13` 退役、Intel job 改 `macos-15-intel`）會隨時間變，首次/久沒跑要微調 workflow。
+8. **dmg 相容**：APFS dmg 在 Windows/WSL 讀不到 → 同時產 `.tar.gz`(保 perm) + `.dmg`(mkisofs -hfs hybrid)。dylibbundler 偶爾無限「Try again / can't get path for @rpath」。
+9. **Gatekeeper**：未簽署 app 首次執行要 `xattr -dr com.apple.quarantine /Applications/ScummVM.app`（README 要寫）。
+10. **cht 資料 post-build 注入**：`game/` gitignore、CI 拿不到 → `package_macos_data.sh` 從版控 `fonts/`/`fonts_vga/` 快照注入（跟 Linux/Windows md5 一致才不 drift）。ROM 同理 CI 拿不到 → macOS 只開 mt32 能力、不設預設。
+11. **[HARD] CI 監控別用旗艦背景 poll**：派 **haiku/sonnet** 一次盯完整條（給 run id + `gh run watch <id> --exit-status`，**明確要求「不 block 到 exit 不准返回」**——便宜 agent 常誤判提早返回；或旗艦用 harness 追蹤的**背景 `gh run watch`** 指令自己盯）。見 rulebook `35`(liveness) + `45`(機械活分工)。
 
 ---
 
