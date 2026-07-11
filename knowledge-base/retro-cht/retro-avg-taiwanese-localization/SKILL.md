@@ -145,6 +145,7 @@ AGI(Adventure Game Interpreter,LSL1 EGA 用 AGI 2.440)比 SCI 更老更簡單,�
 
 ### 引擎內 Big5 字串怎麼寫
 - C++ 字面值用 **`\xNN` 逐 byte hex escape**(mirror 既有 RU/HE/FR 分支),別放裸 Big5 byte(檔案非 UTF-8)。
+- **[HARD] clang(macOS)的 `\x` 是貪婪的 → GCC/mingw 過、clang 炸**:`\xNN` 會**一路吃掉後面所有 hex 數字**。若 Big5 escape 直接接一個「hex 數字字元」(0-9a-fA-F,含 ASCII 字母 A~F、a~f),會被併吞成越界值 → `error: hex escape sequence out of range`。典型:中文逗號 `，`(=`\xA1\x41`)直接接 `ESC`/`ENTER` → `\x41ESC` 讀成 `\x41E`(0x41E>255)。**GCC/mingw 較寬鬆放過,只有 macOS CI 的 clang 才爆**(本機 Linux 測不出)。**修法:字面值串接打斷** `"\xA1\x41" "ESC"`(相鄰字面值自動接合,source 空格被忽略、**位元組完全相同、不加字**、全編譯器可攜)。**通則:任何 `\xNN` 後緊接 hex 字元處都要插 `" "`**;產生器可自動偵測 escape 後接 `[0-9a-fA-F]` 就插斷點。
 - **字元必須在烘出的字庫內**:字庫由 `build_cht.py` 從 translation 表的**譯文 value**取字。若引擎硬寫字串用了表裡沒有的字,先確認覆蓋(這幾組系統 UI/狀態列字剛好都被既有譯文涵蓋)。
 
 ---
