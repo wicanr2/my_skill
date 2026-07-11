@@ -24,5 +24,8 @@
 - 禁 sentinel 迴圈、要求 docker 同步前景、**有界**(逆不出/做不到就誠實標受阻結束,**不掛起**)、禁 GUI viewer、「直接執行不進 plan mode」、dump 帶 `--frames N`。
 - worktree 隔離需 **cwd 在 git repo 內**(session 主目錄可能不是 repo,會導致 worktree 建立失敗)。
 
+## CI / GitHub Action 監控 → 派有界便宜 agent（不要旗艦背景 poll）
+等 CI（`gh run watch`）+ 取 artifact + `gh release upload --clobber` + 重建 `dist-all/` 這類「等待 + 搬運」是機械活，**別用旗艦的背景 Bash job 每次 CI 收尾就重新喚醒主迴圈**（每次喚醒燒最貴的 token）。派 **haiku/sonnet** 監控：`gh run watch` 會阻塞到 run 結束（天然有界，再配 `timeout` 上限），它盯完 + 搬完 + 回報「哪些資產更新/時間戳/成敗」，旗艦只看結論。成本面的完整理由見 `rules/45` 機械活清單「CI / GitHub Action 監控」條；本檔管的是它仍須遵 liveness——**有界、禁無界 sentinel、盯到結束或收掉**。
+
 ## 何時套用
 任何 spawn 背景 sub-agent 或在 agent 流程跑 docker 時(尤其多 agent 編排、逆向/素材抽取、build/test 迴圈)。**開了背景工作就有責任盯到它結束或收掉,不可放生。**
