@@ -1,6 +1,6 @@
 ---
 name: classic-mac-c-game-sdl-port
-description: 把 Classic Mac (Carbon/QuickDraw/CoreFoundation) C 遊戲移植成 SDL2 Linux/Windows + 繁中化(保留上游邏輯,shim 取代 Mac API)。內建六大必踩雷(最關鍵:shim 缺 prototype→64-bit 指標截斷)。觸發:出現 `CGrafPtr`/`CopyBits`/`NewGWorld`/`CFStringRef`/Pascal string `\p..`/`GetResource`/`FSSpec`、做 LairWare/Mac remake 中文化、SDL2 取代 QuickDraw、打包 AppImage/Windows。完整 shim 對照與打包見內文。
+description: 把 Classic Mac (Carbon/QuickDraw/CoreFoundation) C 遊戲移植成 SDL2 Linux/Windows/macOS + 繁中化(保留上游邏輯,shim 取代 Mac API)。內建六大必踩雷(最關鍵:shim 缺 prototype→64-bit 指標截斷)+ macOS 打包三雷(無 objcopy→編譯期 weak 宣告、BSD `cp -n` 撞 `set -e`、GITHUB_TOKEN 缺 contents:write)。觸發:出現 `CGrafPtr`/`CopyBits`/`NewGWorld`/`CFStringRef`/Pascal string `\p..`/`GetResource`/`FSSpec`、做 LairWare/Mac remake 中文化、SDL2 取代 QuickDraw、打包 AppImage/Windows/macOS Universal `.app`+`.dmg`(GitHub Actions macos runner、源碼編真 SDL2 非 brew shim、dylibbundler、lipo 雙弧)。完整 shim 對照與打包見內文。
 ---
 
 # Classic Mac C 遊戲 → SDL2 跨平台移植 + 中文化 Skill
@@ -11,7 +11,7 @@ description: 把 Classic Mac (Carbon/QuickDraw/CoreFoundation) C 遊戲移植成
 - 上游原始碼出現:`CGrafPtr`、`CopyBits`、`NewGWorld`、`SetGWorld`、`DrawThemeTextBox`、
   `CFStringRef`、`CFPreferencesCopyAppValue`、Pascal 字串 `"\p..."`、`GetResource`、`FSSpec`
 - 「Classic Mac 遊戲中文化」「resource fork 抽資料」「QTMA `.mov` 音樂轉檔」
-- 想加復古顯示(單色/CRT 濾鏡、多平台 tileset 切換)、想打包 AppImage / Windows zip
+- 想加復古顯示(單色/CRT 濾鏡、多平台 tileset 切換)、想打包 AppImage / Windows zip / **macOS Universal `.app`+`.dmg`**(「補 Mac 版」「加 macOS support」也算)
 
 **不適用**:純 QuickBasic/.bas → 用 `qb64pe-game-linux-port`;DOS 16-bit binary → DOSBox;
 ScummVM 已支援的遊戲 → 直接用 ScummVM。
@@ -49,9 +49,13 @@ ScummVM 已支援的遊戲 → 直接用 ScummVM。
 
 GNU grep 預設把含高位元組的檔當 binary 靜默跳過 → **一律用 `grep -a`**。Edit 工具寫回時會把遠處註解的高位元組 transcode(純註解無妨,但**產 patch 要手動只留目標 hunk**)。
 
-### 5. intra-TU 呼叫無法 objcopy weaken
+### 5. intra-TU 呼叫無法 objcopy weaken(+ macOS 無 objcopy)
 
 想用 `objcopy --weaken-symbol` 重導向某函式時,**同一 translation unit 內的呼叫**已在編譯期綁定,weaken 無效 → 必須直接實作該函式(或改用 `-include` 注入)。
+
+- **典型用途**:上游檔(如 `UltimaText.c`)**自帶** `UDrawThemePascalString`/`UThemePascalStringWidth` 的 Mac 實作,compat/`qd_text.c` 又以 SDL_ttf CJK 版定義同名強符號 → 連結期重複符號。Linux/Windows 靠 `objcopy --weaken-symbol` 把上游那份弱化,由 compat 強符號覆蓋。
+- 🔴 **複合雷(踩過)**:上游檔常是 **NEL(0x85)換行的 Classic Mac 編碼**,普通 `grep` 靜默把它當 binary 略過(見雷#4)→ 誤判「上游沒定義該符號、objcopy 是 no-op」→ **在 macOS 省掉 weaken → 連結才炸重複符號**。**判斷任何符號在不在某上游檔前,一律 `grep -a`**,別信普通 grep 的「找不到」。
+- 🔴 **macOS 無 `objcopy`**(Apple 工具鏈不含):不要為此裝笨重的 `brew llvm`。改**編譯期 weak 宣告**達同效——只在編譯該上游檔時 `-include` 一個小 header,把函式在定義前先宣告成 `__attribute__((weak))`,clang 便把後續定義發成 weak 符號,連結由 compat 強符號覆蓋。**對 fat(universal)物件原生生效、免外部工具**。範例:`src/compat/weaken_upstream_text.h`(型別靠先一步 `-include mac_shim.h` 提供)。
 
 ### 6. Pascal string → UTF-8 邊界
 
@@ -101,6 +105,21 @@ GNU grep 預設把含高位元組的檔當 binary 靜默跳過 → **一律用 `
 - 🔴 **雙擊 exe 閃退陷阱(必修)**:exe 用相對路徑讀 `assets/`,**依賴啟動工作目錄**。Windows 雙擊 exe、`.bat` 的 `start`、或從別處啟動時 cwd ≠ 解壓目錄 → 找不到 `assets/` → 資源載入後 NULL deref **閃退 (signal 11)**。**wine 從解壓目錄 `cd` 進去再跑不會重現**(工作目錄剛好對),要 `cd /tmp` 再用絕對路徑跑 exe 才複現。修:`main()` 啟動時若「exe 旁有 `assets/`」(`SDL_GetBasePath`+`stat`)就 `chdir` 過去(條件式 → 不破壞 exe 在 build/、assets 在 repo 根的開發/測試);AppImage 任意路徑啟動同樣受惠。
 - 🔴 **字型 fallback**:未設字型環境變數時,別只落到 Linux 系統字型路徑(Windows 不存在 → 中文變方塊)。fallback 到 exe 旁打包的字型(chdir 後相對路徑即可);`.bat` 雖設了字型 env,但使用者常直接雙擊 exe 繞過 bat。
 
+### macOS Universal `.app` + `.dmg`(GitHub Actions,非 Docker)
+
+**Linux 無法可靠跨編 Mach-O、`codesign`/`hdiutil`/`lipo` 只在 macOS** → 走 GitHub Actions `macos-14`(Apple Silicon)runner 原生 build。這個 SDL port 把 macOS 當純 POSIX+SDL 目標(`-include mac_shim.h` + `-I fakeinc` 攔截真實 Carbon SDK,完全不連 Apple 原生框架),故 build 幾乎 = Linux 那套 clang 命令加 `-arch`。實作範例:`u3-cht` `tools/package_macos.sh` + `.github/workflows/build-mac.yml`。
+
+- **Universal**:因 build 是手寫 clang(非 CMake),一趟 `-arch arm64 -arch x86_64` 直接出 fat binary;SDL 系列用 CMake `-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"` 編 fat dylib。**單一 SDL prefix** → 剛好避開「per-arch 各自 prefix + lipo 讓 dylibbundler 退化成單弧」的陷阱(見 `mac-app-cross-pack` skill)。
+- 🔴 **[HARD] 別 `brew install sdl2`**:2026 起 brew 的 sdl2 是架在 SDL3 上的 shim,runtime 才 `dlopen` libSDL3;dylibbundler 只打包靜態相依,不會收 libSDL3 → 玩家端「Failed loading SDL3 library」黑畫面,**本機(有裝 SDL3)測不出來**。改從 release **源碼** tarball 編真 SDL2(自帶 vendored 相依,免 submodule):image 用 `-DSDL2IMAGE_BACKEND_STB=ON`(PNG/JPG 免 libpng/jpeg,GIF 內建)、ttf 用 vendored freetype `-DSDL2TTF_HARFBUZZ=OFF`、mixer OGG 用 `-DSDL2MIXER_VORBIS=STB`(WAV 內建)其餘 codec 全關;`-DCMAKE_POLICY_VERSION_MINIMUM=3.5` 相容 CMake4。**辨識**:`.app/Contents/Frameworks/libSDL2-2.0.0.dylib` ~2–3.5MB=真、~0.5MB=shim;`otool -L … | grep SDL3` 有命中就是 shim。
+- 🔴 **dylibbundler 對自編 SDL 互動式無限 hang**:自編 dylib install name 是 `@rpath/…`(非 brew 的絕對路徑),dylibbundler 解不到 → 進互動模式問路徑,CI 無 stdin → 無限「Try again」卡爆。修:`-s "$PREFIX/lib"`(給搜尋路徑)+ `</dev/null`(保險絲,解不到就 fail-fast 而非 hang)。
+- 🔴 **[HARD] macOS(BSD)`cp -n` 跳過已存在檔案回「非 0」exit**(GNU cp 回 0)。在 `bash -e`(GitHub Actions run 預設 `-eo pipefail`)下,回填/複製資產時只要跳過任一既有檔,整步就**零輸出中止**、超難定位。要「只補不覆蓋」改 **`rsync -a --ignore-existing`**(回 0)。診斷 CI 零輸出 exit 1:先在該 step 加 `set -x`。
+- 🔴 **無 objcopy → 編譯期 weak 宣告**化解上游/compat 同名繪字符號重複(見雷#5)。
+- **.app 佈局**:binary + `launch` wrapper 在 `Contents/MacOS/`,assets 在 `Contents/Resources/`,SDL dylib 由 dylibbundler 收進 `Contents/Frameworks/`。若 `main()` 已有「exe 旁有 assets 就 chdir + 未設字型 env 就 fallback 相對路徑字型」(見上「雙擊閃退/字型 fallback」),wrapper 只需 `cd ../Resources` 後 exec,零 env 依賴。字型:mac 無 fonts-noto-cjk → `curl` 取 Noto Sans CJK TC OTF 命名為 `U3Font.ttc`(TTF_OpenFont 開 face 0)。
+- **防呆斷言(擋「CI 綠但玩家壞」)**:對主 binary 與 `Frameworks/libSDL2` 都 `lipo -info` 須同時見 `arm64`+`x86_64`,任一非雙弧 `exit 1`;`otool -L` 不得命中 SDL3。ad-hoc `codesign --force --deep --sign -`;`ditto` 出 zip + `hdiutil create -format UDZO` 出 dmg(雙保險)。Gatekeeper:附「右鍵打開 / `xattr -dr com.apple.quarantine`」說明。
+- 🔴 **附產物到 Release 需 `permissions: contents: write`**:workflow 沒宣告時預設 GITHUB_TOKEN 唯讀,`softprops/action-gh-release` 更新既有 release 被擋「Resource not accessible by integration」。tag 觸發即自動附;手動觸發驗證時可本機 `gh release upload --clobber` 補上綠燈產物,不必重跑 CI。
+- **gitignore 資產回填**:LairWare 美術刻意不進 git tree(引擎/資料分離),CI checkout 缺料 → build 前從既有 Release 的 Windows zip 抓完整 `assets/` 以 `rsync --ignore-existing` 補齊。
+- **[成本][HARD]** 等 CI + 搬 artifact 派便宜 agent(haiku/sonnet)盯,旗艦別背景 poll(見 `rulebook/35`+`45`)。
+
 ## 上游修改納管(patch 流)
 
 - **上游目錄唯讀**;中文化/修正放 `patches/*.patch`,build 腳本開頭 idempotent 套用(`git apply --reverse --check` 偵測已套用則略過)。重新 clone 上游仍可還原。
@@ -108,5 +127,6 @@ GNU grep 預設把含高位元組的檔當 binary 靜默跳過 → **一律用 `
 
 ## Reference
 
-- 完整實作範例:`u3-cht` repo (github.com/wicanr2/u3-cht) — Ultima III: Exodus LairWare Mac 版 → SDL2 中文化。
-- 關鍵檔:`src/compat/mac_shim.h` (prototype 集中)、`src/compat/qd_*.c` (QuickDraw shim)、`src/platform_sdl/plat_cf.c` (CoreFoundation shim)、`docs/單色模式評估.md` (CF prototype 截斷根因記錄)。
+- 完整實作範例:`u3-cht` repo (github.com/wicanr2/u3-cht) — Ultima III: Exodus LairWare Mac 版 → SDL2 中文化,三平台交付(Linux AppImage / Windows zip / macOS Universal `.app`+`.dmg`)。
+- 關鍵檔:`src/compat/mac_shim.h` (prototype 集中)、`src/compat/qd_*.c` (QuickDraw shim)、`src/compat/weaken_upstream_text.h` (macOS 編譯期 weak)、`src/platform_sdl/plat_cf.c` (CoreFoundation shim)、`tools/package_macos.sh` + `.github/workflows/build-mac.yml` (macOS Universal 打包)、`docs/單色模式評估.md` (CF prototype 截斷根因記錄)。
+- 互補 skill:`mac-app-cross-pack`(SDL 1.2 / 更廣的 macOS Universal + dmg + Gatekeeper SOP)。
