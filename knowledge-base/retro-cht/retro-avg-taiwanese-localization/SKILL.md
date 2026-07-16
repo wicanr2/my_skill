@@ -167,6 +167,13 @@ AGI(Adventure Game Interpreter,LSL1 EGA 用 AGI 2.440)比 SCI 更老更簡單,�
 
 > 完整逆向紀錄:本專案 `docs/45-sci-age-verify.md`(VGA/SCI)、`docs/40-agi-track.md` §7(EGA/AGI `v93`)。**通則:SCI 問答防拷幾乎都把正解存某 script local,dump 題庫看首欄+`Box()` probe 對照 locals 就能定位。**
 
+### [HARD] 第一性原理:要「一鍵跳過」驗證 → 跳門,別答題
+「逐題自動作答」(保留片頭的一次通過永久免答)與「一鍵略過」是兩種需求,別混。**要當場一鍵略過時,逐題模擬會撞題型繁多的坑**(常識題 TAB/字母、笑話題 `local[4]=0` 任意答案、手冊防拷題、各種過場推進方式全不同,一個個特例修到死)。第一性原理:**驗證只是一道「門」把玩家擋在起始房間外——直接跳到門後的起始房間即可,不必答對任何一題**。用引擎內建換場機制:
+- **SCI**:`_gamestate->setRoomNumber(N)`(除錯器 "room" 指令同機制)+ `abortScriptProcessing=kAbortLoadGame`(打斷驗證控制項的 VM 阻塞迴圈,走 replay 恢復路徑進 room N;光設 room 不會打斷阻塞迴圈)+ `_gfxPorts->reset()`(清殘留對話框 window,同 `savegame.cpp` restore 路徑)。
+- **AGI**:keyboard 攔截 → `_text->closeWindow()` + `_game.exitAllLogics=true` + `cycleInnerLoopInactive()` + `newRoom(N)`(比照 AGI restore 從 inner loop 直接換場)。
+- 起始房間號:LSL1 EGA=room 11、VGA=room 100(皆老左酒吧外)。事件層攔 `Ctrl+Alt+X`,一律消化避免字元漏進遊戲 parser。
+> **教訓**:老遊戲 gate/防拷,「跳過」的第一直覺該是「換到門後房間」,不是「破解怎麼答對」。前者用引擎既有的 restore/除錯換場機制,幾行搞定;後者是無底洞。**笑話題(任意答案、`local[4]=0`)若真要逐題答,要偵測問句結尾 `?` 按 'a',否則卡死。**
+
 ---
 
 ## 可複用清單(換一款靠哏的老 AVG)
