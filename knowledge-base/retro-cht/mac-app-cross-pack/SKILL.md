@@ -64,12 +64,8 @@ jobs:
     runs-on: macos-14    # Apple Silicon (M1)，免費 6 小時/月
     steps:
       - uses: actions/checkout@v4
-      - name: Install homebrew deps
-        run: |
-          brew install yaml-cpp sdl2 sdl2_image sdl2_mixer sdl2_gfx \
-                       sdl12-compat dylibbundler
-      # NOTE: brew 已移除 sdl_image / sdl_mixer / sdl_gfx (SDL 1.2)
-      # 必須走 source build
+      # ★絕不 brew 任何 SDL（§1.2b：brew sdl2 = sdl2-compat shim 雷）；SDL 全 source build，brew 只裝打包工具
+      - run: brew install dylibbundler
 ```
 
 ### 1.2 SDL 1.2 source build（Homebrew 殺了 brew sdl 後唯一路）
