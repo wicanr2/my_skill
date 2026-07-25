@@ -45,6 +45,8 @@ description: 逆向工程 + 老遊戲中文化/移植/remake/素材抽取/逆向
 | 互動 app(GUI/TUI/遊戲)離開語意:ESC 只 cancel/back·F10/Ctrl+Q 才 quit·離開前 Yes/No + 自動存檔 / 做 input handler·選單導航·quit 鍵·存檔系統 / 「按錯鍵丟進度」·quit dialog·modal | `esc-cancel-f10-quit-autosave/SKILL.md` |
 | 全螢幕終端 ASCII art 動畫(Matrix Katakana 雨 + 3D billboard turnaround + sprite 縱隊)/ 終端螢幕保護 / PNG·icon → ASCII turnaround / 改 `~/ascii-art/`(尤其 dna_matrix.py 衍生)| `ascii-matrix-scene/SKILL.md` |
 | 1990s SDL 1.2·C++ 老遊戲 → macOS Universal(arm64+x86_64)`.app`·`.dmg` / GitHub Actions macos runner / dylibbundler / sdl12-compat / WSL 產 HFS+ dmg / Gatekeeper quarantine / `std::unary_function`(Xcode 15 C++20)/ 補 Mac 版 | `mac-app-cross-pack/SKILL.md` |
+| **反組譯 DOS 老遊戲執行檔**(MZ 16-bit real mode)/ Ghidra headless / analyzeHeadless 跑不起來 / `segment:offset` 對不回檔案位移 / Ghidra 12.x post-script 失敗·API 方法消失 / 字串錨定找遊戲主邏輯 | `ghidra-headless-dos-re/SKILL.md` |
+| **老遊戲中文化的字形來源**(預設倚天點陣字,非 TTF rasterize)/ 用倚天字形·ETEN 字型 / `stdfont.15`·`spcfont.15`·`STD.24M` 格式怎麼解 / 全形標點掉 fallback·標點字型不一致 / Big5 點陣字抽字烘 `.fnt` / 16×15 vs 24×24 選哪個 | `eten-bitmap-font/SKILL.md` |
 | COCOMO Basic SLOC 反推傳統人力 / KLOC·PM 人月 / 開發成本·工時估算 / AI-agent vs 傳統人力差距 / 逆向漢化工時 / 給 PM 看的 baseline estimate / 「估一下這專案」| `cocomo-estimate/SKILL.md` |
 
 ## C. 60 / 62 / 63 / 64 互補(RE 與除錯的四種真相來源)
