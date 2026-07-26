@@ -54,6 +54,7 @@
 | [`retro-keyboard-to-touch`](knowledge-base/retro-cht/retro-keyboard-to-touch/SKILL.md) | 鍵盤老遊戲/SDL C 引擎移植到 Android/觸控的方法論:不重寫輸入,讀引擎每畫面 keymap 動態渲染 context-aware 觸控控制,手指事件合成 SDLK_* 餵回原事件迴圈 | 「老遊戲移植到 Android」「鍵盤遊戲改觸控」「SDL2 android-project 移植」「觸控覆蓋層/UX 設計」 |
 | [`eten-bitmap-font`](knowledge-base/retro-cht/eten-bitmap-font/SKILL.md) | 用倚天中文系統(ETEN)原生點陣字當老遊戲中文化的字形來源(比 TTF rasterize 對味):`STDFONT.15`/`SPCFONT.15`/`STD.24x` 格式、Big5 分區索引公式、與專案自訂碼表對接、字模尺寸與排版格解耦、16×15 vs 24×24 視覺大小取捨 | 「用倚天字形/ETEN 字型」「原味 DOS 點陣中文」「stdfont.15/spcfont.15/STD.24M 怎麼解」「標點變成別的字型」「Big5 點陣字烘 fnt」 |
 | [`first-principles-tech-notes`](skills/first-principles-tech-notes/SKILL.md) | 建立/擴展「第一性原理+圖文並茂」技術知識庫 GitHub repo:每主題一篇 markdown、概念配手繪 SVG、研究 sub-agent 查證、專家+學生審查、worklist 一項一項做 | 「整理某領域筆記成 repo」「把 X 主題寫成第一性原理教學」「一項一項做我監看」「ASCII 圖升級 SVG」 |
+| [`isaac-sim-monitoring`](skills/isaac-sim-monitoring/SKILL.md) | **階層式** headless Isaac Sim(5.x)監控與物理調參:這條鏈的失效大多**沒有錯誤訊息**(simulation view 失效→車永久不動、DDS SHM 版本不合→資料面靜默全丟、convexHull 薄板→咬不進孔洞、剛體查詢對非剛體回未初始化記憶體卻 `ret_val=True`)。六原則:UDP 唯讀探針主動問狀態、`/proc/<pid>/fd/1` 反查 log 不猜檔名、分清 authored/即時/DB 三層值、查詢成功≠值可用、接觸問題先幾何後摩擦、**「我設了參數」≠「參數生效了」**(實例:以為靠 μ=5.0 抓握,實際那條線從未接上)。含漂移/途中滑動/放置誤差三者的量法、A/B 紀律、快速體檢清單。references/ 收 專案X 完整實作(探針命令表、取樣腳本、門檻取值理由)按需讀 | 「Isaac 車不動但沒錯誤」「棧板叉不起來/邊走邊歪/位置漂掉」「調摩擦、碰撞近似、接觸參數」「headless Isaac 怎麼除錯」「模擬跑得動但實體沒動」 |
 | [`proposal-writer`](skills/proposal-writer/SKILL.md) | 多 agent 分章節撰寫/精鍊長篇計畫書(送審/技術整合/展會提案):含文獻驗證、技術校正、術語中文化、執行摘要、md→docx 產出 | 「寫/改/審計畫書」「研究白皮書」「展會提案」「多 agent 分章節長文件」 |
 
 ### cocomo-estimate 一句話
