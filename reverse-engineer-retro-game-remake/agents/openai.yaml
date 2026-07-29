@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retro Game RE + Remake"
+  short_description: "Evidence-backed reverse engineering and clean remake workflow"
+  default_prompt: "Use $reverse-engineer-retro-game-remake to inventory, reverse engineer, clean-room remake, and verify this retro game."
