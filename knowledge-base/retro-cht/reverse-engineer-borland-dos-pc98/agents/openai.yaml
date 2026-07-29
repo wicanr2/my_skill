@@ -1,0 +1,4 @@
+interface:
+  display_name: "Borland DOS／PC-98 逆向"
+  short_description: "解析 Borland 與 Turbo Pascal 的 MZ、符號表及 overlay"
+  default_prompt: "使用 $reverse-engineer-borland-dos-pc98 解析這個 Borland DOS／PC-98 執行檔的符號表與 overlay。"
