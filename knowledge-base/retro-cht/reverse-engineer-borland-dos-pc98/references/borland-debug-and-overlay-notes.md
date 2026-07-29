@@ -31,13 +31,14 @@ Turbo Pascal 版本可能使用 16-bit count，不能直接套用 32-bit C struc
 1. 讀取 magic 與 version。
 2. 以候選欄位寬度計算所有 table 的最小界線。
 3. 驗證 `symbols_count`、`names_count` 與 `names` 不超出 EOF。
-4. 名稱池可能採 Pascal length-prefixed string，而不是新版文件所寫 ASCIIZ；
-   必須以 count 與 pool byte size 雙重驗證。
+4. 名稱池編碼須由 bytes 判定；本作 Turbo Pascal `0x0208` 使用 ASCIIZ，
+   其前方另有 length-prefixed data pool。必須以 count、pool byte size
+   與 EOF 邊界雙重驗證，不能把兩個 pool 混在一起。
 5. 由 name index 連到 symbol，再把 segment/offset 對回 MZ segment map。
 
 ## 舊式 16-bit symbol record
 
-在 Turbo Pascal 5.x 時代的 16-bit 表格中，可觀察到每筆 10 bytes 的候選
+在 Turbo Pascal 5.x 時代的 16-bit 表格中，本作可驗證每筆 9 bytes：
 排列：
 
 ```text
@@ -45,10 +46,12 @@ Turbo Pascal 版本可能使用 16-bit count，不能直接套用 32-bit C struc
 +2  u16 type_index
 +4  u16 offset
 +6  u16 segment
-+8  u16 flags/class
++8  u8  flags/class
 ```
 
-這是實證導向的 legacy layout，不是把 BC4 的 32-bit struct 強制縮窄。
+使用錯誤的 10-byte stride 會出現「只有每第 9 筆像正常 symbol」的週期性
+假象；這是應立即檢查 record width 的診斷訊號。此 layout 是實證導向，
+不是把 BC4 的 32-bit struct 強制縮窄。
 解析器必須用 symbol count、下一表起點、name index 範圍與程式地址共同驗證。
 
 ## Turbo Pascal TPOV
