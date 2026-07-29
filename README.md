@@ -24,7 +24,8 @@
 
 | Skill | 用途 | 觸發時機 |
 |-------|------|----------|
-| [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) | 逆向工程 + 老遊戲中文化/移植/remake 的**按需路由**:把 14 個遊戲/retro 資產(已降級為 `knowledge-base/retro-cht/`)與 retro craft rules 依觸發表指路,只留 1 個常駐入口省 token | 「逆向工程」「老遊戲中文化/移植/remake」「特定遊戲(火龍之戰/Zak/孟波/裝甲元帥…)」「game tester」「做遊戲推廣片」「ESC/F10 離開鍵」「Mac DMG 打包」「COCOMO 工時估算」 |
+| [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) | 逆向工程 + 老遊戲中文化/移植/remake 的**按需路由**：把遊戲／retro 資產（已降級為 `knowledge-base/retro-cht/`）與 retro craft rules 依觸發表指路，只留 1 個常駐入口省 token | 「逆向工程」「老遊戲中文化/移植/remake」「Golden Box／PC-98」「特定遊戲(火龍之戰/Zak/孟波/裝甲元帥…)」「game tester」「做遊戲推廣片」「ESC/F10 離開鍵」「Mac DMG 打包」「COCOMO 工時估算」 |
+| [`research-pc98-golden-box-ui`](knowledge-base/retro-cht/research-pc98-golden-box-ui/SKILL.md) | PC-98 日文 Golden Box 跨作品介面研究：640×400、16×15／16×16 點陣字、對話分頁、隊伍狀態欄、戰鬥 HUD 與繁中排版；只提供可泛用的結構證據，不複製遊戲美術 | 「Golden Box／Gold Box／黃金盒／金盒」「PC-98／PC98／PC-9801」「克萊恩英豪／幽靈騎士」「Champions／Death Knights of Krynn」「Pool of Radiance」「CJK CRPG 排版」 |
 | [`kneron-edge-ai-integration`](skills/kneron-edge-ai-integration/SKILL.md) | **階層式** 把 YOLO/物件偵測整合部署到耐能 Kneron NPU (KL730/720) 的 SOP + 必踩雷:量化崩潰根因 (raw-logit 須用 mmse 非 percentage=1.0)、kneron-mmdetection docker 6 坑、ONNX→NEF、decode+NMS、逐 channel 驗收、記憶體/CPU 上限。SKILL.md 精簡+三大致命雷,references/ 4 檔按需讀 | 「YOLO 跑在耐能/Kneron NPU」「KL730/KL720 部署」「ONNX 轉 NEF」「NPU 量化後輸出全 0/崩潰」「kneron-mmdetection 環境」「edge AI 晶片整合物件偵測」 |
 | [`github-weekly-radar`](skills/github-weekly-radar/SKILL.md) | 每週彙整 GitHub 近期重要**新**專案 + senior-PM 重要性評估 | 「這週 github 重要新專案」「新 repo 週報」「trending 摘要」 |
 | [`cocomo-estimate`](knowledge-base/retro-cht/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
@@ -164,8 +165,9 @@ my_skill/
 │   ├── prompt-master/  english-prompt-coach/  organize-folder/
 │   └── my-skill-merge/  dev-setup-bundle/
 └── knowledge-base/
-    └── retro-cht/                  # 14 個降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
-        ├── dragon-wars-cht-remake/  zak-fmtowns-zhtw/  rise-of-the-dragon-cht/
+    └── retro-cht/                  # 降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
+        ├── research-pc98-golden-box-ui/  dragon-wars-cht-remake/
+        ├── zak-fmtowns-zhtw/  rise-of-the-dragon-cht/
         ├── panzer-general-wine/  classic-mac-c-game-sdl-port/  qb64pe-game-linux-port/
         ├── retro-game-remake/  retro-game-playtest/  retro-keyboard-to-touch/
         ├── game-promo-video-ffmpeg/  esc-cancel-f10-quit-autosave/  ascii-matrix-scene/

@@ -1,6 +1,6 @@
 ---
 name: re-retro-cht-rulebook
-description: 逆向工程 + 老遊戲中文化/移植/remake/素材抽取/逆向整合 的按需路由(收攏 rulebook 62/64/65/80/81/82/83/84/93 + 60/62/63/64 互補;並收攏 14 個已降級為 knowledge-base 的遊戲 skill)。觸發:逆向工程·分析原始碼寫筆記·「這值從哪來·某欄位·某機制」斷言前·RE 撞牆(封死·要動態·DOSBox·截圖/原版錄影/他版反推位置);老遊戲中文化·移植·remake·素材抽取;retro README 大改;CJK 中文化畫面/字型/解析度(縮字 vs 拉畫布);ScummVM/AGOS/DGDS/SCUMM talkie 繁中化·有語音沒字幕·對齊兩版·.RED 壓縮;跨平台 port 對齊原版。**特定遊戲/工具/任務**(命中即先 Read 本 skill 再按下方表路由 kb):火龍之戰·Dragon Wars·opendw;Zak McKracken·scummtr·FM-Towns 中文;火龍之吼·孟波·中國之心·威利奇遇記·DGDS;Panzer General·裝甲元帥·PG-cht·wine 256色;Classic Mac·QuickDraw·Carbon·CGrafPtr·CopyBits→SDL2·LairWare;QB64·.bas·QuickBasic→Linux/Windows;u2/u3/u6-cht·反編當 oracle 重寫;game tester·實機驗證·「進去就壞/不存檔/能不能玩」;鍵盤老遊戲→Android/觸控·openkb·King's Bounty;做遊戲推廣片·trailer·zoompan·MIDI+SoundFont 抽配樂;ESC/F10 離開鍵·quit dialog·自動存檔;ASCII 動畫·Matrix·螢幕保護·PNG→ASCII turnaround;Mac DMG·universal binary·sdl12-compat·dylibbundler·Gatekeeper;COCOMO·KLOC·PM 人月·開發成本/工時估算·AI vs 傳統人力。
+description: 逆向工程 + 老遊戲中文化/移植/remake/素材抽取/逆向整合 的按需路由(收攏 rulebook 62/64/65/80/81/82/83/84/93 + 60/62/63/64 互補;並收攏已降級為 knowledge-base 的遊戲 skill)。觸發:逆向工程·分析原始碼寫筆記·「這值從哪來·某欄位·某機制」斷言前·RE 撞牆(封死·要動態·DOSBox·截圖/原版錄影/他版反推位置);老遊戲中文化·移植·remake·素材抽取;retro README 大改;CJK 中文化畫面/字型/解析度(縮字 vs 拉畫布);ScummVM/AGOS/DGDS/SCUMM talkie 繁中化·有語音沒字幕·對齊兩版·.RED 壓縮;跨平台 port 對齊原版。**特定遊戲/工具/任務**(命中即先 Read 本 skill 再按下方表路由 kb):Golden Box·Gold Box·黃金盒·金盒·PC-98·PC98·PC-9801·克萊恩英豪·幽靈騎士·Champions of Krynn·Death Knights of Krynn·Pool of Radiance·Curse of the Azure Bonds·Secret of the Silver Blades·Pools of Darkness;火龍之戰·Dragon Wars·opendw;Zak McKracken·scummtr·FM-Towns 中文;火龍之吼·孟波·中國之心·威利奇遇記·DGDS;Panzer General·裝甲元帥·PG-cht·wine 256色;Classic Mac·QuickDraw·Carbon·CGrafPtr·CopyBits→SDL2·LairWare;QB64·.bas·QuickBasic→Linux/Windows;u2/u3/u6-cht·反編當 oracle 重寫;game tester·實機驗證·「進去就壞/不存檔/能不能玩」;鍵盤老遊戲→Android/觸控·openkb·King's Bounty;做遊戲推廣片·trailer·zoompan·MIDI+SoundFont 抽配樂;ESC/F10 離開鍵·quit dialog·自動存檔;ASCII 動畫·Matrix·螢幕保護·PNG→ASCII turnaround;Mac DMG·universal binary·sdl12-compat·dylibbundler·Gatekeeper;COCOMO·KLOC·PM 人月·開發成本/工時估算·AI vs 傳統人力。
 ---
 
 # 逆向工程 + 老遊戲中文化 路由集(rulebook + 已降級遊戲 skill)
@@ -27,10 +27,11 @@ description: 逆向工程 + 老遊戲中文化/移植/remake/素材抽取/逆向
 
 ## B. 已降級遊戲 skill 路由(kb,按需 Read)→ Read
 
-> 這 14 個原本是 skill,2026-07-06 降級為 kb 以省常駐 token。命中觸發 → `Read` 對應 `SKILL.md`(內容不變,只是不再自動載入)。路徑前綴:`knowledge-base/retro-cht/`。
+> 這些原本是常駐 skill，現已降級為 kb 以省常駐 token。命中觸發 → `Read` 對應 `SKILL.md`（內容不會在每次工作階段自動載入）。路徑前綴：`knowledge-base/retro-cht/`。
 
 | 觸發情境 | Read(retro-cht/…/SKILL.md) |
 |---|---|
+| **PC-98 日文 Golden Box／Gold Box 介面研究** / 黃金盒·金盒 / 640×400 / 16×15·16×16 點陣字 / 日文或繁中 CRPG 排版 / 隊伍狀態欄·對話分頁·戰鬥 HUD / 克萊恩英豪·幽靈騎士·Champions of Krynn·Death Knights of Krynn·Pool of Radiance·Curse of the Azure Bonds·Secret of the Silver Blades·Pools of Darkness | `research-pc98-golden-box-ui/SKILL.md` |
 | 《火龍之戰》Dragon Wars 1989 繁中化 / opendw / opendw_remake / C++20·SDL2 重寫 / DATA1·DATA2 資產萃取 / Read Paragraph 防拷 / 逐指令差異測試 | `dragon-wars-cht-remake/SKILL.md` |
 | Zak McKracken(FM-Towns Steam)繁中化 / scummtr 不認 CJK / Unknown function id 0xAB·0xCF / Truncated escaping / chinese_gb16x12.fnt / SCUMM 中文化 / FM-Towns 中文 | `zak-fmtowns-zhtw/SKILL.md` |
 | Rise of the Dragon·火龍之吼·孟波 / Heart of China·中國之心 / Willy Beamish·威利奇遇記 / ScummVM DGDS·TTM 字串·STORE AREA / 電腦·視訊電話英文 / drawTitleSubtitle / Android APK 注入·liboboe.so·eglCreateWindowSurface | `rise-of-the-dragon-cht/SKILL.md` |
