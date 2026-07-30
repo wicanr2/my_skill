@@ -1,0 +1,4 @@
+interface:
+  display_name: "RPG Remake 配樂設計"
+  short_description: "為經典 RPG remake 設計可辨識、可互動且授權清楚的配樂提示詞"
+  default_prompt: "Use $compose-rpg-remake-music to design distinctive exploration, combat, boss, and trailer music prompts for this remake."
