@@ -1,6 +1,6 @@
 ---
 name: retro-game-cht-package
-description: 把一個「patched-ScummVM(或 SDL2)老遊戲繁中化」專案打包成三平台可玩成品的 SOP。涵蓋 Linux 單檔 AppImage(slim 自備遊戲 / full 內嵌遊戲開箱即玩)、Windows 用 docker mingw-w64 cross-compile(自編 SDL2 靜態連結、關掉 mad/vorbis/flac 壓縮編解碼、force little-endian 繞 cross 端序檢測、objdump 遞迴收所有非系統 DLL、打成 .zip)、macOS 走 GitHub Actions(自編 universal SDL2 不用 brew sdl2、dylibbundler)再抓 .app artifact 回本機注入語音+遊戲。也涵蓋 slim/full 版權切分(原版遊戲資料 + TTS 中文語音只進本機完整包、不上公開 CI)。也涵蓋「玩家交付 UX」:每包附繁中 使用說明.txt(Windows SmartScreen、Linux 缺 FUSE、macOS 未簽章報「已損毀」其實是 quarantine),`.app` 用 tar.gz 不用 zip。當使用者談到「打包這個中文化」「Windows/AppImage/macOS 三平台」「cross-compile Windows」「docker mingw」「自編 SDL2」「AppImage 開箱即玩」「把遊戲也包進去」「DLL 都要打包」「Checking endianness unknown」「scummvm.exe 缺 DLL」「macos github action 編完抓回來打包」「macos universal/Intel」「app 已損毀無法打開」「使用說明要寫什麼」「dist-all」時觸發。**主動觸發**:使用者只說「幫這個漢化專案出 Windows / Linux / Mac 版」也套用。
+description: 把一個「patched-ScummVM(或 SDL2)老遊戲繁中化」專案打包成三平台可玩成品的 SOP。涵蓋 Linux 單檔 AppImage(slim 自備遊戲 / full 內嵌遊戲開箱即玩)、Windows 用 docker mingw-w64 cross-compile(自編 SDL2 靜態連結、關掉 mad/vorbis/flac 壓縮編解碼、force little-endian 繞 cross 端序檢測、objdump 遞迴收所有非系統 DLL、打成 .zip)、macOS 走 GitHub Actions(自編 universal SDL2 不用 brew sdl2、dylibbundler)再抓 .app artifact 回本機注入語音+遊戲。也涵蓋 slim/full 版權切分(原版遊戲資料 + TTS 中文語音只進本機完整包、不上公開 CI)。也涵蓋「玩家交付 UX」:每包附繁中 使用說明.txt(Windows SmartScreen、Linux 缺 FUSE、macOS 未簽章報「已損毀」其實是 quarantine),`.app` 用 tar.gz 不用 zip。當使用者談到「打包這個中文化」「Windows/AppImage/macOS 三平台」「cross-compile Windows」「docker mingw」「自編 SDL2」「AppImage 開箱即玩」「把遊戲也包進去」「DLL 都要打包」「Checking endianness unknown」「scummvm.exe 缺 DLL」「macos github action 編完抓回來打包」「macos universal/Intel」「app 已損毀無法打開」「使用說明要寫什麼」「dist-all」「解開後檔案不見了」「中文檔名亂碼」「.bat 中文亂碼」「記事本開 txt 亂碼」時觸發。**主動觸發**:使用者只說「幫這個漢化專案出 Windows / Linux / Mac 版」也套用。
 ---
 
 # 老遊戲漢化專案 → 三平台打包 SOP
@@ -58,6 +58,103 @@ docker run --rm -v $PWD:/work -w /work debian:12-slim bash scripts/build_windows
 - 觸發 + 抓回:`gh workflow run build-macos.yml` → `gh run watch <id> --exit-status` → `gh run download <id>`。
 - `scripts/package_macos_local.sh <下載的.app>`:把 TTS 語音 + 你的遊戲資料注入 `.app/Contents/Resources/data/` → full `.app` 到 `dist-all/macos/`(個人自留)。
 - 細節(Gatekeeper `xattr -dr com.apple.quarantine`、APFS DMG Windows 讀不到改 `.tar.gz`、dylibbundler、.dmg 產法)見 `mac-app-cross-pack` skill。**⚠ 自編 SDL 用 dylibbundler 必踩雷**:from-source SDL 的 install name 是 `@rpath/...`,dylibbundler 解不到會**互動式無限 hang**(CI 卡到 timeout);**務必 `dylibbundler … -s "$PREFIX/lib" </dev/null`**(給搜尋路徑 + fail-fast),見 `mac-app-cross-pack` §1.5。CI 長 hang 別憑記憶換假設,用時間戳逐階段排除(§1.2d)。⚠️ **關鍵分歧**:`mac-app-cross-pack` 是 **CMake** 遊戲(OpenXcom),`-arch arm64 -arch x86_64` **單次雙弧可行**;**ScummVM 是 autoconf**,單次雙弧會炸 configure 版本解析 → **必須分弧 native 編 + lipo**(本 skill)。同樣「runner 退役 → job queued」雷兩邊都有,對應 rule `42-reference-fidelity`(從會動的 reference 抄現用 runner 標籤)。
+
+## [HARD] 交付包的檔名與純文字編碼(玩家端才會爆的一類)
+
+這一類問題在 Linux 開發機上**完全測不出來**:本機解得開、看得懂,到了繁體中文 Windows
+上檔案卻「不見了」。
+
+### Windows zip 不能放中文檔名
+
+**症狀**:玩家回報「下載解開之後,那個 .bat 檔不見了」或「檔名是一串亂碼」。
+
+**根因(第一性)**:**zip 格式沒有檔名編碼欄位**。早期規格假設檔名是該系統的本地編碼,
+後來才用 general purpose flag 的 **bit 11(EFS)** 追加「這個檔名是 UTF-8」的宣告。
+Info-ZIP 的 `zip`(Linux 標準工具)把檔名以 UTF-8 bytes 寫入,**但預設不設那個旗標**:
+
+```
+UTF-8旗標=False 非ASCII=True  'τÄ⌐-Σ║₧τæƒτÄïσé│σÑç-τ╣üΣ╕¡.bat'
+```
+
+繁中 Windows 的解壓工具(檔案總管、舊版 WinRAR)看到沒有旗標,就用系統 ANSI(CP950)
+去解讀那串 UTF-8 bytes:運氣好檔名變亂碼;**運氣差那串 bytes 在 CP950 裡是非法序列,
+解壓工具直接跳過該檔** → 玩家看到的就是「檔案消失」。
+
+**修法三層一起做**:
+
+| 層 | 做法 | 為什麼 |
+|---|---|---|
+| **檔名** | **一律 ASCII**(`PLAY-XXX.bat`、`README-CHT.txt`) | 根治。中文留在檔案**內容**裡,玩家一開啟就看得到 |
+| **zip** | 仍設 UTF-8 旗標,並在打包後驗一次 | 保險。日後有人加了中文檔名不會回到老問題 |
+| **內容** | `.bat` 存 **CP950**、`.txt` 存 **UTF-8 with BOM**,都用 **CRLF** | 見下 |
+
+別為了「中文檔名比較親切」而妥協——把親切度放進檔案內容(`.bat` 開頭 `echo` 幾行中文提示),
+效果一樣而且不會壞。
+
+**用 python `zipfile` 打包**(它對非 ASCII 檔名會自動設 bit 11),打完驗一次:
+
+```python
+with zipfile.ZipFile(out) as z:
+    for i in z.infolist():
+        if any(ord(c) > 127 for c in i.filename) and not (i.flag_bits & 0x800):
+            sys.exit(f"✗ {i.filename!r} 沒有 UTF-8 旗標")
+```
+
+### `.bat` 存 CP950,`.txt` 存 UTF-8 with BOM
+
+- **`.bat`**:`cmd.exe` 用**目前的字碼頁**解讀位元組。啟動器慣例是開頭 `chcp 950`,
+  那**檔案本身也必須是 CP950(Big5)**,否則 `echo` 的中文是亂碼。
+  存 UTF-8 + `chcp 65001` 也行,但舊版 cmd 在 65001 下有已知的批次檔行為異常,
+  **CP950 對繁中玩家最穩**。
+  副作用是 CP950 打不出的字會直接寫檔失敗——這是好事,逼你在打包階段就發現用字問題。
+- **`.txt`**:沒有 BOM 的 UTF-8,舊版記事本會當 ANSI 解讀 → 中文全亂。
+  用 `encoding='utf-8-sig'`。跨語系比 CP950 安全。
+- **換行一律 CRLF**(`newline='\r\n'`)。`.bat` 用 LF-only 遇到 `goto`/label 會有難查的
+  行為差異;`.txt` 用 LF-only 在舊記事本裡擠成一行。
+
+### tar.gz 沒有這個問題
+
+macOS/Linux 的 `.tar.gz` **不需要**改 ASCII 檔名:tar 的檔名欄位就是一串 bytes,
+沒有「宣告編碼」這件事,解開時原樣還原;macOS 又是全系統 UTF-8。
+所以 macOS 包裡「啟動.command」「修復-macOS.command」這種中文檔名是安全的。
+**問題出在 zip 這個格式本身,不是「中文檔名」本身有罪。**
+
+### [雷] 別用「先 cat 再轉檔」的兩段式寫法
+
+```bash
+cat > out.txt.tmp <<'TXT'
+（中文內容）
+TXT
+python3 -c "open('out.txt','w',encoding='utf-8-sig').write(open('out.txt.tmp').read())"
+```
+
+**中間那步靜默失敗時,產物看起來「檔案有在」,但編碼是錯的**——沒有任何錯誤訊息,
+`ls` 看得到、大小也正常,只有拿去 Windows 開才發現。實際踩過:BOM 沒寫進去而完全沒察覺,
+最後逐檔驗編碼才抓到。**改成 quoted heredoc 餵給 python 一次寫對**:
+
+```bash
+python3 - "$STAGE/README-CHT.txt" <<'PYTXT'
+import sys
+open(sys.argv[1], 'w', encoding='utf-8-sig', newline='\r\n').write('''
+（中文內容）
+''')
+PYTXT
+```
+
+### 收尾檢查(每次打包都跑)
+
+```python
+z = zipfile.ZipFile(p)
+assert not [i for i in z.infolist() if any(ord(c) > 127 for c in i.filename)], "有非 ASCII 檔名"
+z.read('PLAY-XXX.bat').decode('cp950')                       # 不是 CP950 會丟例外
+assert z.read('README-CHT.txt')[:3] == b'\xef\xbb\xbf', "README 缺 BOM"
+for n in ('PLAY-XXX.bat', 'README-CHT.txt'):
+    raw = z.read(n)
+    assert raw.count(b'\r\n') == raw.count(b'\n'), f"{n} 有 LF-only 行"
+```
+
+**驗編碼不能只看「檔案在不在」**——這一類問題的共同特徵就是「檔案都在、大小正常」,
+壞的是內容的位元組。
 
 ## 玩家交付(distribution UX:每包附繁中 使用說明.txt)
 
