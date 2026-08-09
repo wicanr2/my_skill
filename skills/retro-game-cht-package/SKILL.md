@@ -1,6 +1,6 @@
 ---
 name: retro-game-cht-package
-description: 把一個「patched-ScummVM(或 SDL2)老遊戲繁中化」專案打包成三平台可玩成品的 SOP。涵蓋 Linux 單檔 AppImage(slim 自備遊戲 / full 內嵌遊戲開箱即玩)、Windows 用 docker mingw-w64 cross-compile(自編 SDL2 靜態連結、關掉 mad/vorbis/flac 壓縮編解碼、force little-endian 繞 cross 端序檢測、objdump 遞迴收所有非系統 DLL、打成 .zip)、macOS 走 GitHub Actions(自編 universal SDL2 不用 brew sdl2、dylibbundler)再抓 .app artifact 回本機注入語音+遊戲。也涵蓋 slim/full 版權切分(原版遊戲資料 + TTS 中文語音只進本機完整包、不上公開 CI)。也涵蓋「玩家交付 UX」:每包附繁中 使用說明.txt(Windows SmartScreen、Linux 缺 FUSE、macOS 未簽章報「已損毀」其實是 quarantine),`.app` 用 tar.gz 不用 zip。當使用者談到「打包這個中文化」「Windows/AppImage/macOS 三平台」「cross-compile Windows」「docker mingw」「自編 SDL2」「AppImage 開箱即玩」「把遊戲也包進去」「DLL 都要打包」「Checking endianness unknown」「scummvm.exe 缺 DLL」「macos github action 編完抓回來打包」「macos universal/Intel」「app 已損毀無法打開」「使用說明要寫什麼」「dist-all」「解開後檔案不見了」「中文檔名亂碼」「.bat 中文亂碼」「記事本開 txt 亂碼」時觸發。**主動觸發**:使用者只說「幫這個漢化專案出 Windows / Linux / Mac 版」也套用。
+description: 把一個「patched-ScummVM(或 SDL2)老遊戲繁中化」專案打包成三平台可玩成品的 SOP。涵蓋 Linux 單檔 AppImage(slim 自備遊戲 / full 內嵌遊戲開箱即玩)、Windows 用 docker mingw-w64 cross-compile(自編 SDL2 靜態連結、關掉 mad/vorbis/flac 壓縮編解碼、force little-endian 繞 cross 端序檢測、objdump 遞迴收所有非系統 DLL、打成 .zip)、macOS 走 GitHub Actions(自編 universal SDL2 不用 brew sdl2、dylibbundler)再抓 .app artifact 回本機注入語音+遊戲;沒有 CI 額度時改用 osxcross 在本機 docker 交叉編(見 skill `osxcross-macos-cross-build`)。也涵蓋 slim/full 版權切分(原版遊戲資料 + TTS 中文語音只進本機完整包、不上公開 CI)。也涵蓋「玩家交付 UX」:每包附繁中 使用說明.txt(Windows SmartScreen、Linux 缺 FUSE、macOS 未簽章報「已損毀」其實是 quarantine),`.app` 用 tar.gz 不用 zip。當使用者談到「打包這個中文化」「Windows/AppImage/macOS 三平台」「cross-compile Windows」「docker mingw」「自編 SDL2」「AppImage 開箱即玩」「把遊戲也包進去」「DLL 都要打包」「Checking endianness unknown」「scummvm.exe 缺 DLL」「macos github action 編完抓回來打包」「macos universal/Intel」「app 已損毀無法打開」「使用說明要寫什麼」「dist-all」「解開後檔案不見了」「中文檔名亂碼」「.bat 中文亂碼」「記事本開 txt 亂碼」時觸發。**主動觸發**:使用者只說「幫這個漢化專案出 Windows / Linux / Mac 版」也套用。
 ---
 
 # 老遊戲漢化專案 → 三平台打包 SOP
@@ -13,7 +13,7 @@ description: 把一個「patched-ScummVM(或 SDL2)老遊戲繁中化」專案打
 |---|---|---|
 | **Linux** | 本機 AppImage(bundle 系統 .so + AppRun) | 本機就是 Linux,直接 |
 | **Windows** | 本機 **docker mingw-w64 cross-compile** | 不需 Windows 機,docker 內 cross 編 .exe |
-| **macOS** | **GitHub Actions** macos runner → 抓 artifact 回本機注入 | Apple SDK EULA 只准 Apple host 編;後處理回本機 |
+| **macOS** | 有 CI 額度 → **GitHub Actions** macos runner;沒有額度或沒有 Mac → **osxcross 在本機 docker 交叉編**(skill `osxcross-macos-cross-build`)。兩條路都是抓產物回本機注入 | 原生編才做得到 `codesign` 與 notarization;交叉編做不到 notarization,且 Apple SDK 授權限在 Apple 硬體上使用 |
 
 ## slim / full 版權切分(鐵則)
 
@@ -50,6 +50,11 @@ docker run --rm -v $PWD:/work -w /work debian:12-slim bash scripts/build_windows
 - **驗證**:`file scummvm.exe` 應為 `PE32+ ... x86-64`。**wine 在 dev box 不可靠**(Xvfb/wineboot 常抓不到輸出,且 ScummVM Windows 把 log 寫 `%APPDATA%/ScummVM/Logs/` **不寫 stdout**);驗到「PE32+ 有效 + wine 首跑達 SDL 視窗建立(objdump import 表正常、~100+ X requests)」即可,完整玩法驗證留給真 Windows。wine 別試超過 2-3 次(rabbit hole)。
 
 ## macOS:GitHub Action 編 → 抓回本機注入(參考 mac-app-cross-pack)
+
+> **沒有 CI 額度時的替代路線**:osxcross 在 Linux docker 裡交叉編,同樣產得出 universal binary,
+> 且 ld64 會替 arm64 自動加 ad-hoc 簽章(Apple Silicon 能不能跑的關鍵)。做不到的是 bundle 層
+> `codesign` 與 notarization,以及在 Linux 上實機驗證。步驟見 skill `osxcross-macos-cross-build`。
+> 兩份腳本並存時 **configure 開關要逐項對齊,改一邊就改另一邊**。
 
 - `.github/workflows/build-macos.yml`:**universal(arm64 + x86_64)走「分弧 native 編 + lipo 合併」三 job**:
   - `build`(matrix):**`macos-14`** 編 arm64、**`macos-15-intel`** 編 x86_64(⚠️ **macos-13 已退役 → queued 卡死;Intel 一律用 `macos-15-intel`**)。每弧**自編 SDL2 native**(`./configure --disable-shared --enable-static`,**不加 `-arch`**)+ **乾淨 `./configure`**(對齊 willy)關壓縮編解碼,各上傳該弧 `scummvm` binary。**不用 `brew sdl2`**(會變 sdl2-compat → 黑畫面)。
