@@ -1,0 +1,4 @@
+interface:
+  display_name: "PC Engine 逆向工程"
+  short_description: "以 HuC6280 與模擬器證據逆向 PC Engine 遊戲"
+  default_prompt: "使用 $reverse-engineer-pc-engine 建立 PC Engine 遊戲的可追溯逆向計畫與證據帳本。"
