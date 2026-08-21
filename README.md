@@ -57,6 +57,9 @@
 | [`eten-bitmap-font`](knowledge-base/retro-cht/eten-bitmap-font/SKILL.md) | 用倚天中文系統(ETEN)原生點陣字當老遊戲中文化的字形來源(比 TTF rasterize 對味):`STDFONT.15`/`SPCFONT.15`/`STD.24x` 格式、Big5 分區索引公式、與專案自訂碼表對接、字模尺寸與排版格解耦、16×15 vs 24×24 視覺大小取捨 | 「用倚天字形/ETEN 字型」「原味 DOS 點陣中文」「stdfont.15/spcfont.15/STD.24M 怎麼解」「標點變成別的字型」「Big5 點陣字烘 fnt」 |
 | [`first-principles-tech-notes`](skills/first-principles-tech-notes/SKILL.md) | 建立/擴展「第一性原理+圖文並茂」技術知識庫 GitHub repo:每主題一篇 markdown、概念配手繪 SVG、研究 sub-agent 查證、專家+學生審查、worklist 一項一項做 | 「整理某領域筆記成 repo」「把 X 主題寫成第一性原理教學」「一項一項做我監看」「ASCII 圖升級 SVG」 |
 | [`isaac-sim-physical-ai`](skills/isaac-sim-physical-ai/SKILL.md) | **階層式** 在 Isaac Sim(4.5/5.1/6.0.x)做 physical AI:讓接觸與抓握**物理上真的成立**,而不是帳面成功。兩條核心命題 ——①接觸力學決定調參順序:Signorini 互補條件 + 摩擦錐推出 `g>0 ⟹ λₙ=0 ⟹ ‖f_t‖ ≤ μ·0 = 0`,**μ 是乘在一個可能為零的量上**,所以幾何永遠先於摩擦(凸包填實凹特徵是**定義**的後果,不是精度問題);②求解器沒有「非法狀態」的概念、永遠給得出答案,所以**「沒報錯」攜帶零資訊**,只能主動量測。另含三層真值(authored/simulated/business)、開環致動的結構性發散、有效場景=authored⊕runtime、**版本差異矩陣**(API 命名空間、`apply_action`、DDS SHM 靜默丟資料、驅動相容)。references/ 收 headless 實作按需讀 | 「夾爪/叉齒抓不住、滑掉、插不進去」「調摩擦/碰撞近似/接觸參數」「Isaac 車不動但沒錯誤」「模擬跑得動但實體沒動」「5.1→6.0 遷移」「場景搬到另一台」 |
+| [`grilling`](skills/grilling/SKILL.md) | 針對計畫、設計、產品方向、規則、架構、資料格式、原版忠實度、授權或發行決策做**逼問式審查**:把「聽起來合理」的提案逼到必須拿出證據、邊界與失敗條件 | 「幫我挑戰這個計畫」「這個設計有什麼問題」「grill 一下」 |
+| [`grill-me`](skills/grill-me/SKILL.md) | 反向版:在**我**要做出會改變目標／範圍／架構／資料格式／授權／發行的決定前,先逼問我,把沒想清楚的地方挖出來 | 「grill me」「先問我幾個問題再動手」「這決定我還沒想清楚」 |
+| [`retro-argos-cht-debug`](skills/retro-argos-cht-debug/SKILL.md) | AGOS/ScummVM 老遊戲繁中 patch 的除錯與驗證,專治 Big5 等多位元組編碼在引擎內被拆裂、顯示異常、存讀檔破圖 | 「AGOS 中文亂碼」「ScummVM Big5 patch 驗證」「繁中補丁跑不出來」 |
 | [`proposal-writer`](skills/proposal-writer/SKILL.md) | 多 agent 分章節撰寫/精鍊長篇計畫書(送審/技術整合/展會提案):含文獻驗證、技術校正、術語中文化、執行摘要、md→docx 產出 | 「寫/改/審計畫書」「研究白皮書」「展會提案」「多 agent 分章節長文件」 |
 
 ### cocomo-estimate 一句話
@@ -90,6 +93,7 @@ $j.items | ForEach-Object {
 |------|------|
 | [`40-learning-loop`](rules/40-learning-loop.md) | 探索/除錯/重構的 learning loop:定義 goal/constraint/可驗證成功標準,先做最小測試,每輪更新假設,先驗證再下結論 |
 | [`42-reference-fidelity`](rules/42-reference-fidelity.md) | 參考保真度:使用者指定「參考 X 專案」時,動手前先讀 X 的實際設定、逐項照抄其 proven values(runner 版本/依賴/旗標),偏離要有講得出口的理由;外部版本標籤(CI runner image 等)會退役不能憑記憶寫死;「CI job queued 很久+執行 0s」=runner 標籤退役非程式 bug。源自沒抄 willy 的 macos-14 寫成退役 macos-13 卡死 |
+| [`41-whack-a-mole-stop-rethink`](rules/41-whack-a-mole-stop-rethink.md) | 打地鼠訊號:特例越修越多、build-test 循環暴增、卡在「再差一點」、發現自己在模擬或重造系統既有行為 → **停下來重想架構**,而不是再補一個特例 |
 | [`45-model-cost-division-of-labor`](rules/45-model-cost-division-of-labor.md) | 模型成本分工:貴模型留給判斷/寫作,對碼核實/盤點/grep 比對等粗活用便宜模型(`/model` 切換或 sub-agent 指定 `model: haiku/sonnet`);不預設 fan-out review agent;筆記寫到「夠用」就停(長尾登 PLAN 被動維護);review 文件抽可驗證斷言回 code grep(配 `63`);[HARD] 旗艦別自己做機械活——截圖/錄影/影片合成/試錯調參/**跨平台打包·重打包**一律派便宜 agent,旗艦只定案+把關 |
 | [`50-ubiquitous-language`](rules/50-ubiquitous-language.md) | DDD ubiquitous language:每個 repo 維護 `CONTEXT.md` 術語表,人與 agent 共用同一套詞,降低 verbosity 與返工 |
 | [`60-feedback-loop-priority`](rules/60-feedback-loop-priority.md) | 棘手 bug/效能 regression 最高優先:先建快速、決定性、可執行的 pass/fail 訊號(failing test > curl > CLI > headless > replay) |
@@ -103,6 +107,7 @@ $j.items | ForEach-Object {
 | [`83-retro-completeness-over-roi`](rules/83-retro-completeness-over-roi.md) | 老遊戲素材抽取/移植[HARD]:完整性>投報(文物保存不能談 ROI),不預先砍版本/資產、卡關記錄方法續做別寫「低投報」;**別漏看資產檔**——同類檔先 `strings EXE\|grep ext` 列舉全(別假設單檔含全部:漏一個檔=子系統用錯來源還報「完成」) |
 | [`84-scummvm-talkie-cht-fusion`](rules/84-scummvm-talkie-cht-fusion.md) | ScummVM/AGOS talkie 老遊戲繁中化(Simon/Feeble/Waxworks):[HARD] 先驗來源版本字幕完整度(talkie 版常缺字幕→用 floppy 完整文字+CD 語音融合)、注入以行 id 為 key(非英文比對,救語音-only 行)、重用引擎內建反組譯器對齊兩版、DOSBox-in-docker 目錄熱抽換跑原版安裝解自訂壓縮、CJK 24px 加大引擎文字緩衝、硬編碼 UI 加 ZH 分支 |
 | [`86-proposal-writing`](rules/86-proposal-writing.md) | 研究/技術計畫書撰寫:定位先行(可否證主張+假說)、範圍誠實、標準結構、評估協議、文獻真實性(WebSearch 驗 arxiv/DOI 不憑記憶)、對照原始碼校正、中文不夾雜、執行摘要;多 agent 分章節 + md→docx pipeline |
+| [`94-github-pages-doc-style`](rules/94-github-pages-doc-style.md) | 技術文件網站／單頁 HTML 工具的版面規範:層級用線條、留白、字級建立,**禁卡片與藍紫漸層**;色彩先定語意再挑色;表格禁粗外框與彩色表頭;外部數據標來源與基準日 |
 | [`90-plain-language`](rules/90-plain-language.md) | 白話寫作七準則:結論先行(BLUF)、短句常用詞、術語即時翻譯、具體勝抽象、數據配「所以呢」、自然不貼標籤、不犧牲正確性。對外/客戶/管理層文件逐條套 |
 | [`91-deslop-ai-writing`](rules/91-deslop-ai-writing.md) | 去 AI 味反面清單:AI 詞黑名單、copula 迴避、權威揭示腔、格言公式、粗體列表症、filler/hedging;draft→audit→final 去 slop 審查 loop + 防改過頭的 false-positive 清單。來源 Wikipedia「Signs of AI writing」 |
 | [`92-technical-report-structure`](rules/92-technical-report-structure.md) | 技術報告(實驗/調校/量測/故障調查)的結構與誠實表述:結論與建議拆開、假設獨立成段、證據等級四態(Test/Analysis/Inspection/Demonstration)、機率與把握程度分兩軸、開放項目分 TBD/TBC/TBR 並配消除條件、小樣本報效應量+信賴區間(「測不出」≠「沒有」)、負面結果走完整結構、有效性威脅四角度自我審查、執行摘要 ≠ 摘要。與 90/91 疊加,提案走 86 |
@@ -141,6 +146,7 @@ my_skill/
 ├── README.md
 ├── rules/                          # 通用工作方法論 (放 ~/.claude/rules/)
 │   ├── 40-learning-loop.md
+│   ├── 41-whack-a-mole-stop-rethink.md
 │   ├── 42-reference-fidelity.md
 │   ├── 45-model-cost-division-of-labor.md
 │   ├── 50-ubiquitous-language.md
@@ -153,6 +159,7 @@ my_skill/
 │   ├── 84-scummvm-talkie-cht-fusion.md
 │   ├── 86-proposal-writing.md
 │   ├── 90-plain-language.md
+│   ├── 94-github-pages-doc-style.md
 │   └── 91-deslop-ai-writing.md
 ├── personas/                       # agent 人格 (system persona)
 │   ├── hermes-research-collaborator.md
@@ -165,8 +172,17 @@ my_skill/
 │   ├── verification-fidelity/  first-principles-tech-notes/  proposal-writer/
 │   ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
 │   ├── prompt-master/  english-prompt-coach/  organize-folder/
-│   └── my-skill-merge/  dev-setup-bundle/
-└── knowledge-base/
+│   ├── my-skill-merge/  dev-setup-bundle/  isaac-sim-physical-ai/
+│   └── grilling/  grill-me/  retro-argos-cht-debug/
+└── knowledge-base/                 # 按需載入,不自動進 context
+    ├── workflows/                  # 跨領域工作流
+    │   ├── kimi-pptd-deck-authoring.md + kimi-pptd-to-pptx.py
+    │   ├── osxcross-macos-cross-build.md
+    │   ├── asan-native-crash-hunting.md
+    │   └── batch-subagent-localization.md
+    ├── retro/                      # 逆向工程平台知識(IDA / DOSBox / PCE / Borland)
+    ├── re-methodology/             # remake 忠實度稽核與 IDA docker 衛生
+    ├── style/                      # 輸出語氣與文件風格
     └── retro-cht/                  # 降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
         ├── research-pc98-golden-box-ui/  dragon-wars-cht-remake/
         ├── zak-fmtowns-zhtw/  rise-of-the-dragon-cht/
