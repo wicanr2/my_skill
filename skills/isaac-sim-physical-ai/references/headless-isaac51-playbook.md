@@ -1,13 +1,12 @@
-# Isaac Sim 5.1 監控與物理調參 playbook(專案X 專案實例)
+# Isaac Sim 5.1 監控與物理調參 playbook(專案X 實例)
 
-> 這是 `wicanr2/<專案私有 repo>` 的 `docs/<專案內部文件目錄>/118-isaac51-monitoring-playbook.md` 快照。
-> 交叉連結指向該 repo 同目錄的文件,在本 skill 內不可點;內容以該 repo 為準。
+> 取自一個實際專案的維運筆記,已去識別化;內含的交叉連結(編號文件、姊妹 KB)
+> 指向該專案私有 repo,在本 skill 內不可點,保留只為標示原始脈絡。
 
-> 對象:要在 專案X(或任何 headless Isaac Sim 5.1 主機)上判斷「模擬到底發生了什麼」、
+> 對象:要在任何 headless Isaac Sim 5.1 主機上判斷「模擬到底發生了什麼」、
 > 並據此調物理參數的人(或 LLM)。
 > 這份記的是**方法**——怎麼觀測、觀測到的數字怎麼讀、哪些觀測方式會騙你。
-> 具體參數值與備份清單在 [117](117-isaac-scene-backup-20260726.md);場景建置 know-how 在姊妹 KB
-> [`docs/<專案內部 KB>/`](../<專案內部 KB>/README.md)。
+> 具體參數值與備份清單在 [117](117-isaac-scene-backup-20260726.md);場景建置 know-how 在姊妹 KB(專案內部文件,此處不可點)。
 >
 > 對應 skill:`isaac-sim-monitoring`(repo `wicanr2/my_skill`)。
 
@@ -368,6 +367,7 @@ v10 兩輪驗收都通過後跑 drift_guard,它回報「最大漂移 **1450.5 cm
 
 - 啟動入口 **一律** `isaac-sim.streaming.sh`;裸 kit 會導致 ROS2 bridge 死、沒有 `/tf`。
 - 啟動前**不可** `source /opt/ros/humble`——python 版本不同。
-- 主機:`ssh <host>`(`<user>@<host>`,RTX5090),資料在 `~/SMARTMOVE`,腳本在 `~/<專案>/scripts`。
+- 主機:單機 headless(實例為 RTX 5090 級消費卡),資料與腳本各自固定在一個工作目錄下;
+  下面的相對路徑都以那個工作目錄為基準。
 - 探針全部是**唯讀**的,除了 `set_friction` / `fix_fork_collider` / `reset` 這三支。跑診斷不會影響正在進行的 demo。
 - 改 `open_fullusd_streaming.py` 前先 `cp` 成 `.bak-before-<主題>-<日期>`——這個目錄現在有二十幾個 bak,每一個都是一次可回溯的決策點。
