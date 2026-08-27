@@ -1,4 +1,4 @@
 interface:
   display_name: "Retro Game RE + Remake"
-  short_description: "Evidence-backed reverse engineering and clean remake workflow"
-  default_prompt: "Use $reverse-engineer-retro-game-remake to gather evidence, approve a READY spec, implement the clean-room remake, and verify normal player paths."
+  short_description: "Fingerprint toolchains and build evidence-backed clean remakes"
+  default_prompt: "Use $reverse-engineer-retro-game-remake to fingerprint the original toolchain, separate runtime from product code, approve a READY spec, and verify a clean remake."
