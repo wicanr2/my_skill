@@ -23,3 +23,13 @@
 - 修正三份因未引用冒號而無法解析的 YAML frontmatter，並移除非必要 metadata。
 - 移除無反向引用且仍保存 `~/.claude`、固定模型分工與舊打包斷言的
   `knowledge-base/retro-cht/CLAUDE-Scummvm-Template.md`；現行方法改由按需技能與規則提供。
+
+## 2026-08-27：把原始工具鏈指紋納入 remake 前置流程
+
+- `reverse-engineer-retro-game-remake` 在大量未知函式判讀前，先分開辨識 compiler、
+  linker／executable、平台 runtime、middleware、driver、packer 與自製資產工具。
+- 新 reference 固定精確版本、家族／範圍、runtime pattern、非破壞性索引與停止線的
+  證據契約；版權年份、格式或相容簽章不再被誤升為精確工具版本。
+- 新增 `knowledge-base/re-methodology/` 路由頁，讓其他復古遊戲專案能按需載入方法，
+  而不攜帶 FD2 專屬位址、二進位或結論。
+- Codex 部署副本與本庫來源均以官方 `quick_validate.py` 驗證通過。

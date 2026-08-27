@@ -147,7 +147,7 @@ $j.items | ForEach-Object {
 my_skill/
 ├── README.md
 ├── WORKLOG.md                     # 本庫逐輪變更與勘誤；README 不寫流水帳
-├── reverse-engineer-retro-game-remake/ # RE→READY spec→實作→驗證的可重用技能
+├── reverse-engineer-retro-game-remake/ # 工具鏈指紋→RE→READY spec→實作→驗證的可重用技能
 ├── rules/                          # 通用工作方法論 (放 ~/.claude/rules/)
 │   ├── 40-learning-loop.md
 │   ├── 41-whack-a-mole-stop-rethink.md

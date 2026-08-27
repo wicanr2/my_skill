@@ -1,6 +1,6 @@
 ---
 name: reverse-engineer-retro-game-remake
-description: Reverse engineer 1980s–1990s games and build clean, cross-platform remakes with evidence-backed behavior, decoded legacy assets, localization, deterministic tests, original-versus-remake screenshots, and player-path verification. Use for DOS/MZ or other legacy binaries, Ghidra/IDA analysis, unknown map/save/item/monster/graphics formats, clean-room engine rewrites, Traditional Chinese bitmap-font integration, remake parity audits, or handoff/worklist cleanup.
+description: Reverse engineer 1980s–1990s games and build clean, cross-platform remakes with evidence-backed behavior, compiler／linker／runtime fingerprinting, decoded legacy assets, localization, deterministic tests, original-versus-remake screenshots, and player-path verification. Use for DOS/MZ or other legacy binaries, Ghidra/IDA analysis, unknown functions or data formats, original toolchain archaeology, clean-room engine rewrites, Traditional Chinese bitmap-font integration, remake parity audits, or handoff/worklist cleanup.
 ---
 
 # Reverse engineer a retro game and remake it
@@ -21,6 +21,19 @@ not transliterate decompiler output or distribute copyrighted game data.
 
 Read [references/evidence-and-re.md](references/evidence-and-re.md) when analyzing binaries,
 jump tables, offsets, unknown fields, or conflicting notes.
+
+## Fingerprint the original toolchain before product semantics
+
+Before interpreting a large unknown-function inventory, identify the compiler family, linker and
+executable format, platform runtime／DOS extender, middleware, drivers, packers, and custom asset
+tools. Separate compiler-generated prologues, libraries, thunks, error paths, and middleware
+wrappers from player-visible product code. Preserve exact versions only when version strings or
+release-specific bytes prove them; copyright years and compatible signatures establish a family or
+range, not an exact release.
+
+Read [references/toolchain-and-runtime-fingerprints.md](references/toolchain-and-runtime-fingerprints.md)
+when many unrelated functions share a callee／prologue, when investigating how an original game was
+built, or before using unknown-function counts as remake work.
 
 ## Gate implementation through a spec
 
