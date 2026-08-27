@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retro RE + CHT Router"
+  short_description: "Route retro reverse engineering and localization knowledge"
+  default_prompt: "Use $re-retro-cht-rulebook to select the smallest relevant retro workflow and knowledge entry."

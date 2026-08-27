@@ -34,7 +34,7 @@
    (火龍之戰實戰:`trace_item_grants` 發現給物品 op **不在 tile script,在 op_58 載入的對話/商店/祝福共享 script**)。
    這一步常推翻「逆不出 set 來源」的舊結論。
 
-**ROI / 誠實**:逆得出才標真值;子程式(如 op_65 的簽章比對 0x4754)沒逆出就**精確記錄卡點**
+**證據誠實**:逆得出才標真值;子程式(如 op_65 的簽章比對 0x4754)沒逆出就**精確記錄卡點**
 (位址 + 為何)、標 ⚠️ 部分,不臆造。OPCODE_REFERENCE 之類的表把舊「(inferred) 推測」改真值時,
 順手把已實作但仍標 ❌ 的 op 一併更正(火龍之戰實戰:0x68 早實作卻仍標 NULL)。
 
@@ -54,7 +54,7 @@
 | `char_ext`(data_CA4C,23B×12 格/員) | 12 格物品欄(裝備/任務物品) | `(selector<<8)+unknown_4456[slot]+operand` | **op_64 給** / op_67 刪+壓 / op_68 讀欄 / op_69 寫欄 / op_65 持有檢查 |
 
 - `unknown_4456[slot]` = slot*23 的偏移表(12 格:0,0x17,0x2E,…,0xFD)。
-- **祝福旗標** flags[85](char +0x55):`0x80` Irkalla、`0x10` 永恆之神(+3 全屬性)、`0x20` Enkidu。
+- **祝福旗標** `flags[85]`（char +0x55）：`0x80` Irkalla、`0x10` 永恆之神（+3 全屬性）、`0x20` Enkidu。
 
 > ⚠️ **char_data 與 char_ext 在原版記憶體中重疊(別建成兩塊獨立陣列!)**:`data_CA4C = data_C960 + 0xEC`
 > ——背包(char_ext)其實是 512B 角色 record 內偏移 **0xEC** 起的後半段(stats 前 236B + 背包 12 槽×23B = 512)。
@@ -85,7 +85,7 @@
 - **op_64 GIVE_ITEM**(0x446E):找空格(該格 offset 0x0B==0)→ 從模板複製 23B → gs[7]=槽;全滿放棄。無 operand。
 - **op_67 REMOVE_ITEM**(0x44CB):從 gs[7] 槽起後格往前壓 23B、末槽清 0。
 - **op_6B move_party_reverse**(0x45A1):`adjust_position(gs[3]^2)`(反向移動)。
-- **op_8D read_string_input**(0x49D3):玩家文字輸入 → gs[0xC6..](說暗語 gate 用)。
+- **op_8D read_string_input**（0x49D3）：玩家文字輸入 → `gs[0xC6..]`（說暗語 gate 用）。
 - **op_65 HAS_ITEM**(0x44B8):0x4754 簽章比對 → 命中設 word_3AE6 bit 0x40。見下「物品簽章比對」。
 
 ### 物品簽章比對(0x4754;DW/BT 系列通用,物品識別的核心)

@@ -6,25 +6,14 @@
 
 ## 取得可反編的 binary
 - 優先找**官方授權重製版 / 移植版**的 binary(LairWare、Alderson Windows port…),通常結構比原 DOS exe 好反編。
-- 反編產物(`oracle/*.c`,可能數萬行)可收進 repo 當「CRPG 史保存」,但原 binary 本身 gitignore。
+- 反編匯出可能含受保護內容；預設留在私有研究區。公開 repo 只提交必要的位址索引、規格、
+  自製測試與不含原版程式碼的 clean-room 實作。
 
-## Ghidra headless(docker)
-```dockerfile
-FROM ubuntu:24.04
-RUN apt-get update && apt-get install -y openjdk-21-jdk-headless wget unzip ca-certificates python3
-RUN wget -q https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.1.2_build/ghidra_11.1.2_PUBLIC_20240709.zip -O /tmp/g.zip \
- && unzip -q /tmp/g.zip -d /opt && mv /opt/ghidra_* /opt/ghidra
-ENV GHIDRA=/opt/ghidra
-```
-分析 + 跑後處理腳本(同一 docker run 內,因 `--rm` 容器無持久 project):
-```
-mkdir -p /tmp/proj
-$GHIDRA/support/analyzeHeadless /tmp/proj proj -import <image.bin> \
-  -processor x86:LE:32:default -loader BinaryLoader -loader-baseAddr 0x0 \
-  -postScript find.py
-```
-- flat/raw binary 要自己定 base addr + processor。protected-mode .EXP 先解標頭(Phar Lap "MP":pages*512+mod512=size,header para×16=資料起點)再把「image 去標頭」匯入(base 0)。
-- Jython(Py2)腳本**第一行加 `# -*- coding: utf-8 -*-`** 才能含中文。
+## 工具優先序
+
+已有 IDA Pro 專用 image 時，以 `.i64` 的函式邊界、xref 與資料流為主。Ghidra headless
+只用於獨立交叉驗證或專案明確指定；先沿用既有、鎖版、可重建的專用 image，不在任務中
+臨時下載未鎖版本。Capstone 只適合核對短指令區段，不可取代資料庫關係。
 
 ## ⚠️ auto-analysis 進不了遊戲主碼
 stripped binary 的遊戲邏輯多在 **indirect call / jump table** 後,Ghidra/capstone 從 entry 遞迴只覆蓋到 runtime(MetaWare/RUN386 startup、DOS int 21h wrapper)。
@@ -32,7 +21,8 @@ stripped binary 的遊戲邏輯多在 **indirect call / jump table** 後,Ghidra/
 Ghidra 腳本實用招:`DecompInterface` 反編每個 func → grep C 文字找線索;`getReferencesTo` 找呼叫端/寫入者;看 caller 的 `PUSH imm`/`MOV` 取常數參數。
 
 ## capstone(快速反組譯,免 Ghidra)
-docker `pip install --break-system-packages capstone`。線性掃要**遇壞 byte 跳 1 續掃**(否則遇 data 即停)。注意:gap-skip 在 data 區會「out/in dx」誤判,要用 Ghidra 反編確認是真 code。
+在專用 Docker image 內使用鎖版 Capstone。線性掃要**遇壞 byte 跳 1 續掃**；gap-skip 在
+data 區可能誤判成指令，必須回到 IDA 資料庫並以第二工具交叉驗證。
 
 ## 抽演算法的常見真值
 - RNG:多為 LCG `seed = seed*0x343fd + 0x269ec3`。

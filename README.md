@@ -20,7 +20,8 @@
 
 ## Skills
 
-> 指向 `knowledge-base/retro-cht/…` 的列是**已降級的按需資產**(遊戲/retro 中文化類):不自動載入,由 [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) router 依觸發表指路,以壓低 `~/.claude` 每 session 的常駐 token;指向 `skills/…` 的才是常駐 skill。
+> 指向 `knowledge-base/retro-cht/…` 的列是按需知識，不應整批載入；由
+> [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) 選一份任務入口。
 
 | Skill | 用途 | 觸發時機 |
 |-------|------|----------|
@@ -37,7 +38,8 @@
 | [`zak-fmtowns-zhtw`](knowledge-base/retro-cht/zak-fmtowns-zhtw/SKILL.md) | 《Zak McKracken》(FM-Towns) 繁中化完整 SOP:`scummtr -r` raw + CRLF 突破 CJK、ScummVM 8 處 patch 走 ZH_CHN 12×12 GBK 字型路徑、WQY 點陣字、GBK 0x5C escape transformer | 「Zak McKracken」「scummtr 不認 CJK」「Unknown function id 0xAB」「FM-Towns 中文」「chinese_gb16x12.fnt」 |
 | [`rise-of-the-dragon-cht`](knowledge-base/retro-cht/rise-of-the-dragon-cht/SKILL.md) | ScummVM **DGDS 引擎**老遊戲(Rise of the Dragon / Heart of China / Willy Beamish)繁中化 + 全平台 ship 完整 SOP:engine-side overlay 攔截繪字→查表→點陣 CJK 疊 hi-res;三繪字路徑、DDS 對白(動態版本述詞通吃 1.211/1.216/1.224)、TTM 持久層(STORE AREA 模型)、名牌剝除+矮牌置中 clamp、對話框溢出自動長高、第二編碼字型(Big5+SJIS 共存)= 日文 F8 字幕模式(whisper 聽寫 Sega CD 日配)、時代雜誌攻略當術語 oracle、文化在地化、Windows/macOS/Android 全平台打包 | 「Rise of the Dragon」「孟波」「DGDS 中文化」「ScummVM dgds CJK」「對話名牌英文」「威利奇遇記」「Willy Beamish」「TTM 字串」「Android APK 注入」「日文字幕/F8」「全平台 ship」 |
 | [`retro-game-cht-package`](skills/retro-game-cht-package/SKILL.md) | patched-ScummVM/SDL2 老遊戲漢化 → **三平台打包**:Linux 單檔 AppImage(slim 自備遊戲/full 內嵌開箱即玩)、Windows docker mingw cross(自編 SDL2 靜態、force LE 繞端序、objdump 遞迴收 DLL、zip)、macOS GitHub Actions(**autoconf 不能單次雙弧** → macos-14 + macos-15-intel 分弧 native 編 + lipo universal)。含 slim/full 版權切分、每包附繁中 使用說明.txt(SmartScreen/FUSE/quarantine 首跑雷)、`.app` 用 tar.gz | 「打包這個中文化」「Windows/AppImage/macOS 三平台」「docker mingw cross」「自編 SDL2」「Checking endianness unknown」「macos universal/Intel」「app 已損毀無法打開」「dist-all」 |
-| [`retro-game-remake`](knowledge-base/retro-cht/retro-game-remake/SKILL.md) | **階層式**老遊戲(CRPG)RE+乾淨重製方法論:反編當 oracle、破格式、FM Towns 美術/CDDA/EUP 音樂考古、CJK 重寫、headless 可破關+**連通分量可達性**驗證、Docker 跨平台+Mac CI 打包、引擎/資料分離。SKILL.md 精簡+踩雷,references/ 6 檔按需讀 | 「重製/反組譯/中文化老遊戲」「破解遊戲資料格式」「抽 FM Towns/DOS 美術音樂」「u2-cht/u3-cht/u6-cht/Ultima」 |
+| [`retro-game-remake`](knowledge-base/retro-cht/retro-game-remake/SKILL.md) | Ultima、FM Towns、多版本 theme、Heineman opcode 與 Genesis 圖形的歷史案例庫；不再充當通用 remake 主流程 | 「u2/u3/u6-cht」「FM Towns 素材」「Heineman opcode」「Genesis 圖形」 |
+| [`reverse-engineer-retro-game-remake`](reverse-engineer-retro-game-remake/SKILL.md) | 證據可回查的 clean-room remake 主流程；強制依序完成 RE、`DRAFT`／`READY` 規格、實作與同狀態驗證，並提供穩定 README／WORKLOG 範本 | 「逆向復古遊戲」「clean-room remake」「RE 後寫 spec」「remake README」 |
 | [`game-promo-video-ffmpeg`](knowledge-base/retro-cht/game-promo-video-ffmpeg/SKILL.md) | 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成 60–75 秒推廣短片;內建硬雷:**zoompan 幀數爆炸(燒滿 CPU)**、CPU 控制(--cpus/預建 image/veryfast/靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改靜態截圖、docker 字型/IM policy 雷;附 CPU-safe make.sh 骨架。配 `rules/93`(配樂用原版[HARD]) | 「做推廣片/trailer/宣傳片」「截圖+配樂合成影片」「ffmpeg 投影片/Ken Burns」「遊戲介紹影片」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」 |
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
@@ -102,7 +104,7 @@ $j.items | ForEach-Object {
 | [`64-re-screenshot-oracle`](rules/64-re-screenshot-oracle.md) | 逆向工程找資料(tileset/圖/表/字庫/音色)撞牆的第三條路:**已破解的解碼器 + 已知輸出(截圖/錄影/另一版本)= 反推未知資料位置**。窮舉解壓+滑窗、以「首次出現順序」重編號做 palette 無關的結構比對(比圖樣不比顏色)、命中反推 palette。別在動態 dump/靜態追資料流兩條死磕 |
 | [`65-verify-against-reference-not-internal-signals`](rules/65-verify-against-reference-not-internal-signals.md) | 有 ground truth 的專案(port/remake/遷移/對齊規格):**驗收=對 reference 實測,不是內部訊號**——agent 的獎勵訊號(編譯過/測試綠/diff 乾淨/subagent 回報)全是內部自洽,會一路謊報完成;oracle 優先序 `人實測>reference 實機>文件>agent 宣稱`,debug 捷徑串的「能跑完」不算,UI 產物 dump 肉眼比對,先確定 spec 齊才動手(節約)。配 `63`/`82`/`64` |
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
-| [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 老遊戲（1990s 經典）繁中化專案 README 三層 voice register（Hero 信 / Magazine 編輯人聲 / Technical 工程文件）+ 1990s 雜誌風 SOP + 譯名考古感 + TOC sync checklist。萃取自 openxcom-cht v2.27 review。 |
+| [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 復古遊戲 remake／中文化 README 的穩定骨架、證據與狀態契約、素材界線及驗證閘門；工作流水帳固定移到 `WORKLOG.md`。 |
 | [`82-cross-platform-port-verification`](rules/82-cross-platform-port-verification.md) | 跨平台打包(Linux/Win/macOS/Android)驗證紀律:目標平台先自己重現(Win→Wine,別先要 backtrace)、驗實際打包產物、缺資料 NULL-safe 回退;6 類分歧雷(log 嚴重度因平台異/相對路徑雙重前綴/能跑的變體遮 bug/唯讀 cwd/編譯器嚴格度/CI 架構)+ Wine·verbose flag·addr2line 手法 |
 | [`83-retro-completeness-over-roi`](rules/83-retro-completeness-over-roi.md) | 老遊戲素材抽取/移植[HARD]:完整性>投報(文物保存不能談 ROI),不預先砍版本/資產、卡關記錄方法續做別寫「低投報」;**別漏看資產檔**——同類檔先 `strings EXE\|grep ext` 列舉全(別假設單檔含全部:漏一個檔=子系統用錯來源還報「完成」) |
 | [`84-scummvm-talkie-cht-fusion`](rules/84-scummvm-talkie-cht-fusion.md) | ScummVM/AGOS talkie 老遊戲繁中化(Simon/Feeble/Waxworks):[HARD] 先驗來源版本字幕完整度(talkie 版常缺字幕→用 floppy 完整文字+CD 語音融合)、注入以行 id 為 key(非英文比對,救語音-only 行)、重用引擎內建反組譯器對齊兩版、DOSBox-in-docker 目錄熱抽換跑原版安裝解自訂壓縮、CJK 24px 加大引擎文字緩衝、硬編碼 UI 加 ZH 分支 |
@@ -144,6 +146,8 @@ $j.items | ForEach-Object {
 ```
 my_skill/
 ├── README.md
+├── WORKLOG.md                     # 本庫逐輪變更與勘誤；README 不寫流水帳
+├── reverse-engineer-retro-game-remake/ # RE→READY spec→實作→驗證的可重用技能
 ├── rules/                          # 通用工作方法論 (放 ~/.claude/rules/)
 │   ├── 40-learning-loop.md
 │   ├── 41-whack-a-mole-stop-rethink.md
@@ -181,7 +185,7 @@ my_skill/
     │   ├── asan-native-crash-hunting.md
     │   └── batch-subagent-localization.md
     ├── retro/                      # 逆向工程平台知識(IDA / DOSBox / PCE / Borland)
-    ├── re-methodology/             # remake 忠實度稽核與 IDA docker 衛生
+    ├── re-methodology/             # remake 忠實度、RE→規格→實作閘門與 IDA docker 衛生
     ├── style/                      # 輸出語氣與文件風格
     └── retro-cht/                  # 降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
         ├── research-pc98-golden-box-ui/  dragon-wars-cht-remake/

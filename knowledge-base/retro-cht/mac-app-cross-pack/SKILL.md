@@ -1,6 +1,9 @@
 ---
 name: mac-app-cross-pack
-description: 不用 Mac 開發機，也要 ship 1990s 風格 SDL 1.2 / C++ 老遊戲的 macOS Universal Binary `.app` + `.dmg`。涵蓋 GitHub Actions macOS-14 (Apple Silicon) runner 上 build arm64+x86_64 universal `.app`、Homebrew 移除 sdl_image/mixer 後改自 source build SDL 1.2、Xcode 15 Clang C++20 default 把 `std::unary_function` 弄壞的 C++14 fallback、dylibbundler 把 SDL2/PNG dylib 包進 bundle、CI 同時 ship `.dmg` 和 `.tar.gz`(繞 APFS DMG 在 Windows 端不可讀問題)、CI 完從 Windows/WSL 把 local 遊戲檔注入 `.app/Contents/Resources/data/` 重打私用版、WSL2 kernel 沒 hfsplus 模組改用 `mkisofs -hfs` 產 raw HFS+ image rename `.dmg`、Gatekeeper `xattr -dr com.apple.quarantine` 解未簽署 app。當使用者談到「Mac DMG build」「macos-14 Apple Silicon runner」「universal binary arm64+x86_64」「SDL 1.2 brew 沒了」「sdl12-compat」「Failed loading SDL3 library」「brew sdl2 變 sdl2-compat」「macOS 黑畫面/載入 SDL 失敗」「自編 SDL2 from source」「`std::unary_function` 找不到」「dylibbundler」「Mac .app 注入遊戲檔」「APFS DMG 在 Windows 讀不到」「WSL2 hfsplus unknown filesystem」「mkisofs -hfs」「xattr quarantine」「Gatekeeper 未驗證開發者」「.tar.gz vs .dmg 私用版」「跨平台 build Mac」「OpenXcom Mac 打包」「老遊戲 Mac 移植 ship」「dylibbundler 卡住 / 無限 Try again / can't get path for @rpath」「macOS CI hang / 卡 40 分鐘 / timeout」「自編 SDL_image 從源碼編很慢 / dav1d / libjxl」「macos-13 退役 / Intel job 一直 queued / 改 macos-15-intel」「CMake 4 policy version」時觸發。**主動觸發**：即使使用者只說「補 Mac 版」「加 macOS support」也要套用此 skill。CI 長 hang 定位法見 §1.2d、自編 SDL → dylibbundler `@rpath` 互動 hang [HARD] 見 §1.5。另涵蓋「`error: unrecognized option: CXXFLAGS=-arch`(ScummVM configure 非 autoconf,flags 走 env-var)」見 §1.2、「universal binary 但 Frameworks SDL2 是單弧/非-fat(per-arch+lipo 後 dylibbundler 只抓一弧)→ 改手動 bundle + 雙弧斷言」見 §1.5。另涵蓋「打包產物散在各處 / 統一放 dist-all / 清舊版打包省磁碟 / ship matrix 產物組織 / build 腳本輸出目錄」見「產物統一放 dist-all/」節。
+description: >-
+  在 Linux／Windows 開發環境為 SDL 舊遊戲建立 macOS universal `.app`、`.dmg` 與
+  `.tar.gz` 的案例與故障排除。當任務涉及 macOS 跨架構封包、GitHub Actions runner、
+  SDL 1.2／sdl12-compat、dylibbundler、Gatekeeper、HFS+ DMG 或 dist-all 時使用。
 ---
 
 # 不用 Mac 開發機 ship macOS Universal `.app` + `.dmg` SOP
