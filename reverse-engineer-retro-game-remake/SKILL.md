@@ -35,6 +35,11 @@ Read [references/toolchain-and-runtime-fingerprints.md](references/toolchain-and
 when many unrelated functions share a callee／prologue, when investigating how an original game was
 built, or before using unknown-function counts as remake work.
 
+Read [references/borland-turbo-cpp-16-runtime-patterns.md](references/borland-turbo-cpp-16-runtime-patterns.md)
+after direct binary evidence identifies Borland Turbo C++ 16-bit DOS, especially when classifying
+32-bit arithmetic, huge-pointer, or near-to-far bridge helpers. Treat the patterns as candidates,
+not cross-binary names or proof of an exact compiler version.
+
 ## Gate implementation through a spec
 
 Never send RE conclusions directly into production code. Use this state machine:

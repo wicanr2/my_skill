@@ -2,6 +2,9 @@
 
 本頁是方法路由，不保存任何單一遊戲的結論。完整流程與證據矩陣見
 [`../../reverse-engineer-retro-game-remake/references/toolchain-and-runtime-fingerprints.md`](../../reverse-engineer-retro-game-remake/references/toolchain-and-runtime-fingerprints.md)。
+若已確認 Borland Turbo C++ 16-bit DOS 且遇到 32-bit 算術、huge pointer
+或 near-to-far bridge helper，再讀
+[`../../reverse-engineer-retro-game-remake/references/borland-turbo-cpp-16-runtime-patterns.md`](../../reverse-engineer-retro-game-remake/references/borland-turbo-cpp-16-runtime-patterns.md)。
 
 把這一步放在大量未知函式逐筆判讀之前：先辨識 compiler 家族、linker／格式、
 平台 runtime、middleware、driver、packer 與自製資產工具，再用 IDA 的原始函式
