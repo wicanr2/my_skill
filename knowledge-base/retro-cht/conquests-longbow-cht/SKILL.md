@@ -1,8 +1,8 @@
 ---
 name: conquests-longbow-cht
-description: Conquests of the Longbow(羅賓漢傳奇,1991 Sierra,SCI1 Late 1.000.510)繁中化專案知識庫。SCI1 Late 與 SCI0/SCI1.1 的差異雷(message 資源、icon bar 介面、無 parser)、專案實戰紀錄。觸發:「Conquests of the Longbow / 羅賓漢傳奇 / longbow 中文化 / SCI1 Late SCI 1.000.510」。repo: github.com/wicanr2/conquests_of_longbow_cht。
-metadata:
-  type: reference
+description: >-
+  Conquests of the Longbow（羅賓漢傳奇）SCI1 Late 繁中化案例。當任務涉及 Longbow、
+  SCI 1.000.510、message 資源、icon bar 或該專案中文化時使用。
 ---
 
 # Conquests of the Longbow(羅賓漢傳奇)繁中化 —— SCI1 Late 實戰知識庫

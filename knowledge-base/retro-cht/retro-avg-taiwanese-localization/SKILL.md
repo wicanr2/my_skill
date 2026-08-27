@@ -1,8 +1,8 @@
 ---
 name: retro-avg-taiwanese-localization
-description: 老 AVG(冒險遊戲)繁中化的三個進階增量 —— (1)AGI(EGA)引擎 CHT(有別於既有 scummvm-sci-cht-localization 的純 SCI 方法);(2)遊戲內「標題 logo 疊繪」中文(不改原美術,引擎 render 期疊點陣圖,EGA 索引直寫 vs SCI nearest-palette-map);(3)「台式幽默在地化」管線 —— 把美式黃色冷笑話「重寫」成台灣人一看就笑,而非直譯(風格聖經+統一譯名表+批次 subagent fan-out+合併驗證+尺度校準)。外加 headless 破防拷擷取。素材:幻想空間(Leisure Suit Larry 1, AGI+SCI 雙版)。觸發:「Leisure Suit Larry / 幻想空間 / LSL1 中文化」「AGI 引擎繁中化 / Sierra AGI LOGIC 抽字 / avis durgan」「遊戲內中文標題 / 標題 logo 疊圖 / title overlay CJK」「台式在地化 / 台式笑話 / 黃色雙關在地化 / 成人喜劇漢化 / 讀者文摘梗」「批次 subagent 翻譯 fan-out / 譯名一致性 / 非 Big5 字 corrections」「headless 破年齡驗證 / 防拷問答 / debugger room 擷取」。repo: github.com/wicanr2/Leisure_Suit_Larry1-cht。
-metadata:
-  type: reference
+description: >-
+  老 AVG 的 AGI／SCI 繁中化、CJK 標題疊繪與台灣用語在地化案例。當任務涉及
+  Leisure Suit Larry、AGI LOGIC、avis durgan、台式幽默、譯名一致性或防拷畫面擷取時使用。
 ---
 
 # 老 AVG 繁中化進階增量 —— AGI 引擎、遊戲內標題疊圖、台式幽默在地化

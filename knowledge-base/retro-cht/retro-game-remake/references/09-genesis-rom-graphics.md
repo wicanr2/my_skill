@@ -126,7 +126,8 @@ for ins in md.disasm(rom[start:end], start): ...
 **KB Genesis RE 進度**：
 - 遊戲 a5 = `0x312`;跳表 `0x312` 起 6-byte 一項 (`4ef9` + addr)。a5+0x96 (`0x3A8`) → `0x18F2A` = **memcpy**;地圖資料只是被 memcpy 到 RAM (-0x66c0(a5))，**不在此處碰 tileset**。
 - **地形 tileset 是 LZSS 壓縮 (見 §8 完整破解)** — 靜態掃描找不到是因為壓縮,不是不存在。
-- ⚠️ ROI 教訓:單一資源 (地圖 tile) 的反組譯追蹤耗了大量回合。**「靜態掃找不到乾淨圖形」→ 第一假設應是壓縮,直接去追解壓器 (`jsr` 進某 helper 後 ROM src→RAM),別先暴力掃 base**。
+- ⚠️ 路由教訓：靜態掃找不到乾淨圖形時，先檢查壓縮與解壓器資料流
+  （`jsr` 進 helper 後 ROM src→RAM），不要先無界暴力掃 base。
 
 ## 8. KB Genesis 地形 tileset 完整解碼 (LZSS,已破)
 

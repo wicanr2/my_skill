@@ -12,14 +12,41 @@ not transliterate decompiler output or distribute copyrighted game data.
 
 1. Inventory executables, data, platform variants, manuals, saves, screenshots, tools, and hashes.
 2. Establish a writable research workspace. Mount or treat pristine originals as read-only.
-3. Create the four ledgers from `assets/project-template/`:
-   `RESEARCH-LOG.md`, `REMAKE-PLAN.md`, `VERIFICATION-MATRIX.md`, and `HANDOFF.md`.
+3. Create the five ledgers from `assets/project-template/`:
+   `WORKLOG.md`, `RESEARCH-LOG.md`, `REMAKE-PLAN.md`, `VERIFICATION-MATRIX.md`, and `HANDOFF.md`.
+   Keep chronological work history in `WORKLOG.md`; never accumulate it in `README.md`.
 4. Classify every claim as `proven`, `strong inference`, `hypothesis`, or `unknown`.
 5. Attach an address, byte range, data diff, original screenshot, or reproducible experiment to
    every `proven` claim.
 
 Read [references/evidence-and-re.md](references/evidence-and-re.md) when analyzing binaries,
 jump tables, offsets, unknown fields, or conflicting notes.
+
+## Gate implementation through a spec
+
+Never send RE conclusions directly into production code. Use this state machine:
+
+```text
+RE evidence → DRAFT spec → evidence review → READY spec
+            → implementation → same-state verification → CONFORMED spec
+```
+
+Only a `READY` spec may authorize behavior, format, player-path, or fidelity changes. Disposable
+probes may support a `DRAFT`, but cannot become production paths. If implementation exposes an
+unknown, return to RE and revise the spec; do not silently guess in code or tests.
+
+Read [references/spec-gated-workflow.md](references/spec-gated-workflow.md) before implementing
+behavior derived from an executable, unknown data, screenshots, saves, or original playtests.
+
+## Separate platform contracts from game RE
+
+Before tracing standard DOS hardware timing or a documented platform API, read
+[`retro-hardware-spec-first`](../knowledge-base/retro-cht/retro-hardware-spec-first/SKILL.md).
+Use public specifications for PIT／DAC／DMA、BIOS and operating-system contracts. Record only the
+game's chosen values, call sites, data flow, completion gate, and nonstandard behavior. Once the
+remaining difference is BIOS、DOS TSR or device wall-clock detail, implement a reproducible
+hardware-spec approximation and stop that RE branch unless the user explicitly requests hardware
+archaeology.
 
 ## Build vertical slices
 
@@ -59,6 +86,13 @@ Require all applicable checks:
 
 Read [references/verification-and-handoff.md](references/verification-and-handoff.md) before
 claiming completion, doing sampling, writing README comparisons, or handing work to another agent.
+Read [references/readme-standard.md](references/readme-standard.md) before creating or substantially
+rewriting a remake README, completion summary, screenshot comparison, or release landing page.
+
+For translated or dynamic UI, derive a text-safe rectangle from the visible／clickable control,
+measure the active runtime font, and define width, height, line count, padding, overflow, and shared
+center explicitly. Test the longest realistic CJK and English values, then capture the normal player
+path at native logical size and production scale. Geometry-only tests do not prove glyph containment.
 
 ## Avoid recurring false conclusions
 
