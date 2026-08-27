@@ -52,6 +52,7 @@ Require all applicable checks:
 - deterministic rule tests with fixed RNG and save fixtures;
 - original executable experiments using adjacent boundary values;
 - normal player path without teleport, grant-item, forced-win, or other debug hooks;
+- stop a sampled player path immediately after a legitimate whole-party wipe; record the wipe as the terminal outcome, never continue issuing post-death inputs, and never silently remove the sample from parity statistics;
 - save/load from a writable overlay without modifying pristine originals;
 - original/remake screenshots labeled with state, coordinate, seed, mode, and known differences;
 - build, static analysis, translation checks, packaging smoke, and dirty-tree review.
@@ -79,4 +80,3 @@ claiming completion, doing sampling, writing README comparisons, or handing work
 Copy `assets/project-template/` into a new project’s documentation area and fill every bracketed
 field. Keep the handoff short enough to reread at the start of each session; link deep research
 instead of duplicating it.
-

@@ -14,6 +14,19 @@
 Sampling is appropriate after mechanics and data-driven connectors are proven. Sample distinct rule
 classes and high-risk state transitions, not merely geographically distant rooms.
 
+For a target of 99% player-visible approximation at 95% confidence, define the sampling population
+and strata before execution. Use a one-sided 95% Clopper–Pearson exact binomial lower bound and pass
+only when the lower bound is at least 0.99. With zero failures this requires at least 299
+representative, approximately independent observations. Fixed smoke paths and hand-picked boundary
+cases remain required engineering gates, but do not count as statistical confidence unless the
+sampling design makes them representative.
+
+Treat a legitimate whole-party wipe as a terminal sample outcome. Stop issuing inputs immediately,
+record `party_wiped`, the last valid step, seed, save hash, and original/remake outcomes, then classify
+the sample. A matching wipe may pass its parity criterion; a wipe on only one side or at a materially
+different time/cause fails. Never discard a wipe from the denominator merely because death is legal,
+and do not count unexecuted post-wipe steps as additional failures.
+
 ## Screenshot comparison
 
 Label every comparison with:
@@ -59,4 +72,3 @@ Before stopping:
 - visual/art production required;
 - packaging/release required;
 - optional modernization.
-
