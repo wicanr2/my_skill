@@ -42,3 +42,12 @@
 - 新增 `knowledge-base/re-methodology/` 路由頁，讓其他復古遊戲專案能按需載入方法，
   而不攜帶 FD2 專屬位址、二進位或結論。
 - Codex 部署副本與本庫來源均以官方 `quick_validate.py` 驗證通過。
+
+## 2026-08-29：SunDog remake 通用經驗與授權規則入庫
+
+- 新增 `knowledge-base/re-methodology/retro-remake-source-selection-and-byte-signatures.md`：
+  多版本挑來源看程式碼形式、規則釘位元組簽章（JSON 工具重產＋md 語意）、找缺口三法、
+  模擬器狀態只做驗證與快照解幀、原版素材 runtime 兩種讀法、remake-owned 到期、容器打包坑。
+- `retro-remake-tactical-parity.md` 補快照解幀、種點法、執行時記錄三條。
+- `reverse-engineer-retro-game-remake/SKILL.md` 在挑來源版本前引用新文件。
+- 補上先前缺漏的 `rules/85-retro-remake-licensing.md`（去識別化：聯絡方式改佔位符）。

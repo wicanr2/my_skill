@@ -16,6 +16,12 @@ conditions—read
 Treat any named game's thresholds, addresses, constants, and license choice as examples, not
 universal rules.
 
+When several platform versions of the same game exist, pick the rule／data source by whether its
+game logic can be read statically (p-code／bytecode versus native code), keep the others as
+cross-check oracles, and pin every rule to a byte signature; read
+[`retro-remake-source-selection-and-byte-signatures.md`](../knowledge-base/re-methodology/retro-remake-source-selection-and-byte-signatures.md)
+before choosing a source version or building the evidence JSON layer.
+
 ## Start from evidence
 
 1. Inventory executables, data, platform variants, manuals, saves, screenshots, tools, and hashes.
