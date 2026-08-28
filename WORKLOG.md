@@ -3,6 +3,15 @@
 本檔只記錄 `my_skill` 的逐輪變更、驗證與勘誤。穩定用途、安裝入口及目錄結構留在
 `README.md`；技能規則留在各技能與 `rules/`，不得從本檔反推目前有效契約。
 
+## 2026-08-28：從 Rich2 收斂復古 remake 完整生命週期
+
+- 新增 `knowledge-base/re-methodology/retro-remake-end-to-end-playbook.md`，把 Rich2 實作中
+  驗證過的證據契約、工具鏈分流、規格閘門、垂直鏈、移動／事件狀態分層、同狀態對拍、
+  多語系、音畫、統計完成、授權、跨平台封包、推廣片與停止線整理為跨遊戲方法。
+- `reverse-engineer-retro-game-remake` 只新增按需路由，沒有把長篇方法塞入常駐入口。
+- Rich2 的位址、常數、素材格式、299 份樣本及 PolyForm 選擇保留為案例，不升格成
+  其他 remake 的固定要求。
+
 ## 2026-08-27：建立復古 remake 的規格閘門與 README 契約
 
 - 以近期 `~/cht/mm2`、`~/cht/dragon` 與 `~/fd2` 的 README 章節與開頭作結構參考，

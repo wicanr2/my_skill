@@ -8,6 +8,14 @@ description: Reverse engineer 1980s–1990s games and build clean, cross-platfor
 Treat the original executable as a behavioral oracle. Reimplement typed, maintainable rules; do
 not transliterate decompiler output or distribute copyrighted game data.
 
+For an end-to-end project lifecycle—completion states, evidence contracts, toolchain triage,
+spec gates, vertical slices, movement／event state, same-state comparison, localization,
+audio-visual verification, statistical completion, licensing, packaging, promo media, and stopping
+conditions—read
+[`retro-remake-end-to-end-playbook.md`](../knowledge-base/re-methodology/retro-remake-end-to-end-playbook.md).
+Treat any named game's thresholds, addresses, constants, and license choice as examples, not
+universal rules.
+
 ## Start from evidence
 
 1. Inventory executables, data, platform variants, manuals, saves, screenshots, tools, and hashes.
