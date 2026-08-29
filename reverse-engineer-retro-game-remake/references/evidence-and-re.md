@@ -47,6 +47,15 @@ Treat decompiler output as untrusted when:
 - code gaps sit behind a switch;
 - a far-call segment differs by the loader base;
 - a claimed call site cannot be found in raw instructions.
+- a function spans implausibly distant address ranges or a block jumps back into a much earlier
+  function body; Watcom may emit distant tail／cold chunks, while IDA may merge or mis-own them.
+
+For a suspected distant tail, preserve the raw block address and bytes, then trace every incoming
+and outgoing edge. Compare IDA chunk ownership with the nearest original／external symbol, but do
+not treat either as decisive. Reconstruct memory-operand register provenance before interpreting a
+matching displacement: the same `+offset` in an unrelated structure is not evidence. Automated
+offset scans must remain `candidate` until base＋stride＋index and a player-visible consumer are
+closed; a long-distance jump alone supports at most a strong inference.
 
 Decode jump-table words directly. In Ghidra, listing references alone do not repair decompiler
 p-code; write a `JumpTable` override. IDA can be a stronger code-discovery oracle even when no
@@ -91,4 +100,3 @@ Close a topic only when the note includes:
 - remaining uncertainty.
 
 Then search the entire repository for stale claims and update the worklist’s single source of truth.
-
