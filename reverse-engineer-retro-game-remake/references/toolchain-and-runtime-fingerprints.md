@@ -76,6 +76,36 @@ Stop when direct evidence proves a helper is toolchain/runtime-only and it has n
 effect. Do not transliterate it into the remake. Continue through the caller after the helper because
 the real frame allocation, argument layout, and product calls still matter.
 
+### Watcom distant tails and false ownership
+
+Watcom can outline cold branches, switch cases, shared tails, and error paths far from the main
+function body. A distant block may sit inside another symbol's linear range and jump back to the
+original function. Conversely, IDA may merge a huge address interval into one function or assign a
+tail chunk to a misleading owner.
+
+When this shape appears:
+
+1. Preserve the raw block, original address, bytes, IDA owner, nearest external symbol, and their
+   disagreement instead of renaming either side.
+2. Trace all predecessor／successor edges and identify the return jump into the main body.
+3. Reconstruct register provenance across the incoming edge. Require base＋stride＋index evidence
+   before calling a matching displacement a gameplay field.
+4. Inspect the external-symbol extent for the same record-base reference, while remembering that
+   an outlined tail can legitimately violate contiguous symbol ranges.
+5. Classify automated offset hits as candidates. Promote only after manual control-flow and data-flow
+   review; use strong inference when the jump graph is clear but incoming register state is not.
+6. Export function entry／all chunks, raw tail bytes, IDA owner, nearest external symbol, every direct
+   predecessor／successor, return target, and the incoming register-definition chain as one record.
+   Mark missing indirect edges as unrecovered instead of inventing linear fall-through.
+
+Treat ownership and field semantics as separate conclusions. Proven ownership of a tail does not
+prove that `[base+index+offset]` names a particular gameplay field; base, stride, index, and the
+player-visible consumer must close independently.
+
+Do not globally repair function boundaries merely to make a decompiler view prettier. Use
+non-destructive comments／indexes first, and retain the original database ownership for rollback and
+cross-tool comparison.
+
 ## 5. Cultural and clean-room outputs
 
 Maintain two outputs:
