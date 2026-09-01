@@ -51,3 +51,12 @@
 - `retro-remake-tactical-parity.md` 補快照解幀、種點法、執行時記錄三條。
 - `reverse-engineer-retro-game-remake/SKILL.md` 在挑來源版本前引用新文件。
 - 補上先前缺漏的 `rules/85-retro-remake-licensing.md`（去識別化：聯絡方式改佔位符）。
+
+## 2026-09-01：固定 version-date 正式版號
+
+- 新增 `rules/87-retro-remake-release-versioning.md`，把 retro remake 正式版號固定為
+  `v.<主版>.<次版>.<修訂版>-YYYYMMDD`，並提供完整 regex 與同日提高修訂號的契約。
+- 固定 Git tag、GitHub Release、程式版本、`dist-all/`、封包檔名、manifest、SHA-256
+  與交接文件七處一致；無參數時不得退回裸日期。
+- 已發布版本預設不可刪除；只有使用者明確授權撤回精確舊版號時，才能刪除後回讀確認，
+  再從乾淨輸入驗證並發布新版本。

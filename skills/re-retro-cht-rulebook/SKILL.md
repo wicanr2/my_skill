@@ -13,6 +13,11 @@ description: 路由復古遊戲逆向、clean-room remake、中文化、原版�
 - 逆向後建立 clean-room remake：讀
   [`reverse-engineer-retro-game-remake`](../../reverse-engineer-retro-game-remake/SKILL.md)。
   這是唯一通用主流程，強制執行「RE 證據 → `READY` 規格 → 實作 → 同狀態驗證」。
+- 較早 spec 的 unknown 已被後續 RE 解出、或函式台帳與玩家流程矛盾：只讀
+  [`re-resolution-backlinks`](../../knowledge-base/retro-cht/re-resolution-backlinks.md)，
+  以平台＋模組＋原始位址建立回填台帳與失敗即關閉護欄。這是所有 retro-remake
+  的通則：函式台帳變綠不算完成，必須閉合「舊 spec 勘誤→READY→實作→正常玩家
+  路徑／同狀態 oracle→CONFORMED」。
 - `knowledge-base/retro-cht/retro-game-remake/` 是 Ultima、FM Towns、多版本素材等歷史案例
   與專項參考，不再是第二份通用主流程。
 - 只做中文化、移植、打包或試玩時，直接選下列一份最接近的專項；需要多個子任務才各加
@@ -62,6 +67,7 @@ description: 路由復古遊戲逆向、clean-room remake、中文化、原版�
 | 正常玩家路徑與存讀檔 | [`retro-game-playtest`](../../knowledge-base/retro-cht/retro-game-playtest/SKILL.md) |
 | 鍵盤介面改觸控 | [`retro-keyboard-to-touch`](../../knowledge-base/retro-cht/retro-keyboard-to-touch/SKILL.md) |
 | 三平台封包 | [`retro-game-cht-package`](../retro-game-cht-package/SKILL.md) |
+| Git tag、GitHub Release、version-date 或同日重發 | [`rules/87-retro-remake-release-versioning.md`](../../rules/87-retro-remake-release-versioning.md) |
 | macOS App／DMG | [`mac-app-cross-pack`](../../knowledge-base/retro-cht/mac-app-cross-pack/SKILL.md) |
 | 推廣片 | [`game-promo-video-ffmpeg`](../../knowledge-base/retro-cht/game-promo-video-ffmpeg/SKILL.md) |
 

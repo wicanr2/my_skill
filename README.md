@@ -103,6 +103,7 @@ $j.items | ForEach-Object {
 | [`63-truth-in-code-not-stale-markers`](rules/63-truth-in-code-not-stale-markers.md) | 多輪/長專案的狀態紀律:**code 是唯一真相**——動手查「未完成」項前先 grep code 確認(別把已完成工作當沒做又重查/鬼打牆),完成即標 done、dated 盤點文件會過期要回頭刪錯誤斷言、記憶只存教訓不存狀態、改有單測的系統用「可選參數+預設=現行」零回歸。`60`/`62` 的互補(驗狀態 vs 驗 bug/來源) |
 | [`64-re-screenshot-oracle`](rules/64-re-screenshot-oracle.md) | 逆向工程找資料(tileset/圖/表/字庫/音色)撞牆的第三條路:**已破解的解碼器 + 已知輸出(截圖/錄影/另一版本)= 反推未知資料位置**。窮舉解壓+滑窗、以「首次出現順序」重編號做 palette 無關的結構比對(比圖樣不比顏色)、命中反推 palette。別在動態 dump/靜態追資料流兩條死磕 |
 | [`65-verify-against-reference-not-internal-signals`](rules/65-verify-against-reference-not-internal-signals.md) | 有 ground truth 的專案(port/remake/遷移/對齊規格):**驗收=對 reference 實測,不是內部訊號**——agent 的獎勵訊號(編譯過/測試綠/diff 乾淨/subagent 回報)全是內部自洽,會一路謊報完成;oracle 優先序 `人實測>reference 實機>文件>agent 宣稱`,debug 捷徑串的「能跑完」不算,UI 產物 dump 肉眼比對,先確定 spec 齊才動手(節約)。配 `63`/`82`/`64` |
+| [`66-localization-tsv-source-of-truth`](rules/66-localization-tsv-source-of-truth.md) | 本地化單一真相來源：所有可翻譯顯示文字（含英文原文）強制放 UTF-8 TSV；程式碼與 JSON 只留穩定 key，fallback 只能在 catalog 之間移動。 |
 | [`70-deep-modules`](rules/70-deep-modules.md) | Ousterhout deep modules:模組好壞 = 隱藏複雜度 / 介面複雜度;按 feature 垂直切、adapter 只在邊界、拒絕 pass-through 與提早抽象 |
 | [`80-retro-cht-readme-polish`](rules/80-retro-cht-readme-polish.md) | 復古遊戲 remake／中文化 README 的穩定骨架、證據與狀態契約、素材界線及驗證閘門；工作流水帳固定移到 `WORKLOG.md`。 |
 | [`82-cross-platform-port-verification`](rules/82-cross-platform-port-verification.md) | 跨平台打包(Linux/Win/macOS/Android)驗證紀律:目標平台先自己重現(Win→Wine,別先要 backtrace)、驗實際打包產物、缺資料 NULL-safe 回退;6 類分歧雷(log 嚴重度因平台異/相對路徑雙重前綴/能跑的變體遮 bug/唯讀 cwd/編譯器嚴格度/CI 架構)+ Wine·verbose flag·addr2line 手法 |
@@ -110,6 +111,7 @@ $j.items | ForEach-Object {
 | [`84-scummvm-talkie-cht-fusion`](rules/84-scummvm-talkie-cht-fusion.md) | ScummVM/AGOS talkie 老遊戲繁中化(Simon/Feeble/Waxworks):[HARD] 先驗來源版本字幕完整度(talkie 版常缺字幕→用 floppy 完整文字+CD 語音融合)、注入以行 id 為 key(非英文比對,救語音-only 行)、重用引擎內建反組譯器對齊兩版、DOSBox-in-docker 目錄熱抽換跑原版安裝解自訂壓縮、CJK 24px 加大引擎文字緩衝、硬編碼 UI 加 ZH 分支 |
 | [`85-retro-remake-licensing`](rules/85-retro-remake-licensing.md) | 復古 remake／中文化專案的授權模型[HARD]:非商業免費（含修改再散布）、商業洽談;第一個公開 commit 前就放;授權要出現在四個位置（`LICENSE`、README、每個發行包、AppImage doc）;叫 source-available 不叫 open source;不把原版素材寫進授權範圍;附繁中範本,要標準條款用 PolyForm Noncommercial 官方全文 |
 | [`86-proposal-writing`](rules/86-proposal-writing.md) | 研究/技術計畫書撰寫:定位先行(可否證主張+假說)、範圍誠實、標準結構、評估協議、文獻真實性(WebSearch 驗 arxiv/DOI 不憑記憶)、對照原始碼校正、中文不夾雜、執行摘要;多 agent 分章節 + md→docx pipeline |
+| [`87-retro-remake-release-versioning`](rules/87-retro-remake-release-versioning.md) | 復古 remake 正式版號[HARD]:固定 `v.<主版>.<次版>.<修訂版>-YYYYMMDD`;tag、Release、程式、dist-all、封包、manifest 與 SHA-256 必須一致;同日重發提高修訂號;刪除舊 Release／tag 仍需使用者明確授權。 |
 | [`94-github-pages-doc-style`](rules/94-github-pages-doc-style.md) | 技術文件網站／單頁 HTML 工具的版面規範:層級用線條、留白、字級建立,**禁卡片與藍紫漸層**;色彩先定語意再挑色;表格禁粗外框與彩色表頭;外部數據標來源與基準日 |
 | [`90-plain-language`](rules/90-plain-language.md) | 白話寫作七準則:結論先行(BLUF)、短句常用詞、術語即時翻譯、具體勝抽象、數據配「所以呢」、自然不貼標籤、不犧牲正確性。對外/客戶/管理層文件逐條套 |
 | [`91-deslop-ai-writing`](rules/91-deslop-ai-writing.md) | 去 AI 味反面清單:AI 詞黑名單、copula 迴避、權威揭示腔、格言公式、粗體列表症、filler/hedging;draft→audit→final 去 slop 審查 loop + 防改過頭的 false-positive 清單。來源 Wikipedia「Signs of AI writing」 |
@@ -157,6 +159,7 @@ my_skill/
 │   ├── 50-ubiquitous-language.md
 │   ├── 60-feedback-loop-priority.md
 │   ├── 63-truth-in-code-not-stale-markers.md
+│   ├── 66-localization-tsv-source-of-truth.md
 │   ├── 70-deep-modules.md
 │   ├── 80-retro-cht-readme-polish.md
 │   ├── 82-cross-platform-port-verification.md
@@ -164,6 +167,7 @@ my_skill/
 │   ├── 84-scummvm-talkie-cht-fusion.md
 │   ├── 85-retro-remake-licensing.md
 │   ├── 86-proposal-writing.md
+│   ├── 87-retro-remake-release-versioning.md
 │   ├── 90-plain-language.md
 │   ├── 94-github-pages-doc-style.md
 │   └── 91-deslop-ai-writing.md
