@@ -1,49 +1,3 @@
-# 復古 remake 專案授權條款範本（第 2 版，2026-09-03）
-
-規則本體在 `rulebook/85-retro-remake-licensing.md`；這一份是**可直接複製的全文**
-（繁中為準 ＋ 英文譯本）。實際採用中的例子：`~/cht/sangokushi/LICENSE`（三國志 X68000 remake）。
-純文字檔版本（不帶這段說明）：`~/my_skill/reverse-engineer-retro-game-remake/assets/project-template/LICENSE`。
-
-## 設計目標與對應條文
-
-| 目標 | 條文 | 為什麼 |
-|---|---|---|
-| 要名聲：條款主動鼓勵傳播 | 第 4 條明示允許實況、影片、評論、報導、論文、展覽，**平台分潤與觀眾贊助不算商業** | 標準非商業條款照字面會擋掉開分潤的 YouTuber，那是名聲最主要的來源 |
-| 名字要跟著傳播走 | 第 5 條 (b) 署名：作品名、作者、儲存庫 | 傳播免費，但署名是交換條件 |
-| 保住商業利益 | 第 6 條保留一切未明示權利、可雙授權；第 7 條**貢獻回授含商業條件**；第 1 條 (a) 把納入的貢獻算進「本作品」 | 沒有第 7 條，日後賣商業授權要逐一找貢獻者簽字；貢獻不在「本作品」定義裡的話，第 3 條的授權就涵蓋不到它 |
-| 不授權自己沒有的東西 | 第 2 條 (b)(c)(d) 排除原版素材、**點名**儲存庫裡踩在原版上的東西、第三方元件；譯文只在「著作權人享有權利的範圍內」授權（它是原版文字的衍生著作）| 商業方讀條款時不會誤以為在授權原版權利人的東西 |
-| 修改版不能變成別人的專有物 | 第 3 條 (b) 修改者就修改部分以相同條件授權 | 否則修改版的新增部分沒有任何授權 |
-| 不被繞過 | 第 5 條 (g) 反規避；第 8 條名稱；第 4 條結尾把「拿本作品當別人商品的行銷工具」踢回商業使用 | 自動轉換、換語言改寫仍是修改版；商展 demo 不能從「展覽」溜進第 4 條 |
-| 可執行 | 第 11 條準據法中華民國、臺北地院、繁中為準 | 沒有準據法的條款到了爭議時先吵管轄 |
-
-**不用 PolyForm Noncommercial**：它只做「非商業免費」，沒有署名傳播與貢獻回授，
-而且禁止改字，補不上去。
-
-⚠ 第 4 條 (a)「實況分潤不算商業」的界線是工程判斷，正式談商業合約前要給律師看。
-
-## 使用方式
-
-整份複製成 repo 根目錄 `LICENSE`，替換占位符：
-
-| 占位符 | 例（三國志） |
-|---|---|
-| `@PROJECT_ZH@` / `@PROJECT_EN@` | 三國志 X68000 remake / Sangokushi X68000 Remake |
-| `@YEAR@` | 2026 |
-| `@ORIG_TITLE@` / `@ORIG_TITLE_EN@` | 光榮（KOEI）1988 年 X68000 版《三國志》 / KOEI's 1988 X68000 game "Sangokushi" |
-| `@ORIG_HOLDER@` / `@ORIG_HOLDER_EN@` | 光榮特庫摩（KOEI TECMO） / KOEI TECMO |
-| `@REPO@`（出現兩次）| https://github.com/wicanr2/sangokushi_x68k_cht |
-| `@GREY_ZONE_ZH@` / `@GREY_ZONE_EN@` | 畫面截圖（其中的地圖、圖塊與臉譜來自原版）、譯文檔案中作為對照的原版日文字串、以及由原版素材量測得出的座標與數值表 / screenshots (whose maps, tiles and portraits come from the original), original Japanese strings kept alongside translations for reference, and coordinate and value tables measured from Original Assets |
-| `@THIRD_PARTY_ZH@` / `@THIRD_PARTY_EN@` | GNU Unifont 字型、Ebiten 遊戲程式庫及其相依套件 / the GNU Unifont font, the Ebiten game library and its dependencies |
-
-`@GREY_ZONE@` 與 `@THIRD_PARTY@` 要照**自己 repo 裡實際有什麼**填（`git ls-files` 查），不要抄例子。
-填完 `grep -n '@' LICENSE` 確認只剩 e-mail 裡的 `@`。
-
-授權要出現在四個地方（repo `LICENSE`、README 授權段、每個發行包、AppImage `usr/share/doc/`），
-見 `rulebook/85`。
-
-## 全文
-
-```
 @PROJECT_ZH@ 授權條款（第 2 版）
 @PROJECT_EN@ License, version 2
 
@@ -369,4 +323,3 @@ separate agreement with the copyright holder.
    Rights obtained under a given version remain governed by that version; a
    new version applies to copies of the Work distributed after its
    publication.
-```
