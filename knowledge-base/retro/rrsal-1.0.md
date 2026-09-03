@@ -32,6 +32,7 @@ SPDX 識別字串：`LicenseRef-RRSAL-1.0`。
 |---|---|
 | `@PROJECT_ZH@` / `@PROJECT_EN@`（各出現兩次）| 三國志 X68000 remake / Sangokushi X68000 Remake |
 | `@YEAR@` | 2026 |
+| `@NATURE_ZH@` / `@NATURE_EN@` | 逆向工程重寫與繁體中文化 / reverse-engineered rewrite and Traditional Chinese localisation（純中文化補丁專案就寫「繁體中文化（以 ScummVM 補丁實作）」之類）|
 | `@ORIG_TITLE@` / `@ORIG_TITLE_EN@` | 光榮（KOEI）1988 年 X68000 版《三國志》 / KOEI's 1988 X68000 game "Sangokushi" |
 | `@ORIG_HOLDER@` / `@ORIG_HOLDER_EN@` | 光榮特庫摩（KOEI TECMO） / KOEI TECMO |
 | `@REPO@`（出現兩次）| https://github.com/wicanr2/sangokushi_x68k_cht |
@@ -61,7 +62,7 @@ the English translation below is provided for convenience only）。
 
 前言
 
-本作品是對@ORIG_TITLE@的逆向工程重寫與繁體中文化，
+本作品是對@ORIG_TITLE@的@NATURE_ZH@，
 目的是文化資產保存。著作權人希望它被廣泛使用、討論與展示，同時保留本作品的
 商業權利。本條款據此設計：非商業用途免費且寬鬆，商業用途保留給著作權人另行洽談。
 
@@ -203,8 +204,7 @@ the English translation below is provided for convenience only）。
 ────────────────────────────────────────────────────────────
 English translation (for convenience; the Chinese text governs)
 
-PREAMBLE. This work is a reverse-engineered rewrite and Traditional Chinese
-localisation of @ORIG_TITLE_EN@, made for cultural
+PREAMBLE. This work is a @NATURE_EN@ of @ORIG_TITLE_EN@, made for cultural
 preservation. The copyright holder wants it widely used, discussed and shown,
 while keeping its commercial rights. This license is built accordingly:
 non-commercial use is free and permissive; commercial use is reserved for a

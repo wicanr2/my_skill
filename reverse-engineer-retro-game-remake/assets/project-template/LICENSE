@@ -12,7 +12,7 @@ the English translation below is provided for convenience only）。
 
 前言
 
-本作品是對@ORIG_TITLE@的逆向工程重寫與繁體中文化，
+本作品是對@ORIG_TITLE@的@NATURE_ZH@，
 目的是文化資產保存。著作權人希望它被廣泛使用、討論與展示，同時保留本作品的
 商業權利。本條款據此設計：非商業用途免費且寬鬆，商業用途保留給著作權人另行洽談。
 
@@ -154,8 +154,7 @@ the English translation below is provided for convenience only）。
 ────────────────────────────────────────────────────────────
 English translation (for convenience; the Chinese text governs)
 
-PREAMBLE. This work is a reverse-engineered rewrite and Traditional Chinese
-localisation of @ORIG_TITLE_EN@, made for cultural
+PREAMBLE. This work is a @NATURE_EN@ of @ORIG_TITLE_EN@, made for cultural
 preservation. The copyright holder wants it widely used, discussed and shown,
 while keeping its commercial rights. This license is built accordingly:
 non-commercial use is free and permissive; commercial use is reserved for a
