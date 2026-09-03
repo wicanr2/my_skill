@@ -18,7 +18,7 @@ universal rules.
 For my own remakes the license is settled: copy `assets/project-template/LICENSE` (non-commercial
 free, showcase and streaming expressly allowed, contribution grant-back, commercial by agreement)
 and fill its `@…@` placeholders; the rationale per clause is in
-`knowledge-base/retro/retro-remake-license-v2.md`.
+`knowledge-base/retro/rrsal-1.0.md`.
 
 When several platform versions of the same game exist, pick the rule／data source by whether its
 game logic can be read statically (p-code／bytecode versus native code), keep the others as

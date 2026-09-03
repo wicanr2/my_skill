@@ -1,8 +1,11 @@
-# 復古 remake 專案授權條款範本（第 2 版，2026-09-03）
+# RRSAL-1.0：復古重製 source-available 授權條款（Retro Remake Source-Available License 1.0）
 
-規則本體在 `rulebook/85-retro-remake-licensing.md`；這一份是**可直接複製的全文**
-（繁中為準 ＋ 英文譯本）。實際採用中的例子：`~/cht/sangokushi/LICENSE`（三國志 X68000 remake）。
-純文字檔版本（不帶這段說明）：`~/my_skill/reverse-engineer-retro-game-remake/assets/project-template/LICENSE`。
+使用者 2026-09-03 定名。所有 retro remake／中文化專案共用這一份，條款有自己的版號，
+不隨專案版本走。**允許分潤**是它與一般非商業條款最大的差別（第 4 條）。
+規則本體在 `rulebook/85-retro-remake-licensing.md`；這一份是**可直接複製的全文**（繁中為準 ＋ 英文譯本）。
+實際採用中的例子：`~/cht/sangokushi/LICENSE`。
+純文字檔（不帶這段說明）：`~/my_skill/reverse-engineer-retro-game-remake/assets/project-template/LICENSE`。
+SPDX 識別字串：`LicenseRef-RRSAL-1.0`。
 
 ## 設計目標與對應條文
 
@@ -16,10 +19,10 @@
 | 不被繞過 | 第 5 條 (g) 反規避；第 8 條名稱；第 4 條結尾把「拿本作品當別人商品的行銷工具」踢回商業使用 | 自動轉換、換語言改寫仍是修改版；商展 demo 不能從「展覽」溜進第 4 條 |
 | 可執行 | 第 11 條準據法中華民國、臺北地院、繁中為準 | 沒有準據法的條款到了爭議時先吵管轄 |
 
-**不用 PolyForm Noncommercial**：它只做「非商業免費」，沒有署名傳播與貢獻回授，
+**PolyForm Noncommercial 已取消，沒有例外**：它只做「非商業免費」，沒有署名傳播與貢獻回授，
 而且禁止改字，補不上去。
 
-⚠ 第 4 條 (a)「實況分潤不算商業」的界線是工程判斷，正式談商業合約前要給律師看。
+⚠ 第 4 條 (a)「實況分潤不算商業」的界線與第 7 條「提交即同意」是工程判斷，正式談商業合約前要給律師看。
 
 ## 使用方式
 
@@ -27,7 +30,7 @@
 
 | 占位符 | 例（三國志） |
 |---|---|
-| `@PROJECT_ZH@` / `@PROJECT_EN@` | 三國志 X68000 remake / Sangokushi X68000 Remake |
+| `@PROJECT_ZH@` / `@PROJECT_EN@`（各出現兩次）| 三國志 X68000 remake / Sangokushi X68000 Remake |
 | `@YEAR@` | 2026 |
 | `@ORIG_TITLE@` / `@ORIG_TITLE_EN@` | 光榮（KOEI）1988 年 X68000 版《三國志》 / KOEI's 1988 X68000 game "Sangokushi" |
 | `@ORIG_HOLDER@` / `@ORIG_HOLDER_EN@` | 光榮特庫摩（KOEI TECMO） / KOEI TECMO |
@@ -36,17 +39,19 @@
 | `@THIRD_PARTY_ZH@` / `@THIRD_PARTY_EN@` | GNU Unifont 字型、Ebiten 遊戲程式庫及其相依套件 / the GNU Unifont font, the Ebiten game library and its dependencies |
 
 `@GREY_ZONE@` 與 `@THIRD_PARTY@` 要照**自己 repo 裡實際有什麼**填（`git ls-files` 查），不要抄例子。
-填完 `grep -n '@' LICENSE` 確認只剩 e-mail 裡的 `@`。
+填完 `grep -n '@' LICENSE` 只能剩 e-mail 裡的 `@`。條款本文（第 1–13 條）不改字；要改就是新版號。
 
 授權要出現在四個地方（repo `LICENSE`、README 授權段、每個發行包、AppImage `usr/share/doc/`），
-見 `rulebook/85`。
+README 寫「採 RRSAL-1.0（復古重製 source-available 授權條款）」並指向 `LICENSE`，見 `rulebook/85`。
 
 ## 全文
 
 ```
-@PROJECT_ZH@ 授權條款（第 2 版）
-@PROJECT_EN@ License, version 2
+復古重製 source-available 授權條款 1.0（RRSAL-1.0）
+Retro Remake Source-Available License, version 1.0 (RRSAL-1.0)
+SPDX-License-Identifier: LicenseRef-RRSAL-1.0
 
+適用作品：@PROJECT_ZH@（@PROJECT_EN@）
 Copyright (c) @YEAR@ Wang Chun-Yu (wicanr2) <wicanr2@gmail.com>
 
 繁體中文為準，英文譯本僅供參考（The Traditional Chinese text governs;
@@ -192,7 +197,7 @@ the English translation below is provided for convenience only）。
 
 第 13 條　版本
 
-著作權人得發布本條款的新版本。已依某一版本取得的授權，依該版本的條件繼續
+著作權人得發布 RRSAL 的新版本（以版號識別，本版為 1.0）。已依某一版本取得的授權，依該版本的條件繼續
 有效；新版本適用於其發布後散布的本作品副本。
 
 ────────────────────────────────────────────────────────────
@@ -365,7 +370,8 @@ separate agreement with the copyright holder.
    reserves the right to adjust the Work's contents in response to a lawful
    claim by the original rights holder.
 
-13. VERSIONS. The copyright holder may publish new versions of this license.
+13. VERSIONS. The copyright holder may publish new versions of RRSAL
+   (identified by version number; this is version 1.0).
    Rights obtained under a given version remain governed by that version; a
    new version applies to copies of the Work distributed after its
    publication.
