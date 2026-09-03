@@ -10,7 +10,11 @@
 - **範本（第 2 版，繁中為準 ＋ 英文譯本）：`~/.claude/knowledge-base/retro/retro-remake-license-v2.md`**
   （占位符版全文 ＋ 各條設計理由）；實際採用中的例子 `~/cht/sangokushi/LICENSE`。
   新專案整份複製，只換占位符與第 2 條 (c) 點名的灰色地帶項目。
-- 第 1 版（六條精簡版）在 `~/cht/dragon/LICENSE`；舊專案要不要升到第 2 版另問。
+- 第 1 版（六條精簡版）在 `~/cht/dragon/LICENSE`。
+- 既有仍掛 PolyForm 的八個 repo 要換到第 2 版（換版是各專案的獨立工作，不在規則裡順手做）：
+`chengshi_cht`（simcity）、`civ1-remake-cht`、`eob_123_remake`、`fd2_re`、`rich2`、`nectaris-cht`、
+`sundog-remake-zh-hant`、`dungeon_master_cht`。換版時：`LICENSE` 整份替換、刪 PolyForm 的
+`NOTICE` Required Notice、README 授權段改寫、下一次打包帶新條款。
 
 ## 條款要點（第 2 版）
 
