@@ -220,7 +220,7 @@ PolyForm Noncommercial 已於 2026-09-03 整個取消（Rich2 當初的選擇也
 日後要商業授權得逐一找貢獻者同意。這種情況用自訂條款，至少要有四段：
 明示允許的傳播（含平台分潤）＋署名、保留權利與雙授權、貢獻回授含商業條件、
 點名 repo 裡踩在原版素材上的東西（截圖、原版字串、量測表）。
-範本與各條理由見 [`retro-remake-license-v2.md`](../retro/retro-remake-license-v2.md)，
+範本與各條理由見 [`rrsal-1.0.md`](../retro/rrsal-1.0.md)，
 規則在 `rules/85`。
 
 ## 15. 打包成功不等於平台驗收

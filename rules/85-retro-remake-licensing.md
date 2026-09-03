@@ -1,4 +1,7 @@
-# 復古 remake 專案的授權條款（使用者裁定 2026-08-28；第 2 版 2026-09-03）
+# 復古 remake 專案的授權條款：RRSAL-1.0（使用者裁定 2026-08-28；定名 2026-09-03）
+
+條款名稱固定為 **復古重製 source-available 授權條款 1.0 ／ Retro Remake Source-Available License 1.0（RRSAL-1.0）**，
+SPDX 用 `LicenseRef-RRSAL-1.0`。名字不綁專案，版號是條款自己的。**允許分潤**（第 4 條）是它與一般非商業條款的差別。
 
 **這是已經定案的決定，不要每個專案重問一次。** 我的 remake／中文化專案一律採
 **專有授權**：非商業用途免費（含修改與再散布），商業用途要先跟我洽談。
@@ -7,16 +10,16 @@
 
 - 著作權人：Wang Chun-Yu (wicanr2)
 - 商業洽談：`wicanr2@gmail.com`
-- **範本（第 2 版，繁中為準 ＋ 英文譯本）：`~/.claude/knowledge-base/retro/retro-remake-license-v2.md`**
+- **範本（RRSAL-1.0，繁中為準 ＋ 英文譯本）：`~/.claude/knowledge-base/retro/rrsal-1.0.md`**
   （占位符版全文 ＋ 各條設計理由）；實際採用中的例子 `~/cht/sangokushi/LICENSE`。
   新專案整份複製，只換占位符與第 2 條 (c) 點名的灰色地帶項目。
 - 第 1 版（六條精簡版）在 `~/cht/dragon/LICENSE`。
-- 既有仍掛 PolyForm 的八個 repo 要換到第 2 版（換版是各專案的獨立工作，不在規則裡順手做）：
+- 既有仍掛 PolyForm 的八個 repo 要換到 RRSAL-1.0（換版是各專案的獨立工作，不在規則裡順手做）：
 `chengshi_cht`（simcity）、`civ1-remake-cht`、`eob_123_remake`、`fd2_re`、`rich2`、`nectaris-cht`、
 `sundog-remake-zh-hant`、`dungeon_master_cht`。換版時：`LICENSE` 整份替換、刪 PolyForm 的
 `NOTICE` Required Notice、README 授權段改寫、下一次打包帶新條款。
 
-## 條款要點（第 2 版）
+## 條款要點（RRSAL-1.0）
 
 兩個目標：**要名聲**（條款主動鼓勵傳播）與**保住商業利益**（先鋪好日後商業授權的路）。
 

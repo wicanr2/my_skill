@@ -1,6 +1,8 @@
-@PROJECT_ZH@ 授權條款（第 2 版）
-@PROJECT_EN@ License, version 2
+復古重製 source-available 授權條款 1.0（RRSAL-1.0）
+Retro Remake Source-Available License, version 1.0 (RRSAL-1.0)
+SPDX-License-Identifier: LicenseRef-RRSAL-1.0
 
+適用作品：@PROJECT_ZH@（@PROJECT_EN@）
 Copyright (c) @YEAR@ Wang Chun-Yu (wicanr2) <wicanr2@gmail.com>
 
 繁體中文為準，英文譯本僅供參考（The Traditional Chinese text governs;
@@ -146,7 +148,7 @@ the English translation below is provided for convenience only）。
 
 第 13 條　版本
 
-著作權人得發布本條款的新版本。已依某一版本取得的授權，依該版本的條件繼續
+著作權人得發布 RRSAL 的新版本（以版號識別，本版為 1.0）。已依某一版本取得的授權，依該版本的條件繼續
 有效；新版本適用於其發布後散布的本作品副本。
 
 ────────────────────────────────────────────────────────────
@@ -319,7 +321,8 @@ separate agreement with the copyright holder.
    reserves the right to adjust the Work's contents in response to a lawful
    claim by the original rights holder.
 
-13. VERSIONS. The copyright holder may publish new versions of this license.
+13. VERSIONS. The copyright holder may publish new versions of RRSAL
+   (identified by version number; this is version 1.0).
    Rights obtained under a given version remain governed by that version; a
    new version applies to copies of the Work distributed after its
    publication.
