@@ -5,7 +5,7 @@ description: 沒有 Mac，在 Linux（docker）上用 osxcross 交叉編出 macO
 
 # 沒有 Mac，在 Linux 上編 macOS 版
 
-原理與每個坑的成因寫在 `~/.claude/knowledge-base/workflows/osxcross-macos-cross-build.md`；這份是照著做的順序。
+原理與每個坑的成因寫在 `../../knowledge-base/workflows/osxcross-macos-cross-build.md`；這份是照著做的順序。
 
 一句話的原理：**clang 本來就能為任何目標產生機器碼，缺的只有 SDK、Mach-O 的連結器與工具（cctools-port），以及一層把旗標包好的 wrapper。** 所以出事的幾乎都在連結與工具鏈那一層，不在編譯。
 

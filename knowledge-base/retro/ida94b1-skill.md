@@ -5,7 +5,7 @@ description: Use the local IDA Pro Docker/Compose environment to perform authori
 
 # IDA Docker 老遊戲反組譯
 
-> ⛔ **這份已被 `~/.claude/knowledge-base/retro/ida-pro-9.4.md` 取代（2026-08-01）。**
+> ⛔ **這份已被 `ida-pro-9.4.md` 取代（2026-08-01）。**
 > 本檔寫的是通用 docker-compose 流程與 IDAPython，**與本機實際環境不符**：
 > 本機 image 在 `~/ida_94_official/dist`（`ida-pro-9.4-ver2`），
 > 直接 `docker run` 不用 compose；而且 **IDAPython 實測跑不起來，要寫 IDC**。

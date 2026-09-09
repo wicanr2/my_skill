@@ -138,6 +138,6 @@ mnemonic + 語意註記 + 證據等級 + 出處`，重建時用 ROM 驗證 raw b
 
 ## 相關
 
-- `~/.claude/knowledge-base/retro/ida-pro-9.4.md`（IDA 本機環境；PCE 用它只為 file offset 錨點）
+- `ida-pro-9.4.md`（IDA 本機環境；PCE 用它只為 file offset 錨點）
 - `rulebook/62-static-provenance-trace.md`（先靜態反追再談動態）
 - `rulebook/65-verify-against-reference-not-internal-signals.md`（測試綠不等於對齊原版）

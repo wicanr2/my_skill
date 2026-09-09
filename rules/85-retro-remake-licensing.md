@@ -10,7 +10,7 @@ SPDX 用 `LicenseRef-RRSAL-1.0`。名字不綁專案，版號是條款自己的�
 
 - 著作權人：Wang Chun-Yu (wicanr2)
 - 商業洽談：`wicanr2@gmail.com`
-- **範本（RRSAL-1.0，繁中為準 ＋ 英文譯本）：`~/.claude/knowledge-base/retro/rrsal-1.0.md`**
+- **範本（RRSAL-1.0，繁中為準 ＋ 英文譯本）：`../knowledge-base/retro/rrsal-1.0.md`**
   （占位符版全文 ＋ 各條設計理由）；實際採用中的例子 `~/cht/sangokushi/LICENSE`。
   新專案整份複製，只換占位符與第 2 條 (c) 點名的灰色地帶項目。
 - 第 1 版（六條精簡版）在 `~/cht/dragon/LICENSE`。

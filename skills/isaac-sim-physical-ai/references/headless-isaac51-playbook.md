@@ -6,7 +6,7 @@
 > 對象:要在任何 headless Isaac Sim 5.1 主機上判斷「模擬到底發生了什麼」、
 > 並據此調物理參數的人(或 LLM)。
 > 這份記的是**方法**——怎麼觀測、觀測到的數字怎麼讀、哪些觀測方式會騙你。
-> 具體參數值與備份清單在 [117](117-isaac-scene-backup-20260726.md);場景建置 know-how 在姊妹 KB(專案內部文件,此處不可點)。
+> 具體參數值與備份清單在 專案內部文件 `117-isaac-scene-backup-20260726.md`;場景建置 know-how 在姊妹 KB(專案內部文件,此處不可點)。
 >
 > 對應 skill:`isaac-sim-monitoring`(repo `wicanr2/my_skill`)。
 
@@ -77,7 +77,7 @@ LOG=$(readlink -f /proc/$PID/fd/1)
 
 它會印「最後寫入距今幾秒」——**這個數字比 log 內容更重要**。距今幾百秒代表這支已經沒在動,你正在讀化石。
 
-> ⚠ 這個技巧有個前置條件:**log 必須落在真實檔案上**。如果啟動時 stdout 導到 pipe 或 `/dev/null`,`/proc/<pid>/fd/1` 反查全部失效。`<專案>-boot.service` 為此特別把每支的輸出都寫成具名檔案(見 [116](116-boot-resilience.md))。
+> ⚠ 這個技巧有個前置條件:**log 必須落在真實檔案上**。如果啟動時 stdout 導到 pipe 或 `/dev/null`,`/proc/<pid>/fd/1` 反查全部失效。`<專案>-boot.service` 為此特別把每支的輸出都寫成具名檔案(見 專案內部文件 `116-boot-resilience.md`)。
 
 ### 判斷「Isaac 到底載了哪支 USD」
 
@@ -359,7 +359,7 @@ v10 兩輪驗收都通過後跑 drift_guard,它回報「最大漂移 **1450.5 cm
 6. **ROS2** — `/tf` 有沒有在更新?servo 有沒有送軌跡?
 7. **DB vs 物理** — `pushback_verify.sh` 雙軌對照。兩邊都單獨說過謊,要一起看。
 
-前六項全綠但東西還是沒動 → 看 [99](99-headless-ros-bridge-fastdds-shm-rootcause.md)(FastDDS SHM 版本不相容,資料面靜默全丟)。
+前六項全綠但東西還是沒動 → 看 專案內部文件 `99-headless-ros-bridge-fastdds-shm-rootcause.md`(FastDDS SHM 版本不相容,資料面靜默全丟)。
 
 ---
 

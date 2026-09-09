@@ -120,6 +120,6 @@ kill -9 "$PID" 2>/dev/null || true      # 5 秒還在就直接砍
 
 ## 相關
 
-- `~/.claude/knowledge-base/retro/ida-pro-9.4.md`（反組譯環境）
-- `~/.claude/skills/re-retro-cht-rulebook/SKILL.md`（老遊戲中文化／remake 路由）
+- `ida-pro-9.4.md`（反組譯環境）
+- `../../skills/re-retro-cht-rulebook/SKILL.md`（老遊戲中文化／remake 路由）
 - `rulebook/64-re-screenshot-oracle.md`（用實機截圖當 oracle 反推資料位置）
