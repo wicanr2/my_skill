@@ -41,6 +41,8 @@ IDA 資料庫為主、Ghidra 交叉驗證 ──(只當行為 oracle，不照抄
   建立不可變鍵，反查舊 spec／玩家流程／實作／測試，並用失敗即關閉的 backlink
   ledger 防止「函式已解讀、產品仍漏功能」。
 - **多版本素材考古 + 遊戲中 Theme 切換 + RE 證據停止線** → `references/07-multiversion-assets-and-themes.md`。抽 Amiga/X68000/PC-98 各版美術音樂、做 F8 主題切換，並在證據足以完成玩家可見規格後停止；未解內容保留為明確待辦，不因成本效益永久刪除。
+- **Heineman 引擎的 unknown opcode 破解**(火龍之戰／Bard's Tale 家族)→ `references/08-null-opcode-heineman-engine.md`
+- **Genesis／Mega Drive ROM 圖形抽取**(tile／sprite／palette)→ `references/09-genesis-rom-graphics.md`
 - **多 agent 並行 + 存活性紀律** → rule `35-background-agent-container-liveness`(禁背景 sentinel/無界 dump/GUI viewer;以活躍 process/branch commit/SendMessage 回應判活死)。
 
 ## ⚠️ 最痛的踩雷(這些用時間換來的,務必記住)

@@ -25,6 +25,9 @@
 
 ## Reference
 
+- 輸出語氣、文件原則與「概念型／實作型／報告型」三種回應形態的規範:
+  [`../knowledge-base/style/output-style.md`](../knowledge-base/style/output-style.md)
+
 - 去 AI 味反面清單(刪 slop):`91-deslop-ai-writing`(AI 詞黑名單、權威揭示腔、格言公式、粗體列表症、去 slop 審查 loop 等)。寫完白話後再過一遍。
 - 文風總則與 meta 標籤禁令:核心文風規則「語言與文風」。
 - 報告落地:BLUF + 可追溯 + 列印友善的單檔技術報告。

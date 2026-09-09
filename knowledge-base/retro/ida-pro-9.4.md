@@ -1,5 +1,8 @@
 # IDA Pro 9.4：本機環境與 16-bit DOS 逆向實務
 
+> 非 root 執行、資料庫擁有權與長期作業的清理清單另見
+> [`../re-methodology/ida-pro-docker-hygiene.md`](../re-methodology/ida-pro-docker-hygiene.md)。
+
 ## 本機環境（`[HARD]` 記住這三行）
 
 ```

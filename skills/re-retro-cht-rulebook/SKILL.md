@@ -50,6 +50,7 @@ description: 路由復古遊戲逆向、clean-room remake、中文化、原版�
 | Ghidra 只作交叉驗證或專案明確指定 | [`ghidra-headless-dos-re`](../../knowledge-base/retro-cht/ghidra-headless-dos-re/SKILL.md) |
 | Borland overlay、Turbo Pascal、DOS／PC-98 | [`reverse-engineer-borland-dos-pc98`](../../knowledge-base/retro-cht/reverse-engineer-borland-dos-pc98/SKILL.md) |
 | PC Engine／HuC6280 | [`knowledge-base/retro/pce-huc6280-re-toolkit.md`](../../knowledge-base/retro/pce-huc6280-re-toolkit.md) |
+| PC Engine 音樂／音效擷取(PSG 埠監看、解樂譜 vs 錄音) | [`knowledge-base/retro/pce-psg-music-extraction.md`](../../knowledge-base/retro/pce-psg-music-extraction.md) |
 | Mega Drive／Genesis ROM | [`megadrive-re-toolkit`](../../knowledge-base/retro-cht/megadrive-re-toolkit/SKILL.md) |
 | 原版 DOSBox 設定 | [`knowledge-base/retro/dosbox-game-configs.md`](../../knowledge-base/retro/dosbox-game-configs.md) |
 

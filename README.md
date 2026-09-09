@@ -45,7 +45,6 @@
 | [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
-| [`slack`](skills/slack/SKILL.md) | Slack workspace 自動化(讀未讀/發訊/搜尋/抓資料) via 瀏覽器 | 「查我的 Slack」「發訊到」「搜尋 Slack」 |
 | [`vercel-sandbox`](skills/vercel-sandbox/SKILL.md) | 在 Vercel Sandbox microVM 內跑 agent-browser + Chrome | 「Vercel Sandbox browser」「microVM Chrome」 |
 | [`prompt-master`](skills/prompt-master/SKILL.md) | 為任何 AI 工具生成優化 prompt(LLM/Cursor/Midjourney/coding agent) | 「寫/改/優化 prompt」 |
 | [`english-prompt-coach`](skills/english-prompt-coach/SKILL.md) | user 用英文下 prompt 時,任務前附 (1) 自然改寫版 (2) 中文修正解析表,當日常英文寫作練習;ON/OFF toggle 跨 session 沿用 | 「start coaching」「開始 coach」「再幫我看英文」「stop coaching」 |
@@ -183,7 +182,7 @@ my_skill/
 │   ├── re-retro-cht-rulebook/      # 逆向/老遊戲中文化 按需路由 → knowledge-base/retro-cht
 │   ├── kneron-edge-ai-integration/  github-weekly-radar/  retro-game-cht-package/
 │   ├── verification-fidelity/  first-principles-tech-notes/  proposal-writer/
-│   ├── agent-browser/  dogfood/  electron/  slack/  vercel-sandbox/
+│   ├── agent-browser/  dogfood/  electron/  vercel-sandbox/
 │   ├── prompt-master/  english-prompt-coach/  organize-folder/
 │   ├── my-skill-merge/  dev-setup-bundle/  isaac-sim-physical-ai/
 │   └── grilling/  grill-me/  retro-argos-cht-debug/
@@ -195,7 +194,7 @@ my_skill/
     │   └── batch-subagent-localization.md
     ├── retro/                      # 逆向工程平台知識(IDA / DOSBox / PCE / Borland)
     ├── re-methodology/             # remake 忠實度、RE→規格→實作閘門與 IDA docker 衛生、挑來源版本與位元組簽章
-    ├── style/                      # 輸出語氣與文件風格
+    ├── style/output-style.md       # 輸出語氣、文件原則、三種回應形態
     └── retro-cht/                  # 降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
         ├── research-pc98-golden-box-ui/  dragon-wars-cht-remake/
         ├── zak-fmtowns-zhtw/  rise-of-the-dragon-cht/
