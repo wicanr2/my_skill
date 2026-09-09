@@ -195,6 +195,7 @@ my_skill/
     ├── retro/                      # 逆向工程平台知識(IDA / DOSBox / PCE / Borland)
     ├── re-methodology/             # remake 忠實度、RE→規格→實作閘門與 IDA docker 衛生、挑來源版本與位元組簽章
     ├── style/output-style.md       # 輸出語氣、文件原則、三種回應形態
+├── assets/                     # 圖像資產（用途與使用者見 assets/README.md）
     └── retro-cht/                  # 降級的遊戲/retro 資產(由 re-retro-cht-rulebook 路由,不自動載入)
         ├── research-pc98-golden-box-ui/  dragon-wars-cht-remake/
         ├── zak-fmtowns-zhtw/  rise-of-the-dragon-cht/
