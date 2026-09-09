@@ -1,8 +1,5 @@
 # IDA Pro 9.4：本機環境與 16-bit DOS 逆向實務
 
-> 取代 `ida94b1-skill.md`（那份寫的是通用 docker-compose 流程與 IDAPython，
-> 與本機實際環境不符，見下方「實測結論」）。
-
 ## 本機環境（`[HARD]` 記住這三行）
 
 ```

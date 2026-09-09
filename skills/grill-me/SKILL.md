@@ -7,7 +7,7 @@ description: 針對會改變目標、範圍、架構、資料格式、原版忠�
 
 把 `grill-me` 當成「使用者掌握價值取捨、agent 負責查證與整理」的工作模式。目標是達到可辯護的共同理解，不是快速產生一份看似完整、其實由 agent 私自決定的方案。
 
-`grill-me` 是使用者可直接指定的入口；`~/.codex/skills/grilling/` 是可由 agent
+`grill-me` 是使用者可直接指定的入口；`grilling`（[`../grilling/SKILL.md`](../grilling/SKILL.md)）是可由 agent
 自動啟動的共用核心。兩者採同一套決策樹、事實／決策分離與確認閘門；若某個
 session 沒有載入 `grilling`，本檔仍可獨立完成訪談，不把技能相依性當成使用者
 需要自行排除的問題。
