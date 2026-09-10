@@ -55,7 +55,7 @@ markdown 的 `- [ ]` 清單會長出**過期斷言**：東西做好了，而沒�
 | `json_len` | 某份 JSON 的欄位長度 ≤ max → 仍未完成 | 進度型的清單（涵蓋幾張圖、抽樣幾項） |
 | `manual` | 一律回「仍未完成」並標出來 | 真的沒有機器訊號的 |
 
-## 四條硬規則
+## 五條硬規則
 
 - **[HARD] 不要用 SQLite 或別的二進位格式。** `git diff` 看不出「哪條斷言什麼
   時候被改成什麼」，而那正是要追的東西。JSON 純文字、結構化、任何語言都讀得動。
@@ -64,6 +64,10 @@ markdown 的 `- [ ]` 清單會長出**過期斷言**：東西做好了，而沒�
   它給人「有在看」的假象。沒有訊號就標 `manual`，並在 `note` 寫明**將來接上時
   該綁什麼**（「改好之後那三行字會消失，到時把這一條改成綁那個」）。
 - **[HARD] `manual` 一律回「仍未完成」並在報表上標出來。** 沉默不等於通過。
+- **[HARD] verify 只看產品程式碼，不掃測試檔。** 測試本來就會提到還沒接上的
+  東西——為了釘住將來的行為，或為了測那個資料結構本身。把 `*_test.*` 算進來，
+  `absent` 會因為測試裡有一行呼叫就判成「已經做了」，真缺口就這樣被蓋掉。
+  條目問的是「**產品程式碼**做了這件事沒有」。
 - **[HARD] verify 的測試要有正反對照。** 只驗「它印出仍未完成」證明不了機制有
   在看——空的檔案、寫錯的路徑、永遠為真的 pattern 都會印出一樣的好消息。測試
   要先確認訊號在時報未完成，**再把訊號拿掉、確認它真的開口**。
@@ -77,6 +81,22 @@ markdown 的 `- [ ]` 清單會長出**過期斷言**：東西做好了，而沒�
 3. **自承註解**（`present`）——最好寫，但改動程式時可能被順手刪掉。刪掉就開口，
    那其實是對的：該回頭看那一條了。
 4. **`manual`**——沒得綁時的誠實選項。
+
+### pattern 寫完，當場往兩個方向各驗一次
+
+`absent` 的 pattern 是最容易寫壞的一格，而且**兩個方向的錯都會安靜地過去**：
+
+- **太窄，或綁到猜想中的名字 → 永遠為真。** 條目會一直說「還沒做」，即使早就
+  做完了。典型寫法是照著規格文件的用詞猜識別字：規格寫「雲團節點」，就綁
+  `CloudNode|cloudNodes|雲團節點`——而程式裡的型別叫 `Cloud` 跟 `CloudList`，
+  三個都不會中。**這種條目看起來很盡責，其實一次都沒有真的看過。**
+- **太寬 → 反過來誤判已完成。** `\.RemoveAt\(` 看起來剛好，但另一個型別
+  （`EffectList`）有同名方法，而且已經有人在呼叫，於是條目在缺口還在時就閉嘴了。
+  綁到接收者上（`Clouds\.RemoveAt\(`）才分得開。
+
+所以 pattern 寫完立刻拿同一份 pattern 對現在的樹 grep 一次，**看清楚它中了誰、
+又為什麼沒中別人**。`paths` 一併檢查：要排掉定義處——`RemoveAt` 的定義就在
+`internal/gamepack/cloud.go`，把那個目錄放進 `paths` 等於自己中自己。
 
 ## 參考實作（語言中立的最小版）
 
@@ -95,9 +115,12 @@ def hit(v):
         p = ROOT / target
         files = p.rglob("*") if p.is_dir() else [p]
         for f in files:
-            if f.is_file() and f.suffix in {".go", ".py", ".sh", ".md", ".json"}:
-                if expr.search(f.read_text(encoding="utf-8", errors="ignore")):
-                    return str(f.relative_to(ROOT))
+            if not f.is_file() or f.suffix not in {".go", ".py", ".sh", ".md", ".json"}:
+                continue
+            if "_test." in f.name or f.name.startswith("test_"):  # 測試檔不算
+                continue
+            if expr.search(f.read_text(encoding="utf-8", errors="ignore")):
+                return str(f.relative_to(ROOT))
     return None
 
 def still_open(item):
@@ -121,7 +144,7 @@ for item in DATA["items"]:
 sys.exit(1 if stale else 0)
 ```
 
-Go 專案的完整版（含 render、schema 檢查與八條測試）在
+Go 專案的完整版（含 render、schema 檢查與九條測試）在
 `Pool-of-Radiance-cht` 的 `cmd/pool-worklist`。
 
 ## 收尾紀律
