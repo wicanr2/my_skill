@@ -4,6 +4,10 @@
 > 害你把「早就做完的」當「沒做」又重查一遍(鬼打牆),或拿過期 audit 當現況下錯結論。
 > 與 [`62-static-provenance-trace`](62-static-provenance-trace.md)(斷言機制前先靜態驗證)、
 > [`60-feedback-loop-priority`](60-feedback-loop-priority.md) 互補:62/60 講「驗 *機制/bug*」,本檔講「驗 *狀態:誰做了沒*」。
+>
+> **本檔要求的「動手前先 grep 確認」依賴人記得；記不得的那一次就是過期斷言活
+> 下去的那一次。** 把那個 grep 寫進資料、讓機器每次都問的做法在
+> [`61-worklist-as-data-with-verify`](61-worklist-as-data-with-verify.md)。
 
 ## 核心鐵則
 
