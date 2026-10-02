@@ -60,3 +60,11 @@
   與交接文件七處一致；無參數時不得退回裸日期。
 - 已發布版本預設不可刪除；只有使用者明確授權撤回精確舊版號時，才能刪除後回讀確認，
   再從乾淨輸入驗證並發布新版本。
+
+## 2026-10-02：移除三個 skill 與週報產物
+
+- 刪除 `skills/kneron-edge-ai-integration`、`skills/isaac-sim-physical-ai`、`skills/github-weekly-radar`。
+- 刪除 `reports/github-radar-2026-05-30.html`，`reports/` 目錄不再存在。
+- README 移除三個 skill 的表格列、「github-weekly-radar 一句話」、「報告產物」與結構樹的對應項目。
+- 刪除 `skills/agent-browser` 與 README 的對應列。`dogfood`、`electron`、`vercel-sandbox` 直接呼叫 `agent-browser` CLI，不依賴這個 skill。
+- `rules/92-technical-report-structure.md`：引用的常駐規則檔名由 `10-lcy-core` 改成 `user-rules`，上游已把三份常駐規則合併成一檔。

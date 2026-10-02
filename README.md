@@ -27,9 +27,7 @@
 |-------|------|----------|
 | [`re-retro-cht-rulebook`](skills/re-retro-cht-rulebook/SKILL.md) | 逆向工程 + 老遊戲中文化/移植/remake 的**按需路由**：把遊戲／retro 資產（已降級為 `knowledge-base/retro-cht/`）與 retro craft rules 依觸發表指路，只留 1 個常駐入口省 token | 「逆向工程」「老遊戲中文化/移植/remake」「Golden Box／PC-98」「特定遊戲(火龍之戰/Zak/孟波/裝甲元帥…)」「game tester」「做遊戲推廣片」「ESC/F10 離開鍵」「Mac DMG 打包」「COCOMO 工時估算」 |
 | [`research-pc98-golden-box-ui`](knowledge-base/retro-cht/research-pc98-golden-box-ui/SKILL.md) | PC-98 日文 Golden Box 跨作品介面研究：640×400、16×15／16×16 點陣字、對話分頁、隊伍狀態欄、戰鬥 HUD 與繁中排版；只提供可泛用的結構證據，不複製遊戲美術 | 「Golden Box／Gold Box／黃金盒／金盒」「PC-98／PC98／PC-9801」「克萊恩英豪／幽靈騎士」「Champions／Death Knights of Krynn」「Pool of Radiance」「CJK CRPG 排版」 |
-| [`kneron-edge-ai-integration`](skills/kneron-edge-ai-integration/SKILL.md) | **階層式** 把 YOLO/物件偵測整合部署到耐能 Kneron NPU (KL730/720) 的 SOP + 必踩雷:量化崩潰根因 (raw-logit 須用 mmse 非 percentage=1.0)、kneron-mmdetection docker 6 坑、ONNX→NEF、decode+NMS、逐 channel 驗收、記憶體/CPU 上限。SKILL.md 精簡+三大致命雷,references/ 4 檔按需讀 | 「YOLO 跑在耐能/Kneron NPU」「KL730/KL720 部署」「ONNX 轉 NEF」「NPU 量化後輸出全 0/崩潰」「kneron-mmdetection 環境」「edge AI 晶片整合物件偵測」 |
 | [`osxcross-macos-cross-build`](skills/osxcross-macos-cross-build/SKILL.md) | 沒有 Mac，在 Linux docker 裡用 osxcross 交叉編 macOS universal binary（arm64 + x86_64）並靜態驗收：預編工具鏈 image、per-arch + lipo、arm64 的 ad-hoc 簽章、Linux 上驗得到／驗不到什麼 | 「沒有 Mac 要出 macOS 版」「macos runner 額度用完」「osxcross」「交叉編 macOS」「universal binary / lipo」「Apple Silicon Killed: 9」「LC_CODE_SIGNATURE」「libxar.so.1」「can't figure out the architecture type」 |
-| [`github-weekly-radar`](skills/github-weekly-radar/SKILL.md) | 每週彙整 GitHub 近期重要**新**專案 + senior-PM 重要性評估 | 「這週 github 重要新專案」「新 repo 週報」「trending 摘要」 |
 | [`cocomo-estimate`](knowledge-base/retro-cht/cocomo-estimate/SKILL.md) | 用 COCOMO Basic SLOC 模型 + 2026 AI 校正法產出「三數字並陳」開發成本章節 | 「估個 baseline」「人力評估」「跟 1990s 比快多少倍」「給 PM 看的 estimate」 |
 | [`classic-mac-c-game-sdl-port`](knowledge-base/retro-cht/classic-mac-c-game-sdl-port/SKILL.md) | Classic Mac (QuickDraw/Carbon) C 遊戲 → SDL2 Linux/Windows/macOS 移植 + 中文化(含 CF prototype 截斷等六大雷 + macOS 打包三雷)| 出現 `CGrafPtr`/`CopyBits`/`CFStringRef`/Pascal 字串、做 Mac remake 中文化、打包 AppImage/Windows/macOS Universal `.app` |
 | [`qb64pe-game-linux-port`](knowledge-base/retro-cht/qb64pe-game-linux-port/SKILL.md) | QB64-PE + Docker 把 QuickBasic/.bas 遊戲 cross-compile 成 Linux/Windows + AppImage | 「把 .bas 遊戲跑在 Linux/Windows」「包 AppImage」 |
@@ -42,7 +40,6 @@
 | [`retro-game-remake`](knowledge-base/retro-cht/retro-game-remake/SKILL.md) | Ultima、FM Towns、多版本 theme、Heineman opcode 與 Genesis 圖形的歷史案例庫；不再充當通用 remake 主流程 | 「u2/u3/u6-cht」「FM Towns 素材」「Heineman opcode」「Genesis 圖形」 |
 | [`reverse-engineer-retro-game-remake`](reverse-engineer-retro-game-remake/SKILL.md) | 證據可回查的 clean-room remake 主流程；強制依序完成 RE、`DRAFT`／`READY` 規格、實作與同狀態驗證，並提供穩定 README／WORKLOG 範本 | 「逆向復古遊戲」「clean-room remake」「RE 後寫 spec」「remake README」 |
 | [`game-promo-video-ffmpeg`](knowledge-base/retro-cht/game-promo-video-ffmpeg/SKILL.md) | 用 ffmpeg + ImageMagick(全 docker、無剪輯軟體、LLM 驅動)把老遊戲/remake/中文化專案的截圖 + 遊戲音樂合成 60–75 秒推廣短片;內建硬雷:**zoompan 幀數爆炸(燒滿 CPU)**、CPU 控制(--cpus/預建 image/veryfast/靜態 fallback)、**MIDI+SoundFont 遊戲音樂離線抽取(fluidsynth)**、滑鼠驅動遊戲改靜態截圖、docker 字型/IM policy 雷;附 CPU-safe make.sh 骨架。配 `rules/93`(配樂用原版[HARD]) | 「做推廣片/trailer/宣傳片」「截圖+配樂合成影片」「ffmpeg 投影片/Ken Burns」「遊戲介紹影片」「影片 CPU 跑太兇/卡住」「抽遊戲配樂當 BGM」 |
-| [`agent-browser`](skills/agent-browser/SKILL.md) | 瀏覽器自動化 CLI(導航/填表/截圖/抓資料/測 web app) | 「開網站」「填表單」「截圖」「scrape 資料」「測 web app」 |
 | [`dogfood`](skills/dogfood/SKILL.md) | 系統化探索測試 web app 找 bug/UX 問題,附完整重現證據 | 「dogfood」「QA」「exploratory test」「bug hunt」 |
 | [`electron`](skills/electron/SKILL.md) | 自動化 Electron 桌面 app(VS Code/Slack/Discord 等) via CDP | 「自動化 Slack app」「控制 VS Code」「測 Electron app」 |
 | [`vercel-sandbox`](skills/vercel-sandbox/SKILL.md) | 在 Vercel Sandbox microVM 內跑 agent-browser + Chrome | 「Vercel Sandbox browser」「microVM Chrome」 |
@@ -58,7 +55,6 @@
 | [`retro-keyboard-to-touch`](knowledge-base/retro-cht/retro-keyboard-to-touch/SKILL.md) | 鍵盤老遊戲/SDL C 引擎移植到 Android/觸控的方法論:不重寫輸入,讀引擎每畫面 keymap 動態渲染 context-aware 觸控控制,手指事件合成 SDLK_* 餵回原事件迴圈 | 「老遊戲移植到 Android」「鍵盤遊戲改觸控」「SDL2 android-project 移植」「觸控覆蓋層/UX 設計」 |
 | [`eten-bitmap-font`](knowledge-base/retro-cht/eten-bitmap-font/SKILL.md) | 用倚天中文系統(ETEN)原生點陣字當老遊戲中文化的字形來源(比 TTF rasterize 對味):`STDFONT.15`/`SPCFONT.15`/`STD.24x` 格式、Big5 分區索引公式、與專案自訂碼表對接、字模尺寸與排版格解耦、16×15 vs 24×24 視覺大小取捨 | 「用倚天字形/ETEN 字型」「原味 DOS 點陣中文」「stdfont.15/spcfont.15/STD.24M 怎麼解」「標點變成別的字型」「Big5 點陣字烘 fnt」 |
 | [`first-principles-tech-notes`](skills/first-principles-tech-notes/SKILL.md) | 建立/擴展「第一性原理+圖文並茂」技術知識庫 GitHub repo:每主題一篇 markdown、概念配手繪 SVG、研究 sub-agent 查證、專家+學生審查、worklist 一項一項做 | 「整理某領域筆記成 repo」「把 X 主題寫成第一性原理教學」「一項一項做我監看」「ASCII 圖升級 SVG」 |
-| [`isaac-sim-physical-ai`](skills/isaac-sim-physical-ai/SKILL.md) | **階層式** 在 Isaac Sim(4.5/5.1/6.0.x)做 physical AI:讓接觸與抓握**物理上真的成立**,而不是帳面成功。兩條核心命題 ——①接觸力學決定調參順序:Signorini 互補條件 + 摩擦錐推出 `g>0 ⟹ λₙ=0 ⟹ ‖f_t‖ ≤ μ·0 = 0`,**μ 是乘在一個可能為零的量上**,所以幾何永遠先於摩擦(凸包填實凹特徵是**定義**的後果,不是精度問題);②求解器沒有「非法狀態」的概念、永遠給得出答案,所以**「沒報錯」攜帶零資訊**,只能主動量測。另含三層真值(authored/simulated/business)、開環致動的結構性發散、有效場景=authored⊕runtime、**版本差異矩陣**(API 命名空間、`apply_action`、DDS SHM 靜默丟資料、驅動相容)。references/ 收 headless 實作按需讀 | 「夾爪/叉齒抓不住、滑掉、插不進去」「調摩擦/碰撞近似/接觸參數」「Isaac 車不動但沒錯誤」「模擬跑得動但實體沒動」「5.1→6.0 遷移」「場景搬到另一台」 |
 | [`grilling`](skills/grilling/SKILL.md) | 針對計畫、設計、產品方向、規則、架構、資料格式、原版忠實度、授權或發行決策做**逼問式審查**:把「聽起來合理」的提案逼到必須拿出證據、邊界與失敗條件 | 「幫我挑戰這個計畫」「這個設計有什麼問題」「grill 一下」 |
 | [`grill-me`](skills/grill-me/SKILL.md) | 反向版:在**我**要做出會改變目標／範圍／架構／資料格式／授權／發行的決定前,先逼問我,把沒想清楚的地方挖出來 | 「grill me」「先問我幾個問題再動手」「這決定我還沒想清楚」 |
 | [`retro-argos-cht-debug`](skills/retro-argos-cht-debug/SKILL.md) | AGOS/ScummVM 老遊戲繁中 patch 的除錯與驗證,專治 Big5 等多位元組編碼在引擎內被拆裂、顯示異常、存讀檔破圖 | 「AGOS 中文亂碼」「ScummVM Big5 patch 驗證」「繁中補丁跑不出來」 |
@@ -70,22 +66,6 @@
 **COCOMO 教科書值**（傳統人力合理上界）/ **單人無 AI 校正後**（拔掉 1980s 團隊 overhead）/ **2026 實測**（wall-clock + 真實人小時）。
 顯式揭露 COCOMO 兩個系統性偏差（低估 0-SLOC 高心智成本工作、高估 1980s 團隊 overhead），給讀者一個 ballpark 而非合約報價。
 案例：[pg-cht](https://github.com/wicanr2/pg-cht)（32 PM 教科書 vs 0.5 PM 實測，60× 壓縮）、[openxcom-cht](https://github.com/wicanr2/openxcom-cht)（雙作漢化 3 sub-project 拆解）。
-
-### github-weekly-radar 一句話
-
-不要相信 web 榜單。trending / aggregator blog 會把**老牌爆紅**誤當「新建」、星數還常過時或灌水。
-本 skill 用 `gh api search/repositories q="created:>DATE" sort:stars` 核實**真實建立日與當下星數**,
-剔除非新建者,再用 senior-PM 視角分級(S/A/B/C)、標紅旗、給行動建議。為每週固定執行設計。
-
-核心指令(PowerShell):
-```powershell
-$since = (Get-Date).AddDays(-30).ToString("yyyy-MM-dd")
-$j = gh api -X GET "search/repositories" -f q="created:>$since stars:>2000" `
-       -f sort=stars -f order=desc -f per_page=50 | ConvertFrom-Json
-$j.items | ForEach-Object {
-  "{0,7}  {1}  {2}  {3}" -f $_.stargazers_count,$_.created_at.Substring(0,10),$_.full_name,$_.description
-}
-```
 
 ## Rules(通用工作方法論)
 
@@ -141,12 +121,6 @@ $j.items | ForEach-Object {
    ```
 2. **直接在對話中引用**:把需要的 `SKILL.md` 內容貼給 Claude,或放進專案的 `.claude/skills/`。
 
-## 報告產物
-
-`github-weekly-radar` 每次執行都會在 [`reports/`](reports/) 產生一份 standalone HTML 週報
-(單檔可雙擊開、每個 repo 附 GitHub 連結、Tier 色塊)。最新一份:
-[`reports/github-radar-2026-05-30.html`](reports/github-radar-2026-05-30.html)。
-
 ## 結構
 
 ```
@@ -177,15 +151,13 @@ my_skill/
 ├── personas/                       # agent 人格 (system persona)
 │   ├── hermes-research-collaborator.md
 │   └── patient-technical-teacher.md
-├── reports/
-│   └── github-radar-<date>.html   # github-weekly-radar 產生的 HTML 週報
 ├── skills/                         # 常駐 skill,每個一個資料夾內含 SKILL.md
 │   ├── re-retro-cht-rulebook/      # 逆向/老遊戲中文化 按需路由 → knowledge-base/retro-cht
-│   ├── kneron-edge-ai-integration/  github-weekly-radar/  retro-game-cht-package/
+│   ├── retro-game-cht-package/
 │   ├── verification-fidelity/  first-principles-tech-notes/  proposal-writer/
-│   ├── agent-browser/  dogfood/  electron/  vercel-sandbox/
+│   ├── dogfood/  electron/  vercel-sandbox/
 │   ├── prompt-master/  english-prompt-coach/  organize-folder/
-│   ├── my-skill-merge/  dev-setup-bundle/  isaac-sim-physical-ai/
+│   ├── my-skill-merge/  dev-setup-bundle/
 │   └── grilling/  grill-me/  retro-argos-cht-debug/
 └── knowledge-base/                 # 按需載入,不自動進 context
     ├── workflows/                  # 跨領域工作流
